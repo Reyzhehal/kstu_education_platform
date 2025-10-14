@@ -1,59 +1,47 @@
-import { Box, Flex, Icon, Text } from "@chakra-ui/react"
-import { useQueryClient } from "@tanstack/react-query"
-import { Link as RouterLink } from "@tanstack/react-router"
-import { FiBriefcase, FiHome, FiSettings, FiUsers } from "react-icons/fi"
-import type { IconType } from "react-icons/lib"
-
-import type { UserPublic } from "@/client"
-
-const items = [
-  { icon: FiHome, title: "Dashboard", path: "/" },
-  { icon: FiBriefcase, title: "Items", path: "/items" },
-  { icon: FiSettings, title: "User Settings", path: "/settings" },
-]
+import { useTranslation } from "react-i18next"
+import { Box, Flex, Text } from "@chakra-ui/react"
+import AppButton from "@/components/AppButton"
 
 interface SidebarItemsProps {
   onClose?: () => void
+  tab?: string
+  setTab?: (tab: string) => void
 }
 
-interface Item {
-  icon: IconType
-  title: string
-  path: string
-}
-
-const SidebarItems = ({ onClose }: SidebarItemsProps) => {
-  const queryClient = useQueryClient()
-  const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
-
-  const finalItems: Item[] = currentUser?.is_superuser
-    ? [...items, { icon: FiUsers, title: "Admin", path: "/admin" }]
-    : items
-
-  const listItems = finalItems.map(({ icon, title, path }) => (
-    <RouterLink key={title} to={path} onClick={onClose}>
-      <Flex
-        gap={4}
-        px={4}
-        py={2}
-        _hover={{
-          background: "gray.subtle",
-        }}
-        alignItems="center"
-        fontSize="sm"
-      >
-        <Icon as={icon} alignSelf="center" />
-        <Text ml={2}>{title}</Text>
-      </Flex>
-    </RouterLink>
-  ))
+const SidebarItems = ({ onClose, tab = "learn", setTab }: SidebarItemsProps) => {
+  const { t } = useTranslation()
+  const tabs = [
+    { key: "learn", label: t("tabs.learn") },
+    { key: "courses", label: t("tabs.courses") },
+    { key: "progress", label: t("tabs.progress") },
+    { key: "favorites", label: t("tabs.favorites") },
+    { key: "wishlist", label: t("tabs.wishlist") },
+    { key: "archive", label: t("tabs.archive") },
+    { key: "classes", label: t("tabs.classes") },
+    { key: "notifications", label: t("tabs.notifications") },
+  ]
 
   return (
     <>
       <Text fontSize="xs" px={4} py={2} fontWeight="bold">
-        Menu
+        {t("sidebar.menu")}
       </Text>
-      <Box>{listItems}</Box>
+      <Box>
+        {tabs.map((t) => (
+          <Flex key={t.key} px={2}>
+            <AppButton
+              variant="ghost"
+              className={`menu-btn${t.key === tab ? " active" : ""}`}
+              onClick={() => {
+                setTab?.(t.key)
+                onClose?.()
+              }}
+            >
+              {t.label}
+            </AppButton>
+          </Flex>
+        ))}
+      </Box>
     </>
   )
 }

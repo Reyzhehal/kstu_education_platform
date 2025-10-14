@@ -12,9 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as MainRouteImport } from './routes/main'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as CoursesWishlistRouteImport } from './routes/courses.wishlist'
+import { Route as CoursesProgressRouteImport } from './routes/courses.progress'
+import { Route as CoursesFavoritesRouteImport } from './routes/courses.favorites'
+import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
@@ -34,19 +42,59 @@ const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
   path: '/recover-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MainRoute = MainRouteImport.update({
+  id: '/main',
+  path: '/main',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClassesRoute = ClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutRoute,
+} as any)
+const CoursesWishlistRoute = CoursesWishlistRouteImport.update({
+  id: '/courses/wishlist',
+  path: '/courses/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesProgressRoute = CoursesProgressRouteImport.update({
+  id: '/courses/progress',
+  path: '/courses/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesFavoritesRoute = CoursesFavoritesRouteImport.update({
+  id: '/courses/favorites',
+  path: '/courses/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesArchiveRoute = CoursesArchiveRouteImport.update({
+  id: '/courses/archive',
+  path: '/courses/archive',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
@@ -65,77 +113,133 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
+  '/main': typeof MainRoute
+  '/notifications': typeof NotificationsRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/courses/archive': typeof CoursesArchiveRoute
+  '/courses/favorites': typeof CoursesFavoritesRoute
+  '/courses/progress': typeof CoursesProgressRoute
+  '/courses/wishlist': typeof CoursesWishlistRoute
   '/': typeof LayoutIndexRoute
+  '/courses': typeof CoursesIndexRoute
 }
 export interface FileRoutesByTo {
+  '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
+  '/main': typeof MainRoute
+  '/notifications': typeof NotificationsRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/courses/archive': typeof CoursesArchiveRoute
+  '/courses/favorites': typeof CoursesFavoritesRoute
+  '/courses/progress': typeof CoursesProgressRoute
+  '/courses/wishlist': typeof CoursesWishlistRoute
   '/': typeof LayoutIndexRoute
+  '/courses': typeof CoursesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteWithChildren
+  '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
+  '/main': typeof MainRoute
+  '/notifications': typeof NotificationsRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
+  '/courses/archive': typeof CoursesArchiveRoute
+  '/courses/favorites': typeof CoursesFavoritesRoute
+  '/courses/progress': typeof CoursesProgressRoute
+  '/courses/wishlist': typeof CoursesWishlistRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/courses/': typeof CoursesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/classes'
     | '/login'
+    | '/main'
+    | '/notifications'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
     | '/items'
     | '/settings'
+    | '/courses/archive'
+    | '/courses/favorites'
+    | '/courses/progress'
+    | '/courses/wishlist'
     | '/'
+    | '/courses'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/classes'
     | '/login'
+    | '/main'
+    | '/notifications'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
     | '/items'
     | '/settings'
+    | '/courses/archive'
+    | '/courses/favorites'
+    | '/courses/progress'
+    | '/courses/wishlist'
     | '/'
+    | '/courses'
   id:
     | '__root__'
     | '/_layout'
+    | '/classes'
     | '/login'
+    | '/main'
+    | '/notifications'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
     | '/_layout/items'
     | '/_layout/settings'
+    | '/courses/archive'
+    | '/courses/favorites'
+    | '/courses/progress'
+    | '/courses/wishlist'
     | '/_layout/'
+    | '/courses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  ClassesRoute: typeof ClassesRoute
   LoginRoute: typeof LoginRoute
+  MainRoute: typeof MainRoute
+  NotificationsRoute: typeof NotificationsRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  CoursesArchiveRoute: typeof CoursesArchiveRoute
+  CoursesFavoritesRoute: typeof CoursesFavoritesRoute
+  CoursesProgressRoute: typeof CoursesProgressRoute
+  CoursesWishlistRoute: typeof CoursesWishlistRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -161,11 +265,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecoverPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/main': {
+      id: '/main'
+      path: '/main'
+      fullPath: '/main'
+      preLoaderRoute: typeof MainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/classes': {
+      id: '/classes'
+      path: '/classes'
+      fullPath: '/classes'
+      preLoaderRoute: typeof ClassesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_layout': {
@@ -175,12 +300,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout/': {
       id: '/_layout/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
+    }
+    '/courses/wishlist': {
+      id: '/courses/wishlist'
+      path: '/courses/wishlist'
+      fullPath: '/courses/wishlist'
+      preLoaderRoute: typeof CoursesWishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/progress': {
+      id: '/courses/progress'
+      path: '/courses/progress'
+      fullPath: '/courses/progress'
+      preLoaderRoute: typeof CoursesProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/favorites': {
+      id: '/courses/favorites'
+      path: '/courses/favorites'
+      fullPath: '/courses/favorites'
+      preLoaderRoute: typeof CoursesFavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/archive': {
+      id: '/courses/archive'
+      path: '/courses/archive'
+      fullPath: '/courses/archive'
+      preLoaderRoute: typeof CoursesArchiveRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_layout/settings': {
       id: '/_layout/settings'
@@ -225,10 +385,18 @@ const LayoutRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  ClassesRoute: ClassesRoute,
   LoginRoute: LoginRoute,
+  MainRoute: MainRoute,
+  NotificationsRoute: NotificationsRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  CoursesArchiveRoute: CoursesArchiveRoute,
+  CoursesFavoritesRoute: CoursesFavoritesRoute,
+  CoursesProgressRoute: CoursesProgressRoute,
+  CoursesWishlistRoute: CoursesWishlistRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

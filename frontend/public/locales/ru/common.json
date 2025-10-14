@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "catalog": "Каталог",
+    "myLearning": "Моё обучение",
+    "teaching": "Преподавание",
+    "searchAria": "Поиск по сайту",
+    "searchPlaceholder": "Поиск…",
+    "sidebarAria": "Навигация обучения"
+  },
+  "tabs": {
+    "learn": "Моё обучение",
+    "courses": "Курсы",
+    "progress": "Прохожу",
+    "favorites": "Избранные",
+    "wishlist": "Хочу пройти",
+    "archive": "Архив",
+    "classes": "Классы",
+    "notifications": "Уведомления"
+  },
+  "content": {
+    "coursesListSoon": "Список курсов появится здесь.",
+    "yourProgress": "Ваш прогресс по курсам.",
+    "favorites": "Избранные курсы.",
+    "wishlist": "Курсы, которые вы хотите пройти.",
+    "archive": "Архив пройденных курсов.",
+    "classes": "Ваши классы.",
+    "notifications": "Ваши уведомления.",
+    "welcome": "Добро пожаловать! Здесь будет лента обучения.",
+    "titleSuffix": "– Политех"
+  },
+  "sidebar": {
+    "menu": "Меню"
+  },
+  "lang": {
+    "label": "Язык",
+    "choose": "Выберите язык"
+  },
+  "common": {
+    "inDev": "Страница в разработке."
+  }
+}
+
+

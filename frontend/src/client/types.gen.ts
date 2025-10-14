@@ -13,26 +13,15 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
-export type ItemCreate = {
-    title: string;
-    description?: (string | null);
+export type LanguagePublic = {
+    name: string;
+    code: string;
+    id: number;
 };
 
-export type ItemPublic = {
-    title: string;
-    description?: (string | null);
-    id: string;
-    owner_id: string;
-};
-
-export type ItemsPublic = {
-    data: Array<ItemPublic>;
+export type LanguagesPublic = {
+    data: Array<LanguagePublic>;
     count: number;
-};
-
-export type ItemUpdate = {
-    title?: (string | null);
-    description?: (string | null);
 };
 
 export type Message = {
@@ -49,6 +38,10 @@ export type PrivateUserCreate = {
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type SetLanguage = {
+    language_id?: (number | null);
 };
 
 export type Token = {
@@ -75,6 +68,17 @@ export type UserPublic = {
     is_superuser?: boolean;
     full_name?: (string | null);
     id: string;
+    language_id?: (number | null);
+    username?: (string | null);
+    is_staff?: boolean;
+    is_teacher?: boolean;
+    first_name?: (string | null);
+    last_name?: (string | null);
+    description?: (string | null);
+    description_short?: (string | null);
+    is_profile_private?: boolean;
+    avatar_image?: (string | null);
+    cover_image?: (string | null);
 };
 
 export type UserRegister = {
@@ -107,37 +111,12 @@ export type ValidationError = {
     type: string;
 };
 
-export type ItemsReadItemsData = {
+export type LanguagesReadLanguagesData = {
     limit?: number;
     skip?: number;
 };
 
-export type ItemsReadItemsResponse = (ItemsPublic);
-
-export type ItemsCreateItemData = {
-    requestBody: ItemCreate;
-};
-
-export type ItemsCreateItemResponse = (ItemPublic);
-
-export type ItemsReadItemData = {
-    id: string;
-};
-
-export type ItemsReadItemResponse = (ItemPublic);
-
-export type ItemsUpdateItemData = {
-    id: string;
-    requestBody: ItemUpdate;
-};
-
-export type ItemsUpdateItemResponse = (ItemPublic);
-
-export type ItemsDeleteItemData = {
-    id: string;
-};
-
-export type ItemsDeleteItemResponse = (Message);
+export type LanguagesReadLanguagesResponse = (LanguagesPublic);
 
 export type LoginLoginAccessTokenData = {
     formData: Body_login_login_access_token;
@@ -199,6 +178,12 @@ export type UsersUpdatePasswordMeData = {
 };
 
 export type UsersUpdatePasswordMeResponse = (Message);
+
+export type UsersSetLanguageMeData = {
+    requestBody: SetLanguage;
+};
+
+export type UsersSetLanguageMeResponse = (UserPublic);
 
 export type UsersRegisterUserData = {
     requestBody: UserRegister;

@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "catalog": "Catalog",
+    "myLearning": "My Learning",
+    "teaching": "Teaching",
+    "searchAria": "Site search",
+    "searchPlaceholder": "Search…",
+    "sidebarAria": "Learning navigation"
+  },
+  "tabs": {
+    "learn": "My Learning",
+    "courses": "Courses",
+    "progress": "In Progress",
+    "favorites": "Favorites",
+    "wishlist": "Wishlist",
+    "archive": "Archive",
+    "classes": "Classes",
+    "notifications": "Notifications"
+  },
+  "content": {
+    "coursesListSoon": "The courses list will appear here.",
+    "yourProgress": "Your course progress.",
+    "favorites": "Favorite courses.",
+    "wishlist": "Courses you want to take.",
+    "archive": "Completed courses archive.",
+    "classes": "Your classes.",
+    "notifications": "Your notifications.",
+    "welcome": "Welcome! The learning feed will be here.",
+    "titleSuffix": "– Polytechnic"
+  },
+  "sidebar": {
+    "menu": "Menu"
+  },
+  "lang": {
+    "label": "Language",
+    "choose": "Choose a language"
+  },
+  "common": {
+    "inDev": "Page under construction."
+  }
+}
+
+
