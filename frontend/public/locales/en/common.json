@@ -37,6 +37,13 @@
   },
   "common": {
     "inDev": "Page under construction."
+  },
+  "menu": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "whatsNew": "What's new",
+    "logout": "Log out"
   }
 }
 

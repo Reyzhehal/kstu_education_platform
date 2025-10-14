@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlmodel import col, func, select
 
 from app import crud
@@ -246,3 +246,44 @@ async def delete_user(
     await session.delete(user)
     await session.commit()
     return Message(message="User deleted successfully")
+
+
+@router.post("/me/avatar", response_model=UserPublic)
+async def upload_avatar_me(
+    *, session: AsyncSessionDep, current_user: CurrentUser, file: UploadFile = File(...)
+) -> Any:
+    """
+    Upload and set current user's avatar. Accepts image/jpeg, image/png, image/webp.
+    Returns updated user.
+    """
+    content_type = file.content_type or ""
+    allowed = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+    if content_type not in allowed:
+        raise HTTPException(status_code=400, detail="Unsupported content type")
+
+    from pathlib import Path
+    from uuid import uuid4
+
+    avatars_dir = Path("app/static/avatars")
+    avatars_dir.mkdir(parents=True, exist_ok=True)
+    ext = allowed[content_type]
+    filename = f"{current_user.id}_{uuid4().hex}.{ext}"
+    filepath = avatars_dir / filename
+
+    data = await file.read()
+    filepath.write_bytes(data)
+
+    # Remove previous local avatar file if exists under /static/avatars
+    if current_user.avatar_image and current_user.avatar_image.startswith("/static/avatars/"):
+        try:
+            old_path = Path("app") / current_user.avatar_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    current_user.avatar_image = f"/static/avatars/{filename}"
+    session.add(current_user)
+    await session.commit()
+    await session.refresh(current_user)
+    return current_user

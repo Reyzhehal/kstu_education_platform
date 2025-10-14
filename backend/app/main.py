@@ -6,6 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.admin import setup_admin
 from app.api.main import api_router
 from app.core.config import settings
+from fastapi.staticfiles import StaticFiles
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
@@ -32,6 +33,9 @@ if settings.all_cors_origins:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Static for uploaded avatars
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Mount SQLAdmin
 setup_admin(app)

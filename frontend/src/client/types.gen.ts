@@ -9,6 +9,10 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type Body_users_upload_avatar_me = {
+    file: (Blob | File);
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -209,6 +213,12 @@ export type UsersDeleteUserData = {
 };
 
 export type UsersDeleteUserResponse = (Message);
+
+export type UsersUploadAvatarMeData = {
+    formData: Body_users_upload_avatar_me;
+};
+
+export type UsersUploadAvatarMeResponse = (UserPublic);
 
 export type UtilsTestEmailData = {
     emailTo: string;

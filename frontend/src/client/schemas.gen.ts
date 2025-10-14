@@ -55,6 +55,19 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const Body_users_upload_avatar_meSchema = {
+    properties: {
+        file: {
+            type: 'string',
+            format: 'binary',
+            title: 'File'
+        }
+    },
+    type: 'object',
+    required: ['file'],
+    title: 'Body_users-upload_avatar_me'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {

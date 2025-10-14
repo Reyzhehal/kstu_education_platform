@@ -37,6 +37,13 @@
   },
   "common": {
     "inDev": "Страница в разработке."
+  },
+  "menu": {
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "notifications": "Уведомления",
+    "whatsNew": "Что нового",
+    "logout": "Выход"
   }
 }
 

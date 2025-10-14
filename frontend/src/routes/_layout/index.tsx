@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import AppButton from "@/components/AppButton"
 import "../main.css"
 import LanguageSelect from "@/components/LanguageSelect"
+import { UserMenuDropdown } from "@/components/UserMenuDropdown"
 
 export const Route = createFileRoute("/_layout/")({
   component: IndexPage,
@@ -60,7 +61,7 @@ function IndexPage() {
         </form>
         <div className="tools">
           <LanguageSelect />
-          <span className="avatar" aria-hidden="true">R</span>
+          <UserMenuDropdown />
         </div>
       </header>
 

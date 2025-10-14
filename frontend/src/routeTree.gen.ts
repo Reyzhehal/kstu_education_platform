@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as NewsRouteImport } from './routes/news'
 import { Route as MainRouteImport } from './routes/main'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ClassesRouteImport } from './routes/classes'
@@ -42,9 +44,19 @@ const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
   path: '/recover-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainRoute = MainRouteImport.update({
@@ -116,7 +128,9 @@ export interface FileRoutesByFullPath {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRoute
+  '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -134,7 +148,9 @@ export interface FileRoutesByTo {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRoute
+  '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -154,7 +170,9 @@ export interface FileRoutesById {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRoute
+  '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -174,7 +192,9 @@ export interface FileRouteTypes {
     | '/classes'
     | '/login'
     | '/main'
+    | '/news'
     | '/notifications'
+    | '/profile'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
@@ -192,7 +212,9 @@ export interface FileRouteTypes {
     | '/classes'
     | '/login'
     | '/main'
+    | '/news'
     | '/notifications'
+    | '/profile'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
@@ -211,7 +233,9 @@ export interface FileRouteTypes {
     | '/classes'
     | '/login'
     | '/main'
+    | '/news'
     | '/notifications'
+    | '/profile'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
@@ -231,7 +255,9 @@ export interface RootRouteChildren {
   ClassesRoute: typeof ClassesRoute
   LoginRoute: typeof LoginRoute
   MainRoute: typeof MainRoute
+  NewsRoute: typeof NewsRoute
   NotificationsRoute: typeof NotificationsRoute
+  ProfileRoute: typeof ProfileRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
@@ -265,11 +291,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecoverPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notifications': {
       id: '/notifications'
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/main': {
@@ -388,7 +428,9 @@ const rootRouteChildren: RootRouteChildren = {
   ClassesRoute: ClassesRoute,
   LoginRoute: LoginRoute,
   MainRoute: MainRoute,
+  NewsRoute: NewsRoute,
   NotificationsRoute: NotificationsRoute,
+  ProfileRoute: ProfileRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,

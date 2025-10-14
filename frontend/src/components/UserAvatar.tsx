@@ -1,0 +1,42 @@
+import { useMemo, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import type { UserPublic } from "@/client"
+import { OpenAPI } from "@/client"
+import { UsersService as Users } from "@/client"
+
+type Props = {
+  size?: number
+  onClick?: () => void
+}
+
+const palette = ["#8a8aff", "#ff8a8a", "#8affc1", "#ffd28a", "#8ad2ff", "#d48aff"]
+
+export default function UserAvatar({ size = 32, onClick }: Props) {
+  const me = useQuery({ queryKey: ["currentUser"], queryFn: Users.readUserMe })
+  const user = (me.data as UserPublic) || null
+  const [bg] = useState(() => palette[Math.floor(Math.random() * palette.length)])
+  const username = (user as any)?.username || user?.full_name || user?.email || "?"
+  const initial = useMemo(() => username.trim().charAt(0).toUpperCase(), [username])
+  const url = user?.avatar_image
+    ? `${OpenAPI.BASE?.replace(/\/$/, "")}${user.avatar_image.startsWith("/") ? user.avatar_image : `/${user.avatar_image}`}`
+    : undefined
+  const style: React.CSSProperties = {
+    width: size,
+    height: size,
+    borderRadius: 6,
+    background: url ? `url(${url}) center/cover no-repeat` : bg,
+    color: "#fff",
+    display: "grid",
+    placeItems: "center",
+    fontWeight: 700,
+    cursor: onClick ? "pointer" : "default",
+    userSelect: "none",
+  }
+  return (
+    <div style={style} onMouseDown={(e) => e.preventDefault()} onClick={onClick} aria-label="User avatar">
+      {!user?.avatar_image ? initial : null}
+    </div>
+  )
+}
+
+

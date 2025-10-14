@@ -28,7 +28,7 @@ async def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = await crud.a_authenticate(
+    user = await crud.authenticate(
         session=session, email=form_data.username, password=form_data.password
     )
     if not user:
@@ -56,7 +56,7 @@ async def recover_password(email: str, session: AsyncSessionDep) -> Message:
     """
     Password Recovery
     """
-    user = await crud.a_get_user_by_email(session=session, email=email)
+    user = await crud.get_user_by_email(session=session, email=email)
 
     if not user:
         raise HTTPException(
@@ -83,7 +83,7 @@ async def reset_password(session: AsyncSessionDep, body: NewPassword) -> Message
     email = verify_password_reset_token(token=body.token)
     if not email:
         raise HTTPException(status_code=400, detail="Invalid token")
-    user = await crud.a_get_user_by_email(session=session, email=email)
+    user = await crud.get_user_by_email(session=session, email=email)
     if not user:
         raise HTTPException(
             status_code=404,
@@ -107,7 +107,7 @@ async def recover_password_html_content(email: str, session: AsyncSessionDep) ->
     """
     HTML Content for Password Recovery
     """
-    user = await crud.a_get_user_by_email(session=session, email=email)
+    user = await crud.get_user_by_email(session=session, email=email)
 
     if not user:
         raise HTTPException(
