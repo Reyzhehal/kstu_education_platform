@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from starlette.middleware.cors import CORSMiddleware
 
+from app.admin import setup_admin
 from app.api.main import api_router
 from app.core.config import settings
 
@@ -31,3 +32,6 @@ if settings.all_cors_origins:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Mount SQLAdmin
+setup_admin(app)

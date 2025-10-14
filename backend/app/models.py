@@ -53,9 +53,9 @@ class Language(LanguageBase, table=True):
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
+    __tablename__ = "users"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     hashed_password: str
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
     language_id: int | None = Field(
         default=None, foreign_key="language.id", ondelete="SET NULL"
     )
@@ -90,42 +90,6 @@ class UserPublic(UserBase):
 
 class UsersPublic(SQLModel):
     data: list[UserPublic]
-    count: int
-
-
-# Shared properties
-class ItemBase(SQLModel):
-    title: str = Field(min_length=1, max_length=255)
-    description: str | None = Field(default=None, max_length=255)
-
-
-# Properties to receive on item creation
-class ItemCreate(ItemBase):
-    pass
-
-
-# Properties to receive on item update
-class ItemUpdate(ItemBase):
-    title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
-
-
-# Database model, database table inferred from class name
-class Item(ItemBase, table=True):
-    id: UUID = Field(default_factory=uuid4, primary_key=True)
-    owner_id: UUID = Field(
-        foreign_key="user.id", nullable=False, ondelete="CASCADE"
-    )
-    owner: User | None = Relationship(back_populates="items")
-
-
-# Properties to return via API, id is always required
-class ItemPublic(ItemBase):
-    id: UUID
-    owner_id: UUID
-
-
-class ItemsPublic(SQLModel):
-    data: list[ItemPublic]
     count: int
 
 
@@ -205,13 +169,13 @@ class DifficultyLevel(IntEnum):
 class CourseStudentLink(SQLModel, table=True):
     __tablename__ = "course_student_link"
     course_id: UUID = Field(foreign_key="course.id", primary_key=True)
-    user_id: UUID = Field(foreign_key="user.id", primary_key=True)
+    user_id: UUID = Field(foreign_key="users.id", primary_key=True)
 
 
 class CourseFavoriteLink(SQLModel, table=True):
     __tablename__ = "course_favorite_link"
     course_id: UUID = Field(foreign_key="course.id", primary_key=True)
-    user_id: UUID = Field(foreign_key="user.id", primary_key=True)
+    user_id: UUID = Field(foreign_key="users.id", primary_key=True)
 
 
 class CourseBase(SQLModel):
@@ -232,7 +196,7 @@ class Course(CourseBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     datetime_create: datetime = Field(default_factory=datetime.now)
     datetime_update: datetime = Field(default_factory=datetime.now)
-    author_id: UUID = Field(foreign_key="user.id", ondelete="CASCADE")
+    author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
     currency_id: UUID | None = Field(
         default=None, foreign_key="currency.id", ondelete="RESTRICT"
@@ -290,7 +254,7 @@ class CoursePageComment(CoursePageCommentBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     course_page_id: UUID = Field(foreign_key="coursepage.id", ondelete="CASCADE")
     course_page: CoursePage | None = Relationship()
-    author_id: UUID = Field(foreign_key="user.id", ondelete="CASCADE")
+    author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
     reply_to_comment_id: UUID | None = Field(
         default=None, foreign_key="coursepagecomment.id", ondelete="SET NULL"
@@ -306,7 +270,7 @@ class CoursePageCommentReview(CoursePageCommentReviewBase, table=True):
         UniqueConstraint("author_id", "comment_id", name="uq_comment_review_author"),
     )
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    author_id: UUID = Field(foreign_key="user.id", ondelete="CASCADE")
+    author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
     comment_id: UUID = Field(foreign_key="coursepagecomment.id", ondelete="CASCADE")
     comment: CoursePageComment | None = Relationship()
@@ -315,7 +279,7 @@ class CoursePageCommentReview(CoursePageCommentReviewBase, table=True):
 class ClassroomStudentLink(SQLModel, table=True):
     __tablename__ = "classroom_student_link"
     classroom_id: UUID = Field(foreign_key="classroom.id", primary_key=True)
-    user_id: UUID = Field(foreign_key="user.id", primary_key=True)
+    user_id: UUID = Field(foreign_key="users.id", primary_key=True)
 
 
 class ClassroomBase(SQLModel):
@@ -324,6 +288,6 @@ class ClassroomBase(SQLModel):
 
 class Classroom(ClassroomBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    owner_id: UUID = Field(foreign_key="user.id", ondelete="CASCADE")
+    owner_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     owner: User | None = Relationship()
     students: list[User] = Relationship(link_model=ClassroomStudentLink)
