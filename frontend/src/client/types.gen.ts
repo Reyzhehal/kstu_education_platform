@@ -39,6 +39,7 @@ export type CoursePublic = {
     language_id: number;
     category_id?: (string | null);
     subcategory_id?: (string | null);
+    is_favorite?: boolean;
 };
 
 export type CoursesPublic = {
@@ -196,6 +197,29 @@ export type CoursesReadCoursesData = {
 };
 
 export type CoursesReadCoursesResponse = (CoursesPublic);
+
+export type CoursesAddToFavoritesData = {
+    courseId: string;
+};
+
+export type CoursesAddToFavoritesResponse = ({
+    [key: string]: (string);
+});
+
+export type CoursesRemoveFromFavoritesData = {
+    courseId: string;
+};
+
+export type CoursesRemoveFromFavoritesResponse = ({
+    [key: string]: (string);
+});
+
+export type CoursesReadFavoriteCoursesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type CoursesReadFavoriteCoursesResponse = (CoursesPublic);
 
 export type LanguagesReadLanguagesData = {
     limit?: number;

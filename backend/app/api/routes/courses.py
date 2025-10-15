@@ -1,10 +1,10 @@
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from sqlmodel import col, func, select
 
-from app.models import Course, CoursesPublic, User
+from app.models import Course, CoursesPublic, CoursePublic, CourseFavoriteLink, User
 from app.api.deps import AsyncSessionDep, CurrentUser
 
 
@@ -76,6 +76,119 @@ async def read_courses(
     statement = statement.offset(skip).limit(limit)
     courses = (await session.exec(statement)).all()
 
-    return CoursesPublic(data=courses, count=count)
+    # Получаем список ID избранных курсов текущего пользователя
+    favorite_statement = select(CourseFavoriteLink.course_id).where(
+        CourseFavoriteLink.user_id == current_user.id
+    )
+    favorite_course_ids = set((await session.exec(favorite_statement)).all())
+
+    # Преобразуем курсы в CoursePublic с is_favorite
+    courses_public = []
+    for course in courses:
+        course_dict = course.model_dump()
+        course_dict['is_favorite'] = course.id in favorite_course_ids
+        courses_public.append(CoursePublic(**course_dict))
+
+    return CoursesPublic(data=courses_public, count=count)
+
+
+@router.post("/{course_id}/favorite")
+async def add_to_favorites(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> dict[str, str]:
+    """
+    Добавить курс в избранное
+    """
+    # Проверяем, существует ли курс
+    course = await session.get(Course, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    
+    # Проверяем, не добавлен ли уже курс в избранное
+    existing = await session.exec(
+        select(CourseFavoriteLink).where(
+            CourseFavoriteLink.course_id == course_id,
+            CourseFavoriteLink.user_id == current_user.id
+        )
+    )
+    if existing.first():
+        raise HTTPException(status_code=400, detail="Course already in favorites")
+    
+    # Добавляем в избранное
+    favorite_link = CourseFavoriteLink(course_id=course_id, user_id=current_user.id)
+    session.add(favorite_link)
+    await session.commit()
+    
+    return {"message": "Course added to favorites"}
+
+
+@router.delete("/{course_id}/favorite")
+async def remove_from_favorites(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> dict[str, str]:
+    """
+    Удалить курс из избранного
+    """
+    # Ищем запись в избранном
+    result = await session.exec(
+        select(CourseFavoriteLink).where(
+            CourseFavoriteLink.course_id == course_id,
+            CourseFavoriteLink.user_id == current_user.id
+        )
+    )
+    favorite_link = result.first()
+    
+    if not favorite_link:
+        raise HTTPException(status_code=404, detail="Course not in favorites")
+    
+    # Удаляем из избранного
+    await session.delete(favorite_link)
+    await session.commit()
+    
+    return {"message": "Course removed from favorites"}
+
+
+@router.get("/favorites", response_model=CoursesPublic)
+async def read_favorite_courses(
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Получить список избранных курсов текущего пользователя
+    """
+    # Получаем ID избранных курсов
+    favorite_links_statement = select(CourseFavoriteLink.course_id).where(
+        CourseFavoriteLink.user_id == current_user.id
+    )
+    favorite_course_ids = (await session.exec(favorite_links_statement)).all()
+    
+    if not favorite_course_ids:
+        return CoursesPublic(data=[], count=0)
+    
+    # Получаем курсы по ID
+    statement = select(Course).where(col(Course.id).in_(favorite_course_ids))
+    
+    # Подсчет
+    count_statement = statement.with_only_columns(func.count()).order_by(None)
+    count = (await session.exec(count_statement)).one()
+    
+    # Пагинация
+    statement = statement.offset(skip).limit(limit)
+    courses = (await session.exec(statement)).all()
+    
+    # Все курсы в избранном, поэтому is_favorite = True для всех
+    courses_public = []
+    for course in courses:
+        course_dict = course.model_dump()
+        course_dict['is_favorite'] = True
+        courses_public.append(CoursePublic(**course_dict))
+    
+    return CoursesPublic(data=courses_public, count=count)
 
 

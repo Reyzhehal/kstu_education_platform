@@ -228,6 +228,11 @@ export const CoursePublicSchema = {
                 }
             ],
             title: 'Subcategory Id'
+        },
+        is_favorite: {
+            type: 'boolean',
+            title: 'Is Favorite',
+            default: false
         }
     },
     type: 'object',

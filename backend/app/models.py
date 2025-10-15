@@ -383,6 +383,7 @@ class CoursePublic(CourseBase):
     language_id: int
     category_id: UUID | None = None
     subcategory_id: UUID | None = None
+    is_favorite: bool = False
 
 
 class CoursesPublic(SQLModel):

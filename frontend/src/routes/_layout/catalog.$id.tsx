@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
-import { CoursesService, type CoursePublic, LanguagesService, type LanguagePublic } from "@/client"
+import { CoursesService, LanguagesService, type LanguagePublic } from "@/client"
 import { useMemo, useState, useEffect } from "react"
-import { useTranslation } from "react-i18next"
-import CheckboxList from "@/components/Common/CheckboxList"
+import CourseCard from "@/components/Common/CourseCard"
+import CatalogFilters from "@/components/Common/CatalogFilters"
+import Pagination from "@/components/Common/Pagination"
 import useAuth from "@/hooks/useAuth"
 
 type SearchParams = {
@@ -19,26 +20,7 @@ export const Route = createFileRoute("/_layout/catalog/$id")({
   },
 })
 
-function CourseCard({ c }: { c: CoursePublic }) {
-  const { t } = useTranslation()
-  const apiUrl = import.meta.env.VITE_API_URL || ""
-  const coverImage = c.cover_image ? `${apiUrl}/${c.cover_image}` : "/assets/images/header-img-night.png"
-  
-  return (
-    <div className="course-card">
-      <img className="course-card__img" src={coverImage} alt="" />
-      <div className="course-card__body">
-        <div className="course-card__title">{c.title}</div>
-        <div className="course-card__desc">{c.description ?? ""}</div>
-        <div className="course-card__meta">{c.hours_total ?? 0} {t("catalog.course.hoursTotal")}</div>
-      </div>
-      <button className="course-card__like" title={t("catalog.course.wishlist")} aria-label={t("catalog.course.wishlist")}>❤</button>
-    </div>
-  )
-}
-
 function CatalogBySubcategory() {
-  const { t } = useTranslation()
   const { user } = useAuth()
   const { id } = Route.useParams()
   const { q } = Route.useSearch()
@@ -75,42 +57,22 @@ function CatalogBySubcategory() {
 
   return (
     <div className="catalog-page">
-      <aside className="catalog-filters">
-        <CheckboxList
-          title={t("catalog.filters.language")}
-          options={languages.map((l) => ({ label: l.name, value: l.id }))}
-          values={langs}
-          onToggle={(v) => setLangs((arr) => (arr.includes(v as number) ? arr.filter((x) => x !== v) : [...arr, v as number]))}
-        />
-        <CheckboxList
-          title={t("catalog.filters.difficulty")}
-          options={[
-            { label: t("catalog.difficulty.beginner"), value: 1 },
-            { label: t("catalog.difficulty.intermediate"), value: 2 },
-            { label: t("catalog.difficulty.advanced"), value: 3 },
-          ]}
-          values={levels}
-          onToggle={(v) => setLevels((arr) => (arr.includes(v as number) ? arr.filter((x) => x !== v) : [...arr, v as number]))}
-        />
-      </aside>
+      <CatalogFilters
+        languages={languages}
+        selectedLanguages={langs}
+        onLanguageToggle={(v) => setLangs((arr) => (arr.includes(v as number) ? arr.filter((x) => x !== v) : [...arr, v as number]))}
+        selectedLevels={levels}
+        onLevelToggle={(v) => setLevels((arr) => (arr.includes(v as number) ? arr.filter((x) => x !== v) : [...arr, v as number]))}
+      />
 
       <section className="catalog-results">
         <div className="courses-grid">
           {courses.map((c) => (
-            <CourseCard key={c.id} c={c} />
+            <CourseCard key={c.id} course={c} />
           ))}
         </div>
 
-        <div className="pagination">
-          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, pages).map((p) => (
-            <button key={p} className={`page-btn ${p === page ? "is-active" : ""}`} onClick={() => setPage(p)}>
-              {p}
-            </button>
-          ))}
-          {page < pages && (
-            <button className="page-btn" onClick={() => setPage(page + 1)}>{t("catalog.pagination.next")}</button>
-          )}
-        </div>
+        <Pagination currentPage={page} totalPages={pages} onPageChange={setPage} />
       </section>
     </div>
   )

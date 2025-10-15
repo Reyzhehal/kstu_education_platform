@@ -23,7 +23,6 @@ const SidebarItems = ({ onClose, tab = "learn", setTab }: SidebarItemsProps) => 
       submenu: [
         { key: "progress", label: t("tabs.progress") },
         { key: "favorites", label: t("tabs.favorites") },
-        { key: "wishlist", label: t("tabs.wishlist") },
         { key: "archive", label: t("tabs.archive") },
       ]
     },

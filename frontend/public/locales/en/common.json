@@ -12,7 +12,6 @@
     "courses": "Courses",
     "progress": "In Progress",
     "favorites": "Favorites",
-    "wishlist": "Wishlist",
     "archive": "Archive",
     "classes": "Classes",
     "notifications": "Notifications"
@@ -21,7 +20,6 @@
     "coursesListSoon": "The courses list will appear here.",
     "yourProgress": "Your course progress.",
     "favorites": "Favorite courses.",
-    "wishlist": "Courses you want to take.",
     "archive": "Completed courses archive.",
     "classes": "Your classes.",
     "notifications": "Your notifications.",
@@ -36,6 +34,9 @@
   },
   "common": {
     "inDev": "Page under construction."
+  },
+  "course": {
+    "in_favorites": "In favorites"
   },
   "menu": {
     "profile": "Profile",

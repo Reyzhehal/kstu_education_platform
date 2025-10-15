@@ -13,7 +13,6 @@
     "courses": "Курсы",
     "progress": "Прохожу",
     "favorites": "Избранные",
-    "wishlist": "Хочу пройти",
     "archive": "Архив",
     "classes": "Классы",
     "notifications": "Уведомления"
@@ -22,7 +21,7 @@
     "coursesListSoon": "Список курсов появится здесь.",
     "yourProgress": "Ваш прогресс по курсам.",
     "favorites": "Избранные курсы.",
-    "wishlist": "Курсы, которые вы хотите пройти.",
+    "noFavorites": "У вас пока нет избранных курсов.",
     "archive": "Архив пройденных курсов.",
     "classes": "Ваши классы.",
     "notifications": "Ваши уведомления.",
@@ -56,13 +55,15 @@
       "advanced": "Продвинутый"
     },
     "course": {
-      "wishlist": "Хочу пройти",
-      "hoursTotal": "ч суммарно"
+      "removeFromWishlist": "Удалить из избранного",
+      "in_favorites": "В избранное",
+      "hoursTotal": "ч суммарно",
+      "addedToFavorites": "Курс добавлен в избранное",
+      "removedFromFavorites": "Курс удален из избранного",
+      "favoriteError": "Ошибка при работе с избранным"
     },
     "pagination": {
       "next": "Далее →"
     }
   }
 }
-
-

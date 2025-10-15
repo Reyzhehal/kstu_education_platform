@@ -20,13 +20,11 @@ import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
-import { Route as CoursesWishlistRouteImport } from './routes/courses.wishlist'
 import { Route as CoursesProgressRouteImport } from './routes/courses.progress'
 import { Route as CoursesFavoritesRouteImport } from './routes/courses.favorites'
 import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
-import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
 import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog.$id'
@@ -86,11 +84,6 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
-const CoursesWishlistRoute = CoursesWishlistRouteImport.update({
-  id: '/courses/wishlist',
-  path: '/courses/wishlist',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CoursesProgressRoute = CoursesProgressRouteImport.update({
   id: '/courses/progress',
   path: '/courses/progress',
@@ -114,11 +107,6 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
 const LayoutMainRoute = LayoutMainRouteImport.update({
   id: '/main',
   path: '/main',
-  getParentRoute: () => LayoutRoute,
-} as any)
-const LayoutItemsRoute = LayoutItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
@@ -152,13 +140,11 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/items': typeof LayoutItemsRoute
   '/main': typeof LayoutMainRoute
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
   '/courses/progress': typeof CoursesProgressRoute
-  '/courses/wishlist': typeof CoursesWishlistRoute
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
@@ -175,13 +161,11 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/items': typeof LayoutItemsRoute
   '/main': typeof LayoutMainRoute
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
   '/courses/progress': typeof CoursesProgressRoute
-  '/courses/wishlist': typeof CoursesWishlistRoute
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
@@ -200,13 +184,11 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/items': typeof LayoutItemsRoute
   '/_layout/main': typeof LayoutMainRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
   '/courses/progress': typeof CoursesProgressRoute
-  '/courses/wishlist': typeof CoursesWishlistRoute
   '/_layout/': typeof LayoutIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/_layout/catalog/$id': typeof LayoutCatalogIdRoute
@@ -225,13 +207,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
     | '/main'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
     | '/courses/progress'
-    | '/courses/wishlist'
     | '/'
     | '/courses'
     | '/catalog/$id'
@@ -248,13 +228,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
     | '/main'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
     | '/courses/progress'
-    | '/courses/wishlist'
     | '/'
     | '/courses'
     | '/catalog/$id'
@@ -272,13 +250,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
-    | '/_layout/items'
     | '/_layout/main'
     | '/_layout/settings'
     | '/courses/archive'
     | '/courses/favorites'
     | '/courses/progress'
-    | '/courses/wishlist'
     | '/_layout/'
     | '/courses/'
     | '/_layout/catalog/$id'
@@ -299,7 +275,6 @@ export interface RootRouteChildren {
   CoursesArchiveRoute: typeof CoursesArchiveRoute
   CoursesFavoritesRoute: typeof CoursesFavoritesRoute
   CoursesProgressRoute: typeof CoursesProgressRoute
-  CoursesWishlistRoute: typeof CoursesWishlistRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
 }
 
@@ -382,13 +357,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/courses/wishlist': {
-      id: '/courses/wishlist'
-      path: '/courses/wishlist'
-      fullPath: '/courses/wishlist'
-      preLoaderRoute: typeof CoursesWishlistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/courses/progress': {
       id: '/courses/progress'
       path: '/courses/progress'
@@ -424,13 +392,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutMainRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/items': {
-      id: '/_layout/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof LayoutItemsRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -464,7 +425,6 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutMainRoute: typeof LayoutMainRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
@@ -475,7 +435,6 @@ interface LayoutRouteChildren {
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
-  LayoutItemsRoute: LayoutItemsRoute,
   LayoutMainRoute: LayoutMainRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
@@ -500,7 +459,6 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesArchiveRoute: CoursesArchiveRoute,
   CoursesFavoritesRoute: CoursesFavoritesRoute,
   CoursesProgressRoute: CoursesProgressRoute,
-  CoursesWishlistRoute: CoursesWishlistRoute,
   CoursesIndexRoute: CoursesIndexRoute,
 }
 export const routeTree = rootRouteImport
