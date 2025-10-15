@@ -201,17 +201,9 @@ export const CoursePublicSchema = {
             format: 'uuid',
             title: 'Author Id'
         },
-        currency_id: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'uuid'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Currency Id'
+        language_id: {
+            type: 'integer',
+            title: 'Language Id'
         },
         category_id: {
             anyOf: [
@@ -239,7 +231,7 @@ export const CoursePublicSchema = {
         }
     },
     type: 'object',
-    required: ['title', 'id', 'datetime_create', 'datetime_update', 'author_id'],
+    required: ['title', 'id', 'datetime_create', 'datetime_update', 'author_id', 'language_id'],
     title: 'CoursePublic'
 } as const;
 

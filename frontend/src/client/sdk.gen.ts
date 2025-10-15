@@ -65,6 +65,9 @@ export class CoursesService {
      * @param data.limit
      * @param data.categoryId
      * @param data.subcategoryId
+     * @param data.metaCategoryId
+     * @param data.languageId
+     * @param data.difficultyLevel
      * @param data.q
      * @returns CoursesPublic Successful Response
      * @throws ApiError
@@ -78,6 +81,9 @@ export class CoursesService {
                 limit: data.limit,
                 category_id: data.categoryId,
                 subcategory_id: data.subcategoryId,
+                meta_category_id: data.metaCategoryId,
+                language_id: data.languageId,
+                difficulty_level: data.difficultyLevel,
                 q: data.q
             },
             errors: {

@@ -19,6 +19,9 @@ async def read_courses(
     limit: int = 100,
     category_id: UUID | None = None,
     subcategory_id: UUID | None = None,
+    meta_category_id: UUID | None = None,
+    language_id: int | None = None,
+    difficulty_level: int | None = None,
     q: str | None = None,
 ) -> Any:
     """
@@ -35,6 +38,22 @@ async def read_courses(
     # Фильтр по подкатегории
     if subcategory_id is not None:
         statement = statement.where(col(Course.subcategory_id) == subcategory_id)
+
+    # Фильтр по метакатегории через join subcategory
+    if meta_category_id is not None:
+        from app.models import Subcategory
+        statement = (
+            statement.join(Subcategory, col(Subcategory.id) == col(Course.subcategory_id))
+            .where(col(Subcategory.meta_category_id) == meta_category_id)
+        )
+
+    # Фильтр по языку курса
+    if language_id is not None:
+        statement = statement.where(col(Course.language_id) == language_id)
+
+    # Фильтр по уровню сложности
+    if difficulty_level is not None:
+        statement = statement.where(col(Course.difficulty_level) == difficulty_level)
 
     # Поиск по тексту (title, description, author.full_name, author.username)
     if q:

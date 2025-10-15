@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { CategoriesService, type CategoryPublic, type MetaCategoryWithSubcategoriesPublic } from "@/client"
 import { useQuery } from "@tanstack/react-query"
+import { Link } from "@tanstack/react-router"
 
 type Props = { open: boolean; onClose: () => void }
 
@@ -53,11 +54,15 @@ export default function CatalogMenu({ open, onClose }: Props) {
           <section className="catalog__right" aria-label="Подкатегории">
             {groups.map((g) => (
               <div className="catalog__group" key={g.id}>
-                <div className="catalog__meta">{g.name}</div>
+                <Link to="/catalog/meta/$id" params={{ id: g.id }} className="catalog__meta" onClick={onClose}>
+                  {g.name}
+                </Link>
                 <ul className="catalog__sublist">
                   {(g.subcategories ?? []).map((s) => (
                     <li key={s.id}>
-                      <a href="#" className="catalog__sub">{s.name}</a>
+                      <Link to="/catalog/$id" params={{ id: s.id }} className="catalog__sub" onClick={onClose}>
+                        {s.name}
+                      </Link>
                     </li>
                   ))}
                 </ul>

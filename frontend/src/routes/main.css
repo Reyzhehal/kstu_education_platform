@@ -50,11 +50,30 @@ h1 { margin: 0 0 16px; font-size: 28px; font-weight: 700; }
 .catalog__cat.is-active { background: rgba(76,127,255,.12); border-left: 3px solid var(--accent); padding-left: 13px; font-weight: 600; }
 .catalog__right { padding: 16px; }
 .catalog__group + .catalog__group { margin-top: 16px; }
-.catalog__meta { font-weight: 700; font-size: 16px; margin: 6px 0 10px; }
+.catalog__meta { font-weight: 700; font-size: 16px; margin: 6px 0 10px; display: block; color: var(--text); cursor: pointer; }
+.catalog__meta:hover { color: var(--accent); }
 .catalog__sublist { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 16px; list-style: none; margin: 0; padding: 0; }
-.catalog__sub { display: inline-block; padding: 8px 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; }
+.catalog__sub { display: inline-block; padding: 8px 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); }
+.catalog__sub:hover { background: var(--panel); border-color: var(--accent); }
 
 @keyframes catalogIn { from { transform: translateX(-24px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Course catalog pages */
+.catalog-page { display: grid; grid-template-columns: 280px 1fr; gap: 24px; padding: 24px; }
+.catalog-filters { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; height: fit-content; position: sticky; top: calc(var(--header-h) + 16px); }
+.catalog-results {}
+.courses-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.course-card { display: grid; grid-template-columns: 140px 1fr auto; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 10px; }
+.course-card__img { width: 140px; height: 90px; object-fit: cover; border-radius: 8px; }
+.course-card__title { font-weight: 700; margin-bottom: 4px; }
+.course-card__desc { color: var(--muted); margin-bottom: 6px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.course-card__meta { font-size: 12px; color: var(--muted); }
+.course-card__like { border: 1px solid var(--border); background: var(--bg-2); border-radius: 8px; width: 36px; height: 36px; cursor: pointer; position: relative; }
+.course-card__like:hover::after { content: "Хочу пройти"; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--panel); border: 1px solid var(--border); padding: 4px 6px; border-radius: 6px; font-size: 12px; }
+
+.pagination { display: flex; gap: 10px; margin-top: 16px; }
+.page-btn { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); }
+.page-btn.is-active { background: rgba(76,127,255,.12); border-color: var(--accent); }
 
 

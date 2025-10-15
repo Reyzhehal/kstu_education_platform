@@ -36,7 +36,7 @@ export type CoursePublic = {
     datetime_create: string;
     datetime_update: string;
     author_id: string;
-    currency_id?: (string | null);
+    language_id: number;
     category_id?: (string | null);
     subcategory_id?: (string | null);
 };
@@ -186,7 +186,10 @@ export type CategoriesReadMetaCategoriesByCategoryResponse = (MetaCategoriesWith
 
 export type CoursesReadCoursesData = {
     categoryId?: (string | null);
+    difficultyLevel?: (number | null);
+    languageId?: (number | null);
     limit?: number;
+    metaCategoryId?: (string | null);
     q?: (string | null);
     skip?: number;
     subcategoryId?: (string | null);

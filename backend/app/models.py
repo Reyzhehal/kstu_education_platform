@@ -255,6 +255,8 @@ class Course(CourseBase, table=True):
     datetime_update: datetime = Field(default_factory=datetime.now)
     author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
+    language_id: int = Field(foreign_key="language.id", ondelete="RESTRICT", default=1)
+    language: Language | None = Relationship()
     category_id: UUID | None = Field(
         default=None, foreign_key="category.id", ondelete="RESTRICT"
     )
@@ -378,6 +380,7 @@ class CoursePublic(CourseBase):
     datetime_create: datetime
     datetime_update: datetime
     author_id: UUID
+    language_id: int
     category_id: UUID | None = None
     subcategory_id: UUID | None = None
 

@@ -44,6 +44,24 @@
     "notifications": "Уведомления",
     "whatsNew": "Что нового",
     "logout": "Выход"
+  },
+  "catalog": {
+    "filters": {
+      "language": "Язык курса",
+      "difficulty": "Уровень сложности"
+    },
+    "difficulty": {
+      "beginner": "Новичкам",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    },
+    "course": {
+      "wishlist": "Хочу пройти",
+      "hoursTotal": "ч суммарно"
+    },
+    "pagination": {
+      "next": "Далее →"
+    }
   }
 }
 
