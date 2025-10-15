@@ -17,7 +17,6 @@ from app.models import (
     CoursePage,
     CoursePageComment,
     CoursePageCommentReview,
-    Currency,
     Language,
     MetaCategory,
     Subcategory,
@@ -111,10 +110,7 @@ class MetaCategoryAdmin(ModelView, model=MetaCategory):
     column_list = [MetaCategory.id, MetaCategory.name, MetaCategory.category]
 
 
-class CurrencyAdmin(ModelView, model=Currency):
-    name = "Currency"
-    name_plural = "Currencies"
-    column_list = [Currency.id, Currency.code, Currency.name]
+# Currency removed
 
 
 class CourseAdmin(ModelView, model=Course):
@@ -127,7 +123,6 @@ class CourseAdmin(ModelView, model=Course):
         Course.author,
         Course.category,
         Course.subcategory,
-        Course.currency_id,
         Course.difficulty_level,
     ]
 
@@ -175,7 +170,6 @@ def setup_admin(app) -> None:
     admin.add_view(CategoryAdmin)
     admin.add_view(SubcategoryAdmin)
     admin.add_view(MetaCategoryAdmin)
-    admin.add_view(CurrencyAdmin)
     admin.add_view(CourseAdmin)
     admin.add_view(CourseDescriptionBlockAdmin)
     admin.add_view(CourseDescriptionLineAdmin)

@@ -220,18 +220,6 @@ class MetaCategoriesWithChildrenPublic(SQLModel):
     count: int
 
 
-class CurrencyBase(SQLModel):
-    code: str = Field(min_length=1, max_length=8, unique=True, index=True)
-    name: str = Field(min_length=1, max_length=64)
-
-
-class Currency(CurrencyBase, table=True):
-    id: UUID = Field(default_factory=uuid4, primary_key=True)
-
-    def __str__(self) -> str:
-        return f"{self.code} — {self.name}"
-
-
 class DifficultyLevel(IntEnum):
     BEGINNER = 1
     INTERMEDIATE = 2
@@ -267,9 +255,6 @@ class Course(CourseBase, table=True):
     datetime_update: datetime = Field(default_factory=datetime.now)
     author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
-    currency_id: UUID | None = Field(
-        default=None, foreign_key="currency.id", ondelete="RESTRICT"
-    )
     category_id: UUID | None = Field(
         default=None, foreign_key="category.id", ondelete="RESTRICT"
     )
@@ -393,7 +378,6 @@ class CoursePublic(CourseBase):
     datetime_create: datetime
     datetime_update: datetime
     author_id: UUID
-    currency_id: UUID | None = None
     category_id: UUID | None = None
     subcategory_id: UUID | None = None
 
