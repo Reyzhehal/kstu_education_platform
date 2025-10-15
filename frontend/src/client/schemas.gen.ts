@@ -68,6 +68,19 @@ export const Body_users_upload_avatar_meSchema = {
     title: 'Body_users-upload_avatar_me'
 } as const;
 
+export const Body_users_upload_cover_meSchema = {
+    properties: {
+        file: {
+            type: 'string',
+            format: 'binary',
+            title: 'File'
+        }
+    },
+    type: 'object',
+    required: ['file'],
+    title: 'Body_users-upload_cover_me'
+} as const;
+
 export const CategoriesPublicSchema = {
     properties: {
         data: {
@@ -696,10 +709,20 @@ export const UserPublicSchema = {
                 }
             ],
             title: 'Cover Image'
+        },
+        city: {
+            type: 'string',
+            title: 'City',
+            default: 'Bishkek'
+        },
+        date_joined: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Date Joined'
         }
     },
     type: 'object',
-    required: ['email', 'id'],
+    required: ['email', 'id', 'date_joined'],
     title: 'UserPublic'
 } as const;
 
@@ -816,6 +839,42 @@ export const UserUpdateMeSchema = {
                 }
             ],
             title: 'Email'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 30
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        description_short: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description Short'
         }
     },
     type: 'object',

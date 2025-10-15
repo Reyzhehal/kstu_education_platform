@@ -13,6 +13,10 @@ export type Body_users_upload_avatar_me = {
     file: (Blob | File);
 };
 
+export type Body_users_upload_cover_me = {
+    file: (Blob | File);
+};
+
 export type CategoriesPublic = {
     data: Array<CategoryPublic>;
     count: number;
@@ -138,6 +142,8 @@ export type UserPublic = {
     is_profile_private?: boolean;
     avatar_image?: (string | null);
     cover_image?: (string | null);
+    city?: string;
+    date_joined: string;
 };
 
 export type UserRegister = {
@@ -162,6 +168,9 @@ export type UserUpdate = {
 export type UserUpdateMe = {
     full_name?: (string | null);
     email?: (string | null);
+    city?: (string | null);
+    description?: (string | null);
+    description_short?: (string | null);
 };
 
 export type ValidationError = {
@@ -325,6 +334,16 @@ export type UsersUploadAvatarMeData = {
 };
 
 export type UsersUploadAvatarMeResponse = (UserPublic);
+
+export type UsersDeleteAvatarMeResponse = (UserPublic);
+
+export type UsersUploadCoverMeData = {
+    formData: Body_users_upload_cover_me;
+};
+
+export type UsersUploadCoverMeResponse = (UserPublic);
+
+export type UsersDeleteCoverMeResponse = (UserPublic);
 
 export type UtilsTestEmailData = {
     emailTo: string;

@@ -293,3 +293,94 @@ async def upload_avatar_me(
     await session.commit()
     await session.refresh(current_user)
     return current_user
+
+
+@router.delete("/me/avatar", response_model=UserPublic)
+async def delete_avatar_me(
+    *, session: AsyncSessionDep, current_user: CurrentUser
+) -> Any:
+    """
+    Delete current user's avatar.
+    """
+    if current_user.avatar_image and current_user.avatar_image.startswith(
+        "/static/avatars/"
+    ):
+        try:
+            old_path = Path("app") / current_user.avatar_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    current_user.avatar_image = None
+    session.add(current_user)
+    await session.commit()
+    await session.refresh(current_user)
+    return current_user
+
+
+@router.post("/me/cover", response_model=UserPublic)
+async def upload_cover_me(
+    *, session: AsyncSessionDep, current_user: CurrentUser, file: UploadFile = File(...)
+) -> Any:
+    """
+    Upload and set current user's cover image. Only for teachers. Accepts image/jpeg, image/png, image/webp.
+    Returns updated user.
+    """
+    if not current_user.is_teacher:
+        raise HTTPException(status_code=403, detail="Only teachers can upload cover images")
+
+    content_type = file.content_type or ""
+    allowed = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+    if content_type not in allowed:
+        raise HTTPException(status_code=400, detail="Unsupported content type")
+
+    covers_dir = Path("app/static/covers")
+    covers_dir.mkdir(parents=True, exist_ok=True)
+    ext = allowed[content_type]
+    filename = f"{current_user.id}_{uuid4().hex}.{ext}"
+    filepath = covers_dir / filename
+
+    data = await file.read()
+    filepath.write_bytes(data)
+
+    # Remove previous local cover file if exists under /static/covers
+    if current_user.cover_image and current_user.cover_image.startswith(
+        "/static/covers/"
+    ):
+        try:
+            old_path = Path("app") / current_user.cover_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    current_user.cover_image = f"/static/covers/{filename}"
+    session.add(current_user)
+    await session.commit()
+    await session.refresh(current_user)
+    return current_user
+
+
+@router.delete("/me/cover", response_model=UserPublic)
+async def delete_cover_me(
+    *, session: AsyncSessionDep, current_user: CurrentUser
+) -> Any:
+    """
+    Delete current user's cover image.
+    """
+    if current_user.cover_image and current_user.cover_image.startswith(
+        "/static/covers/"
+    ):
+        try:
+            old_path = Path("app") / current_user.cover_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    current_user.cover_image = None
+    session.add(current_user)
+    await session.commit()
+    await session.refresh(current_user)
+    return current_user

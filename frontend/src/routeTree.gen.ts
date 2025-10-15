@@ -12,9 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as NewsRouteImport } from './routes/news'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as LayoutRouteImport } from './routes/_layout'
@@ -24,6 +21,9 @@ import { Route as CoursesProgressRouteImport } from './routes/courses.progress'
 import { Route as CoursesFavoritesRouteImport } from './routes/courses.favorites'
 import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
+import { Route as LayoutNotificationsRouteImport } from './routes/_layout/notifications'
+import { Route as LayoutNewsRouteImport } from './routes/_layout/news'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
@@ -43,21 +43,6 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
   id: '/recover-password',
   path: '/recover-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
-  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -104,6 +89,21 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutProfileRoute = LayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutNotificationsRoute = LayoutNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutNewsRoute = LayoutNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutMainRoute = LayoutMainRouteImport.update({
   id: '/main',
   path: '/main',
@@ -133,14 +133,14 @@ const LayoutCatalogMetaIdRoute = LayoutCatalogMetaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
-  '/notifications': typeof NotificationsRoute
-  '/profile': typeof ProfileRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/main': typeof LayoutMainRoute
+  '/news': typeof LayoutNewsRoute
+  '/notifications': typeof LayoutNotificationsRoute
+  '/profile': typeof LayoutProfileRoute
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -154,14 +154,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
-  '/notifications': typeof NotificationsRoute
-  '/profile': typeof ProfileRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/main': typeof LayoutMainRoute
+  '/news': typeof LayoutNewsRoute
+  '/notifications': typeof LayoutNotificationsRoute
+  '/profile': typeof LayoutProfileRoute
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -177,14 +177,14 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteWithChildren
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
-  '/notifications': typeof NotificationsRoute
-  '/profile': typeof ProfileRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/main': typeof LayoutMainRoute
+  '/_layout/news': typeof LayoutNewsRoute
+  '/_layout/notifications': typeof LayoutNotificationsRoute
+  '/_layout/profile': typeof LayoutProfileRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -200,14 +200,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/classes'
     | '/login'
-    | '/news'
-    | '/notifications'
-    | '/profile'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
     | '/main'
+    | '/news'
+    | '/notifications'
+    | '/profile'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -221,14 +221,14 @@ export interface FileRouteTypes {
   to:
     | '/classes'
     | '/login'
-    | '/news'
-    | '/notifications'
-    | '/profile'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
     | '/main'
+    | '/news'
+    | '/notifications'
+    | '/profile'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -243,14 +243,14 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/classes'
     | '/login'
-    | '/news'
-    | '/notifications'
-    | '/profile'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
     | '/_layout/main'
+    | '/_layout/news'
+    | '/_layout/notifications'
+    | '/_layout/profile'
     | '/_layout/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -266,9 +266,6 @@ export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
   ClassesRoute: typeof ClassesRoute
   LoginRoute: typeof LoginRoute
-  NewsRoute: typeof NewsRoute
-  NotificationsRoute: typeof NotificationsRoute
-  ProfileRoute: typeof ProfileRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
@@ -299,27 +296,6 @@ declare module '@tanstack/react-router' {
       path: '/recover-password'
       fullPath: '/recover-password'
       preLoaderRoute: typeof RecoverPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -385,6 +361,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/profile': {
+      id: '/_layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof LayoutProfileRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/notifications': {
+      id: '/_layout/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof LayoutNotificationsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/news': {
+      id: '/_layout/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof LayoutNewsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/main': {
       id: '/_layout/main'
       path: '/main'
@@ -426,6 +423,9 @@ declare module '@tanstack/react-router' {
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutMainRoute: typeof LayoutMainRoute
+  LayoutNewsRoute: typeof LayoutNewsRoute
+  LayoutNotificationsRoute: typeof LayoutNotificationsRoute
+  LayoutProfileRoute: typeof LayoutProfileRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
@@ -436,6 +436,9 @@ interface LayoutRouteChildren {
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
   LayoutMainRoute: LayoutMainRoute,
+  LayoutNewsRoute: LayoutNewsRoute,
+  LayoutNotificationsRoute: LayoutNotificationsRoute,
+  LayoutProfileRoute: LayoutProfileRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutCatalogIdRoute: LayoutCatalogIdRoute,
@@ -450,9 +453,6 @@ const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
   ClassesRoute: ClassesRoute,
   LoginRoute: LoginRoute,
-  NewsRoute: NewsRoute,
-  NotificationsRoute: NotificationsRoute,
-  ProfileRoute: ProfileRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,

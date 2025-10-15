@@ -6,10 +6,14 @@ import {
   Heading,
   Input,
   Text,
+  Textarea,
+  Image,
+  VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import {
   type ApiError,
@@ -23,10 +27,19 @@ import { emailPattern, handleError } from "@/utils"
 import { Field } from "../ui/field"
 
 const UserInformation = () => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
-  const { showSuccessToast } = useCustomToast()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
   const [editMode, setEditMode] = useState(false)
   const { user: currentUser } = useAuth()
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+  const coverInputRef = useRef<HTMLInputElement>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    currentUser?.avatar_image ? `${import.meta.env.VITE_API_URL}${currentUser.avatar_image}` : null
+  )
+  const [coverPreview, setCoverPreview] = useState<string | null>(
+    currentUser?.cover_image ? `${import.meta.env.VITE_API_URL}${currentUser.cover_image}` : null
+  )
   const {
     register,
     handleSubmit,
@@ -39,6 +52,9 @@ const UserInformation = () => {
     defaultValues: {
       full_name: currentUser?.full_name,
       email: currentUser?.email,
+      city: currentUser?.city,
+      description: currentUser?.description,
+      description_short: currentUser?.description_short,
     },
   })
 
@@ -50,13 +66,65 @@ const UserInformation = () => {
     mutationFn: (data: UserUpdateMe) =>
       UsersService.updateUserMe({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User updated successfully.")
+      showSuccessToast(t("settings.messages.updateSuccess"))
     },
     onError: (err: ApiError) => {
       handleError(err)
     },
     onSettled: () => {
       queryClient.invalidateQueries()
+    },
+  })
+
+  const uploadAvatarMutation = useMutation({
+    mutationFn: (file: File) => {
+      return UsersService.uploadAvatarMe({ formData: { file } })
+    },
+    onSuccess: (data) => {
+      showSuccessToast(t("settings.avatar.uploadSuccess"))
+      setAvatarPreview(`${import.meta.env.VITE_API_URL}${data.avatar_image}`)
+      queryClient.invalidateQueries()
+    },
+    onError: (err: ApiError) => {
+      handleError(err)
+    },
+  })
+
+  const deleteAvatarMutation = useMutation({
+    mutationFn: () => UsersService.deleteAvatarMe(),
+    onSuccess: () => {
+      showSuccessToast(t("settings.avatar.deleteSuccess"))
+      setAvatarPreview(null)
+      queryClient.invalidateQueries()
+    },
+    onError: (err: ApiError) => {
+      handleError(err)
+    },
+  })
+
+  const uploadCoverMutation = useMutation({
+    mutationFn: (file: File) => {
+      return UsersService.uploadCoverMe({ formData: { file } })
+    },
+    onSuccess: (data) => {
+      showSuccessToast(t("settings.cover.uploadSuccess"))
+      setCoverPreview(`${import.meta.env.VITE_API_URL}${data.cover_image}`)
+      queryClient.invalidateQueries()
+    },
+    onError: (err: ApiError) => {
+      handleError(err)
+    },
+  })
+
+  const deleteCoverMutation = useMutation({
+    mutationFn: () => UsersService.deleteCoverMe(),
+    onSuccess: () => {
+      showSuccessToast(t("settings.cover.deleteSuccess"))
+      setCoverPreview(null)
+      queryClient.invalidateQueries()
+    },
+    onError: (err: ApiError) => {
+      handleError(err)
     },
   })
 
@@ -69,78 +137,288 @@ const UserInformation = () => {
     toggleEditMode()
   }
 
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      showErrorToast(t("settings.avatar.uploadError"))
+      return
+    }
+
+    uploadAvatarMutation.mutate(file)
+  }
+
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      showErrorToast(t("settings.cover.uploadError"))
+      return
+    }
+
+    uploadCoverMutation.mutate(file)
+  }
+
+  const handleAvatarDelete = () => {
+    deleteAvatarMutation.mutate()
+  }
+
+  const handleCoverDelete = () => {
+    deleteCoverMutation.mutate()
+  }
+
   return (
     <Container maxW="full">
       <Heading size="sm" py={4}>
-        User Information
+        {t("settings.userInformation")}
       </Heading>
-      <Box
-        w={{ sm: "full", md: "sm" }}
-        as="form"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Field label="Full name">
-          {editMode ? (
-            <Input
-              {...register("full_name", { maxLength: 30 })}
-              type="text"
-              size="md"
-            />
-          ) : (
-            <Text
-              fontSize="md"
-              py={2}
-              color={!currentUser?.full_name ? "gray" : "inherit"}
-              truncate
-              maxW="sm"
-            >
-              {currentUser?.full_name || "N/A"}
-            </Text>
-          )}
-        </Field>
-        <Field
-          mt={4}
-          label="Email"
-          invalid={!!errors.email}
-          errorText={errors.email?.message}
+      <VStack align="stretch" gap={6}>
+        <Box
+          w={{ sm: "full", md: "xl" }}
+          as="form"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          {editMode ? (
-            <Input
-              {...register("email", {
-                required: "Email is required",
-                pattern: emailPattern,
-              })}
-              type="email"
-              size="md"
-            />
-          ) : (
-            <Text fontSize="md" py={2} truncate maxW="sm">
-              {currentUser?.email}
-            </Text>
-          )}
-        </Field>
-        <Flex mt={4} gap={3}>
-          <Button
-            variant="solid"
-            onClick={toggleEditMode}
-            type={editMode ? "button" : "submit"}
-            loading={editMode ? isSubmitting : false}
-            disabled={editMode ? !isDirty || !getValues("email") : false}
+          <Field label={t("settings.fields.fullName")}>
+            {editMode ? (
+              <Input
+                {...register("full_name", { maxLength: 255 })}
+                type="text"
+                size="md"
+              />
+            ) : (
+              <Text
+                fontSize="md"
+                py={2}
+                color={!currentUser?.full_name ? "gray" : "inherit"}
+                truncate
+                maxW="sm"
+              >
+                {currentUser?.full_name || t("settings.validation.notAvailable")}
+              </Text>
+            )}
+          </Field>
+          <Field
+            mt={4}
+            label={t("settings.fields.email")}
+            invalid={!!errors.email}
+            errorText={errors.email?.message}
           >
-            {editMode ? "Save" : "Edit"}
-          </Button>
-          {editMode && (
+            {editMode ? (
+              <Input
+                {...register("email", {
+                  required: t("settings.messages.emailRequired"),
+                  pattern: emailPattern,
+                })}
+                type="email"
+                size="md"
+              />
+            ) : (
+              <Text fontSize="md" py={2} truncate maxW="sm">
+                {currentUser?.email}
+              </Text>
+            )}
+          </Field>
+          <Field mt={4} label={t("settings.fields.city")}>
+            {editMode ? (
+              <Input
+                {...register("city", { maxLength: 30 })}
+                type="text"
+                size="md"
+              />
+            ) : (
+              <Text fontSize="md" py={2} truncate maxW="sm">
+                {currentUser?.city || t("settings.validation.notAvailable")}
+              </Text>
+            )}
+          </Field>
+          <Field mt={4} label={t("settings.fields.descriptionShort")}>
+            {editMode ? (
+              <Input
+                {...register("description_short", { maxLength: 255 })}
+                type="text"
+                size="md"
+                placeholder={t("settings.placeholders.descriptionShort")!}
+              />
+            ) : (
+              <Text
+                fontSize="md"
+                py={2}
+                color={!currentUser?.description_short ? "gray" : "inherit"}
+                truncate
+                maxW="sm"
+              >
+                {currentUser?.description_short || t("settings.validation.notAvailable")}
+              </Text>
+            )}
+          </Field>
+          <Field mt={4} label={t("settings.fields.description")}>
+            {editMode ? (
+              <Textarea
+                {...register("description", { maxLength: 2000 })}
+                size="md"
+                placeholder={t("settings.placeholders.description")!}
+                rows={4}
+              />
+            ) : (
+              <Text
+                fontSize="md"
+                py={2}
+                color={!currentUser?.description ? "gray" : "inherit"}
+                maxW="sm"
+              >
+                {currentUser?.description || t("settings.validation.notAvailable")}
+              </Text>
+            )}
+          </Field>
+          <Flex mt={4} gap={3}>
             <Button
-              variant="subtle"
-              colorPalette="gray"
-              onClick={onCancel}
-              disabled={isSubmitting}
+              variant="solid"
+              onClick={toggleEditMode}
+              type={editMode ? "button" : "submit"}
+              loading={editMode ? isSubmitting : false}
+              disabled={editMode ? !isDirty || !getValues("email") : false}
             >
-              Cancel
+              {editMode ? t("settings.buttons.save") : t("settings.buttons.edit")}
             </Button>
+            {editMode && (
+              <Button
+                variant="subtle"
+                colorPalette="gray"
+                onClick={onCancel}
+                disabled={isSubmitting}
+              >
+                {t("settings.buttons.cancel")}
+              </Button>
+            )}
+          </Flex>
+        </Box>
+
+        {/* Avatar Section */}
+        <Box>
+          <Heading size="xs" mb={2}>
+            {t("settings.avatar.title")}
+          </Heading>
+          {avatarPreview && (
+            <Image
+              src={avatarPreview}
+              alt="Avatar"
+              boxSize="150px"
+              objectFit="cover"
+              borderRadius="md"
+              mb={2}
+            />
           )}
-        </Flex>
-      </Box>
+          {!avatarPreview && (
+            <Box
+              width="150px"
+              height="150px"
+              bg="gray.200"
+              borderRadius="md"
+              mb={2}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text color="gray.500">{t("settings.avatar.noImage")}</Text>
+            </Box>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            ref={avatarInputRef}
+            style={{ display: "none" }}
+            onChange={handleAvatarUpload}
+          />
+          <Flex gap={2}>
+            <Button
+              size="sm"
+              onClick={() => avatarInputRef.current?.click()}
+              loading={uploadAvatarMutation.isPending}
+            >
+              {t("settings.buttons.upload")}
+            </Button>
+            {avatarPreview && (
+              <Button
+                size="sm"
+                variant="outline"
+                colorPalette="red"
+                onClick={handleAvatarDelete}
+                loading={deleteAvatarMutation.isPending}
+              >
+                {t("settings.buttons.remove")}
+              </Button>
+            )}
+          </Flex>
+        </Box>
+
+        {/* Cover Section - Only for teachers */}
+        {currentUser?.is_teacher && (
+          <Box>
+            <Heading size="xs" mb={2}>
+              {t("settings.cover.title")}
+            </Heading>
+            <Text fontSize="sm" color="gray.600" mb={2}>
+              {t("settings.cover.description")}
+            </Text>
+            {coverPreview && (
+              <Image
+                src={coverPreview}
+                alt="Cover"
+                width="100%"
+                maxW="500px"
+                height="150px"
+                objectFit="cover"
+                borderRadius="md"
+                mb={2}
+              />
+            )}
+            {!coverPreview && (
+              <Box
+                width="100%"
+                maxW="500px"
+                height="150px"
+                bg="gray.200"
+                borderRadius="md"
+                mb={2}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Text color="gray.500">{t("settings.cover.noImage")}</Text>
+              </Box>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              ref={coverInputRef}
+              style={{ display: "none" }}
+              onChange={handleCoverUpload}
+            />
+            <Flex gap={2}>
+              <Button
+                size="sm"
+                onClick={() => coverInputRef.current?.click()}
+                loading={uploadCoverMutation.isPending}
+              >
+                {t("settings.buttons.upload")}
+              </Button>
+              {coverPreview && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  colorPalette="red"
+                  onClick={handleCoverDelete}
+                  loading={deleteCoverMutation.isPending}
+                >
+                  {t("settings.buttons.remove")}
+                </Button>
+              )}
+            </Flex>
+          </Box>
+        )}
+      </VStack>
     </Container>
   )
 }

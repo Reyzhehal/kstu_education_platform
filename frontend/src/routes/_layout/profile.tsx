@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
 
-export const Route = createFileRoute("/notifications")({
-  component: () => <PlaceholderTranslated pageKey="tabs.notifications" />,
+export const Route = createFileRoute("/_layout/profile")({
+  component: ProfilePage,
 })
 
-function PlaceholderTranslated({ pageKey }: { pageKey: string }) {
+function ProfilePage() {
   const { t } = useTranslation()
+  
   return (
     <div style={{ padding: 24 }}>
-      <h1>{t(pageKey)}</h1>
+      <h1>{t("menu.profile")}</h1>
       <p>{t("common.inDev")}</p>
     </div>
   )
 }
-

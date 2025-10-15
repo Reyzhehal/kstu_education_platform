@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class CategoriesService {
     /**
@@ -535,6 +535,53 @@ export class UsersService {
             errors: {
                 422: 'Validation Error'
             }
+        });
+    }
+    
+    /**
+     * Delete Avatar Me
+     * Delete current user's avatar.
+     * @returns UserPublic Successful Response
+     * @throws ApiError
+     */
+    public static deleteAvatarMe(): CancelablePromise<UsersDeleteAvatarMeResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/users/me/avatar'
+        });
+    }
+    
+    /**
+     * Upload Cover Me
+     * Upload and set current user's cover image. Only for teachers. Accepts image/jpeg, image/png, image/webp.
+     * Returns updated user.
+     * @param data The data for the request.
+     * @param data.formData
+     * @returns UserPublic Successful Response
+     * @throws ApiError
+     */
+    public static uploadCoverMe(data: UsersUploadCoverMeData): CancelablePromise<UsersUploadCoverMeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/users/me/cover',
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Cover Me
+     * Delete current user's cover image.
+     * @returns UserPublic Successful Response
+     * @throws ApiError
+     */
+    public static deleteCoverMe(): CancelablePromise<UsersDeleteCoverMeResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/users/me/cover'
         });
     }
 }

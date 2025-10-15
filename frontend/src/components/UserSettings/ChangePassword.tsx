@@ -1,6 +1,7 @@
 import { Box, Button, Container, Heading, VStack } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 import { FiLock } from "react-icons/fi"
 
 import { type ApiError, type UpdatePassword, UsersService } from "@/client"
@@ -13,6 +14,7 @@ interface UpdatePasswordForm extends UpdatePassword {
 }
 
 const ChangePassword = () => {
+  const { t } = useTranslation()
   const { showSuccessToast } = useCustomToast()
   const {
     register,
@@ -29,7 +31,7 @@ const ChangePassword = () => {
     mutationFn: (data: UpdatePassword) =>
       UsersService.updatePasswordMe({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Password updated successfully.")
+      showSuccessToast(t("settings.password.updateSuccess"))
       reset()
     },
     onError: (err: ApiError) => {
@@ -44,7 +46,7 @@ const ChangePassword = () => {
   return (
     <Container maxW="full">
       <Heading size="sm" py={4}>
-        Change Password
+        {t("settings.changePassword")}
       </Heading>
       <Box as="form" onSubmit={handleSubmit(onSubmit)}>
         <VStack gap={4} w={{ base: "100%", md: "sm" }}>
@@ -52,26 +54,26 @@ const ChangePassword = () => {
             type="current_password"
             startElement={<FiLock />}
             {...register("current_password", passwordRules())}
-            placeholder="Current Password"
+            placeholder={t("settings.placeholders.currentPassword")!}
             errors={errors}
           />
           <PasswordInput
             type="new_password"
             startElement={<FiLock />}
             {...register("new_password", passwordRules())}
-            placeholder="New Password"
+            placeholder={t("settings.placeholders.newPassword")!}
             errors={errors}
           />
           <PasswordInput
             type="confirm_password"
             startElement={<FiLock />}
             {...register("confirm_password", confirmPasswordRules(getValues))}
-            placeholder="Confirm Password"
+            placeholder={t("settings.placeholders.confirmPassword")!}
             errors={errors}
           />
         </VStack>
         <Button variant="solid" mt={4} type="submit" loading={isSubmitting}>
-          Save
+          {t("settings.buttons.save")}
         </Button>
       </Box>
     </Container>

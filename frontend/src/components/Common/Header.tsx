@@ -49,7 +49,6 @@ export default function Header() {
       <header className="header" role="banner">
         <nav className="nav" aria-label={t("nav.searchAria")}>
           <button
-            className="btn btn-ghost"
             onClick={() => setCatalogOpen((v) => !v)}
             aria-expanded={isCatalogOpen}
             aria-controls="catalog-panel"
@@ -58,7 +57,7 @@ export default function Header() {
           </button>
           <Link
             to="/main"
-            className={location.pathname === "/main" ? "active" : ""}
+            className={location.pathname === "/main" || location.pathname.startsWith("/main") ? "active" : ""}
           >
             {t("nav.myLearning")}
           </Link>

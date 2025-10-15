@@ -35,6 +35,9 @@ class UserUpdate(UserBase):
 class UserUpdateMe(SQLModel):
     full_name: str | None = Field(default=None, max_length=255)
     email: EmailStr | None = Field(default=None, max_length=255)
+    city: str | None = Field(default=None, max_length=30)
+    description: str | None = Field(default=None, max_length=2000)
+    description_short: str | None = Field(default=None, max_length=255)
 
 
 class UpdatePassword(SQLModel):
@@ -73,6 +76,8 @@ class User(UserBase, table=True):
     is_profile_private: bool = False
     avatar_image: str | None = Field(default=None, max_length=255)
     cover_image: str | None = Field(default=None, max_length=255)
+    city: str = Field(default="Bishkek", max_length=30)
+    date_joined: datetime = Field(default_factory=datetime.now)
 
     def __str__(self) -> str:
         return self.full_name or (self.username or self.email)
@@ -92,6 +97,8 @@ class UserPublic(UserBase):
     is_profile_private: bool = False
     avatar_image: str | None = None
     cover_image: str | None = None
+    city: str = "Bishkek"
+    date_joined: datetime
 
 
 class UsersPublic(SQLModel):

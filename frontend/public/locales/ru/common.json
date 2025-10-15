@@ -65,5 +65,77 @@
     "pagination": {
       "next": "Далее →"
     }
+  },
+  "settings": {
+    "title": "Настройки пользователя",
+    "tabs": {
+      "myProfile": "Мой профиль",
+      "password": "Пароль",
+      "appearance": "Внешний вид",
+      "dangerZone": "Опасная зона"
+    },
+    "userInformation": "Информация пользователя",
+    "appearance": "Тема",
+    "changePassword": "Сменить пароль",
+    "deleteAccount": "Удалить аккаунт",
+    "fields": {
+      "fullName": "Полное имя",
+      "email": "Email",
+      "city": "Город",
+      "descriptionShort": "Краткое описание",
+      "description": "Описание"
+    },
+    "placeholders": {
+      "descriptionShort": "Краткая биография или слоган",
+      "description": "Расскажите о себе",
+      "currentPassword": "Текущий пароль",
+      "newPassword": "Новый пароль",
+      "confirmPassword": "Подтвердите пароль"
+    },
+    "buttons": {
+      "edit": "Редактировать",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "upload": "Загрузить",
+      "remove": "Убрать",
+      "delete": "Удалить",
+      "confirm": "Подтвердить"
+    },
+    "avatar": {
+      "title": "Аватарка",
+      "noImage": "Нет изображения",
+      "uploadSuccess": "Аватарка успешно загружена",
+      "deleteSuccess": "Аватарка успешно удалена",
+      "uploadError": "Пожалуйста, загрузите файл изображения"
+    },
+    "cover": {
+      "title": "Обложка",
+      "description": "Обложки профиля есть только у авторов курсов",
+      "noImage": "Нет изображения",
+      "uploadSuccess": "Обложка успешно загружена",
+      "deleteSuccess": "Обложка успешно удалена",
+      "uploadError": "Пожалуйста, загрузите файл изображения"
+    },
+    "theme": {
+      "system": "Системная",
+      "light": "Светлая",
+      "dark": "Тёмная"
+    },
+    "password": {
+      "updateSuccess": "Пароль успешно обновлён"
+    },
+    "deleteAccountWarning": "Навсегда удалить ваши данные и всё, что связано с вашим аккаунтом.",
+    "deleteConfirmation": {
+      "title": "Требуется подтверждение",
+      "message": "Все данные вашего аккаунта будут <strong>безвозвратно удалены.</strong> Если вы уверены, нажмите <strong>\"Удалить\"</strong> для продолжения. Это действие нельзя отменить.",
+      "success": "Ваш аккаунт успешно удалён"
+    },
+    "messages": {
+      "updateSuccess": "Информация пользователя успешно обновлена",
+      "emailRequired": "Email обязателен"
+    },
+    "validation": {
+      "notAvailable": "Н/Д"
+    }
   }
 }

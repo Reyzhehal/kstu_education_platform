@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Text } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { type ApiError, UsersService } from "@/client"
 import {
@@ -20,6 +21,7 @@ import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
 const DeleteConfirmation = () => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast } = useCustomToast()
@@ -32,7 +34,7 @@ const DeleteConfirmation = () => {
   const mutation = useMutation({
     mutationFn: () => UsersService.deleteUserMe(),
     onSuccess: () => {
-      showSuccessToast("Your account has been successfully deleted")
+      showSuccessToast(t("settings.deleteConfirmation.success"))
       setIsOpen(false)
       logout()
     },
@@ -58,7 +60,7 @@ const DeleteConfirmation = () => {
     >
       <DialogTrigger asChild>
         <Button variant="solid" colorPalette="red" mt={4}>
-          Delete
+          {t("settings.buttons.delete")}
         </Button>
       </DialogTrigger>
 
@@ -66,15 +68,10 @@ const DeleteConfirmation = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>Confirmation Required</DialogTitle>
+            <DialogTitle>{t("settings.deleteConfirmation.title")}</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>
-              All your account data will be{" "}
-              <strong>permanently deleted.</strong> If you are sure, please
-              click <strong>"Confirm"</strong> to proceed. This action cannot be
-              undone.
-            </Text>
+            <Text mb={4} dangerouslySetInnerHTML={{ __html: t("settings.deleteConfirmation.message") }} />
           </DialogBody>
 
           <DialogFooter gap={2}>
@@ -85,7 +82,7 @@ const DeleteConfirmation = () => {
                   colorPalette="gray"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  {t("settings.buttons.cancel")}
                 </Button>
               </DialogActionTrigger>
               <Button
@@ -94,7 +91,7 @@ const DeleteConfirmation = () => {
                 type="submit"
                 loading={isSubmitting}
               >
-                Delete
+                {t("settings.buttons.delete")}
               </Button>
             </ButtonGroup>
           </DialogFooter>
