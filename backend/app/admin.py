@@ -82,58 +82,90 @@ class AdminAuth(AuthenticationBackend):
 
 class UserAdmin(ModelView, model=User):
     name = "User"
-    column_list = [User.id, User.email, User.is_superuser, User.is_staff, User.is_teacher]
+    name_plural = "Users"
+    column_list = [User.id, User.email, User.full_name, User.username, User.language, User.is_superuser, User.is_staff, User.is_teacher]
     column_searchable_list = [User.email, User.username, User.full_name]
 
 
 class LanguageAdmin(ModelView, model=Language):
     name = "Language"
+    name_plural = "Languages"
     column_list = [Language.id, Language.code, Language.name]
 
 
 class CategoryAdmin(ModelView, model=Category):
     name = "Category"
+    name_plural = "Categories"
+    column_list = [Category.id, Category.name]
 
 
 class SubcategoryAdmin(ModelView, model=Subcategory):
     name = "Subcategory"
+    name_plural = "Subcategories"
+    column_list = [Subcategory.id, Subcategory.name, Subcategory.category, Subcategory.meta_category]
 
 
 class MetaCategoryAdmin(ModelView, model=MetaCategory):
     name = "MetaCategory"
+    name_plural = "MetaCategories"
+    column_list = [MetaCategory.id, MetaCategory.name, MetaCategory.category]
 
 
 class CurrencyAdmin(ModelView, model=Currency):
     name = "Currency"
+    name_plural = "Currencies"
+    column_list = [Currency.id, Currency.code, Currency.name]
 
 
 class CourseAdmin(ModelView, model=Course):
     name = "Course"
+    name_plural = "Courses"
     column_searchable_list = [Course.title]
+    column_list = [
+        Course.id,
+        Course.title,
+        Course.author,
+        Course.category,
+        Course.subcategory,
+        Course.currency_id,
+        Course.difficulty_level,
+    ]
 
 
 class CourseDescriptionBlockAdmin(ModelView, model=CourseDescriptionBlock):
     name = "Course Block"
+    name_plural = "Course Blocks"
+    column_list = [CourseDescriptionBlock.id, CourseDescriptionBlock.title, CourseDescriptionBlock.course]
 
 
 class CourseDescriptionLineAdmin(ModelView, model=CourseDescriptionLine):
     name = "Course Line"
+    name_plural = "Course Lines"
+    column_list = [CourseDescriptionLine.id, CourseDescriptionLine.block, CourseDescriptionLine.text]
 
 
 class CoursePageAdmin(ModelView, model=CoursePage):
     name = "Course Page"
+    name_plural = "Course Pages"
+    column_list = [CoursePage.id, CoursePage.title, CoursePage.course]
 
 
 class CoursePageCommentAdmin(ModelView, model=CoursePageComment):
     name = "Comment"
+    name_plural = "Comments"
+    column_list = [CoursePageComment.id, CoursePageComment.course_page, CoursePageComment.author, CoursePageComment.text]
 
 
 class CoursePageCommentReviewAdmin(ModelView, model=CoursePageCommentReview):
     name = "Comment Review"
+    name_plural = "Comment Reviews"
+    column_list = [CoursePageCommentReview.id, CoursePageCommentReview.comment, CoursePageCommentReview.author, CoursePageCommentReview.is_like]
 
 
 class ClassroomAdmin(ModelView, model=Classroom):
     name = "Classroom"
+    name_plural = "Classrooms"
+    column_list = [Classroom.id, Classroom.owner]
 
 
 def setup_admin(app) -> None:

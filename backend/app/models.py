@@ -50,6 +50,9 @@ class Language(LanguageBase, table=True):
     id: int = Field(primary_key=True)
     users: list["User"] = Relationship(back_populates="language")
 
+    def __str__(self) -> str:
+        return f"{self.code} — {self.name}"
+
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
@@ -70,6 +73,9 @@ class User(UserBase, table=True):
     is_profile_private: bool = False
     avatar_image: str | None = Field(default=None, max_length=255)
     cover_image: str | None = Field(default=None, max_length=255)
+
+    def __str__(self) -> str:
+        return self.full_name or (self.username or self.email)
 
 
 # Properties to return via API, id is always required
@@ -140,6 +146,9 @@ class Category(CategoryBase, table=True):
         back_populates="category", cascade_delete=True
     )
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class SubcategoryBase(SQLModel):
     name: str = Field(min_length=1, max_length=255, index=True)
@@ -155,6 +164,9 @@ class MetaCategory(MetaCategoryBase, table=True):
     category: Category | None = Relationship(back_populates="meta_categories")
     subcategories: list["Subcategory"] = Relationship(back_populates="meta_category")
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Subcategory(SubcategoryBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
@@ -162,7 +174,11 @@ class Subcategory(SubcategoryBase, table=True):
     meta_category_id: UUID | None = Field(
         default=None, foreign_key="metacategory.id", ondelete="SET NULL"
     )
+    category: Category | None = Relationship()
     meta_category: MetaCategory | None = Relationship(back_populates="subcategories")
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class CategoryPublic(CategoryBase):
@@ -211,6 +227,9 @@ class CurrencyBase(SQLModel):
 
 class Currency(CurrencyBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
+
+    def __str__(self) -> str:
+        return f"{self.code} — {self.name}"
 
 
 class DifficultyLevel(IntEnum):
@@ -261,6 +280,13 @@ class Course(CourseBase, table=True):
     students: list[User] = Relationship(link_model=CourseStudentLink)
     favorite: list[User] = Relationship(link_model=CourseFavoriteLink)
 
+    # helper relationships for admin forms
+    category: Category | None = Relationship()
+    subcategory: Subcategory | None = Relationship()
+
+    def __str__(self) -> str:
+        return self.title
+
 
 class CourseDescriptionBlockBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
@@ -272,6 +298,9 @@ class CourseDescriptionBlock(CourseDescriptionBlockBase, table=True):
     course_id: UUID = Field(foreign_key="course.id", ondelete="CASCADE")
     course: Course | None = Relationship()
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class CourseDescriptionLineBase(SQLModel):
     text: str = Field(min_length=1, max_length=2000)
@@ -281,6 +310,9 @@ class CourseDescriptionLine(CourseDescriptionLineBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     block_id: UUID = Field(foreign_key="coursedescriptionblock.id", ondelete="CASCADE")
     block: CourseDescriptionBlock | None = Relationship()
+
+    def __str__(self) -> str:
+        return self.text[:50] + ("…" if len(self.text) > 50 else "")
 
 
 class CoursePageBase(SQLModel):
@@ -293,6 +325,9 @@ class CoursePage(CoursePageBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     course_id: UUID = Field(foreign_key="course.id", ondelete="CASCADE")
     course: Course | None = Relationship()
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class CoursePageCommentBase(SQLModel):
@@ -310,6 +345,9 @@ class CoursePageComment(CoursePageCommentBase, table=True):
         default=None, foreign_key="coursepagecomment.id", ondelete="SET NULL"
     )
 
+    def __str__(self) -> str:
+        return self.text[:50] + ("…" if len(self.text) > 50 else "")
+
 
 class CoursePageCommentReviewBase(SQLModel):
     is_like: bool = True
@@ -324,6 +362,9 @@ class CoursePageCommentReview(CoursePageCommentReviewBase, table=True):
     author: User | None = Relationship()
     comment_id: UUID = Field(foreign_key="coursepagecomment.id", ondelete="CASCADE")
     comment: CoursePageComment | None = Relationship()
+
+    def __str__(self) -> str:
+        return "Like" if self.is_like else "Dislike"
 
 
 class ClassroomStudentLink(SQLModel, table=True):
@@ -341,6 +382,9 @@ class Classroom(ClassroomBase, table=True):
     owner_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     owner: User | None = Relationship()
     students: list[User] = Relationship(link_model=ClassroomStudentLink)
+
+    def __str__(self) -> str:
+        return f"Classroom {str(self.id)[:8]}"
 
 
 # Public schemas for Courses
