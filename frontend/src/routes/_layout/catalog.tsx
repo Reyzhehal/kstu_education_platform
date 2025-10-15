@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
-import { CoursesService, LanguagesService, type LanguagePublic } from "@/client"
+import { CoursesService, type CoursePublic, LanguagesService, type LanguagePublic } from "@/client"
 import { useMemo, useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import CheckboxList from "@/components/Common/CheckboxList"
@@ -10,8 +10,8 @@ type SearchParams = {
   q?: string
 }
 
-export const Route = createFileRoute("/_layout/catalog/meta/$id")({
-  component: CatalogByMeta,
+export const Route = createFileRoute("/_layout/catalog")({
+  component: CatalogPage,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
       q: search.q as string | undefined,
@@ -19,10 +19,27 @@ export const Route = createFileRoute("/_layout/catalog/meta/$id")({
   },
 })
 
-function CatalogByMeta() {
+function CourseCard({ c }: { c: CoursePublic }) {
+  const { t } = useTranslation()
+  const apiUrl = import.meta.env.VITE_API_URL || ""
+  const coverImage = c.cover_image ? `${apiUrl}/${c.cover_image}` : "/assets/images/header-img-night.png"
+  
+  return (
+    <div className="course-card">
+      <img className="course-card__img" src={coverImage} alt="" />
+      <div className="course-card__body">
+        <div className="course-card__title">{c.title}</div>
+        <div className="course-card__desc">{c.description ?? ""}</div>
+        <div className="course-card__meta">{c.hours_total ?? 0} {t("catalog.course.hoursTotal")}</div>
+      </div>
+      <button className="course-card__like" title={t("catalog.course.wishlist")} aria-label={t("catalog.course.wishlist")}>❤</button>
+    </div>
+  )
+}
+
+function CatalogPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
-  const { id } = Route.useParams()
   const { q } = Route.useSearch()
   const [page, setPage] = useState(1)
   const [langs, setLangs] = useState<number[]>([])
@@ -39,10 +56,9 @@ function CatalogByMeta() {
   }, [user?.language_id, langs.length])
 
   const { data } = useQuery({
-    queryKey: ["courses", "meta", id, page, langs, levels, q],
+    queryKey: ["courses", "all", page, langs, levels, q],
     queryFn: () =>
       CoursesService.readCourses({ 
-        metaCategoryId: id, 
         skip: (page - 1) * 12, 
         limit: 12, 
         languageId: langs.length === 1 ? langs[0] : undefined, 
@@ -78,20 +94,9 @@ function CatalogByMeta() {
 
       <section className="catalog-results">
         <div className="courses-grid">
-          {courses.map((c) => {
-            const coverImage = c.cover_image ? `${apiUrl}/${c.cover_image}` : "/assets/images/header-img-night.png"
-            return (
-              <div className="course-card" key={c.id}>
-                <img className="course-card__img" src={coverImage} alt="" />
-                <div className="course-card__body">
-                  <div className="course-card__title">{c.title}</div>
-                  <div className="course-card__desc">{c.description ?? ""}</div>
-                  <div className="course-card__meta">{c.hours_total ?? 0} {t("catalog.course.hoursTotal")}</div>
-                </div>
-                <button className="course-card__like" title={t("catalog.course.wishlist")} aria-label={t("catalog.course.wishlist")}>❤</button>
-              </div>
-            )
-          })}
+          {courses.map((c) => (
+            <CourseCard key={c.id} c={c} />
+          ))}
         </div>
 
         <div className="pagination">

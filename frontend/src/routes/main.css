@@ -19,8 +19,9 @@ a:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .nav { display: flex; gap: 20px; align-items: center; }
 .nav a { color: var(--text); opacity: .9; }
 .nav a.active { opacity: 1; font-weight: 600; }
-.search { display: flex; align-items: center; justify-content: center; }
-.search input[type="search"] { width: min(560px, 100%); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); }
+.search { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.search input[type="search"] { width: min(460px, 100%); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); }
+.search button { white-space: nowrap; }
 .tools { display: flex; gap: 14px; justify-content: flex-end; align-items: center; }
 .btn { cursor: pointer; font: inherit; }
 .btn-pill { padding: 6px 10px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--border); color: var(--text); }

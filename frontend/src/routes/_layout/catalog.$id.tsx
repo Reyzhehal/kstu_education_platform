@@ -6,8 +6,17 @@ import { useTranslation } from "react-i18next"
 import CheckboxList from "@/components/Common/CheckboxList"
 import useAuth from "@/hooks/useAuth"
 
+type SearchParams = {
+  q?: string
+}
+
 export const Route = createFileRoute("/_layout/catalog/$id")({
   component: CatalogBySubcategory,
+  validateSearch: (search: Record<string, unknown>): SearchParams => {
+    return {
+      q: search.q as string | undefined,
+    }
+  },
 })
 
 function CourseCard({ c }: { c: CoursePublic }) {
@@ -32,6 +41,7 @@ function CatalogBySubcategory() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const { id } = Route.useParams()
+  const { q } = Route.useSearch()
   const [page, setPage] = useState(1)
   const [langs, setLangs] = useState<number[]>([])
   const [levels, setLevels] = useState<number[]>([1, 2, 3])
@@ -39,7 +49,6 @@ function CatalogBySubcategory() {
   const { data: langsResp } = useQuery({ queryKey: ["langs"], queryFn: () => LanguagesService.readLanguages({ limit: 100 }) })
   const languages: LanguagePublic[] = langsResp?.data ?? []
 
-  // Устанавливаем язык пользователя по умолчанию после загрузки
   useEffect(() => {
     if (user?.language_id && langs.length === 0) {
       setLangs([user.language_id])
@@ -47,14 +56,15 @@ function CatalogBySubcategory() {
   }, [user?.language_id, langs.length])
 
   const { data } = useQuery({
-    queryKey: ["courses", id, page, langs, levels],
+    queryKey: ["courses", id, page, langs, levels, q],
     queryFn: () =>
       CoursesService.readCourses({ 
         subcategoryId: id, 
         skip: (page - 1) * 12, 
         limit: 12, 
         languageId: langs.length === 1 ? langs[0] : undefined, 
-        difficultyLevel: levels.length === 1 ? levels[0] : undefined 
+        difficultyLevel: levels.length === 1 ? levels[0] : undefined,
+        q: q || undefined,
       }),
   })
 
