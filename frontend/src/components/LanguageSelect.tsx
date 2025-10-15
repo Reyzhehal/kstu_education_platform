@@ -39,7 +39,6 @@ export default function LanguageSelect({ className }: Props) {
 
   return (
     <div className={className}>
-      <label htmlFor="lang-select" className="sr-only">{t("lang.label")}</label>
       <select
         id="lang-select"
         value={currentId ?? ""}

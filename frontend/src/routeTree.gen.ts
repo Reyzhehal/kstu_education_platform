@@ -15,7 +15,6 @@ import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NewsRouteImport } from './routes/news'
-import { Route as MainRouteImport } from './routes/main'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as LayoutRouteImport } from './routes/_layout'
@@ -26,6 +25,7 @@ import { Route as CoursesProgressRouteImport } from './routes/courses.progress'
 import { Route as CoursesFavoritesRouteImport } from './routes/courses.favorites'
 import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutMainRouteImport } from './routes/_layout/main'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutCatalogRouteImport } from './routes/_layout/catalog'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
@@ -60,11 +60,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MainRoute = MainRouteImport.update({
-  id: '/main',
-  path: '/main',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -116,6 +111,11 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutMainRoute = LayoutMainRouteImport.update({
+  id: '/main',
+  path: '/main',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutItemsRoute = LayoutItemsRouteImport.update({
   id: '/items',
   path: '/items',
@@ -145,7 +145,6 @@ const LayoutCatalogMetaIdRoute = LayoutCatalogMetaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
-  '/main': typeof MainRoute
   '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -155,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof LayoutAdminRoute
   '/catalog': typeof LayoutCatalogRouteWithChildren
   '/items': typeof LayoutItemsRoute
+  '/main': typeof LayoutMainRoute
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -168,7 +168,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
-  '/main': typeof MainRoute
   '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -178,6 +177,7 @@ export interface FileRoutesByTo {
   '/admin': typeof LayoutAdminRoute
   '/catalog': typeof LayoutCatalogRouteWithChildren
   '/items': typeof LayoutItemsRoute
+  '/main': typeof LayoutMainRoute
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -193,7 +193,6 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteWithChildren
   '/classes': typeof ClassesRoute
   '/login': typeof LoginRoute
-  '/main': typeof MainRoute
   '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -203,6 +202,7 @@ export interface FileRoutesById {
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/catalog': typeof LayoutCatalogRouteWithChildren
   '/_layout/items': typeof LayoutItemsRoute
+  '/_layout/main': typeof LayoutMainRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -218,7 +218,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/classes'
     | '/login'
-    | '/main'
     | '/news'
     | '/notifications'
     | '/profile'
@@ -228,6 +227,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/catalog'
     | '/items'
+    | '/main'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -241,7 +241,6 @@ export interface FileRouteTypes {
   to:
     | '/classes'
     | '/login'
-    | '/main'
     | '/news'
     | '/notifications'
     | '/profile'
@@ -251,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/catalog'
     | '/items'
+    | '/main'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -265,7 +265,6 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/classes'
     | '/login'
-    | '/main'
     | '/news'
     | '/notifications'
     | '/profile'
@@ -275,6 +274,7 @@ export interface FileRouteTypes {
     | '/_layout/admin'
     | '/_layout/catalog'
     | '/_layout/items'
+    | '/_layout/main'
     | '/_layout/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -290,7 +290,6 @@ export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
   ClassesRoute: typeof ClassesRoute
   LoginRoute: typeof LoginRoute
-  MainRoute: typeof MainRoute
   NewsRoute: typeof NewsRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
@@ -346,13 +345,6 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/main': {
-      id: '/main'
-      path: '/main'
-      fullPath: '/main'
-      preLoaderRoute: typeof MainRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -425,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/main': {
+      id: '/_layout/main'
+      path: '/main'
+      fullPath: '/main'
+      preLoaderRoute: typeof LayoutMainRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/items': {
       id: '/_layout/items'
       path: '/items'
@@ -481,6 +480,7 @@ interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutCatalogRoute: typeof LayoutCatalogRouteWithChildren
   LayoutItemsRoute: typeof LayoutItemsRoute
+  LayoutMainRoute: typeof LayoutMainRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
@@ -489,6 +489,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
   LayoutCatalogRoute: LayoutCatalogRouteWithChildren,
   LayoutItemsRoute: LayoutItemsRoute,
+  LayoutMainRoute: LayoutMainRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
@@ -500,7 +501,6 @@ const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
   ClassesRoute: ClassesRoute,
   LoginRoute: LoginRoute,
-  MainRoute: MainRoute,
   NewsRoute: NewsRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,

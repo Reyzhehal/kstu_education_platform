@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Box, Flex, Text } from "@chakra-ui/react"
 import AppButton from "@/components/AppButton"
@@ -10,15 +11,24 @@ interface SidebarItemsProps {
 
 const SidebarItems = ({ onClose, tab = "learn", setTab }: SidebarItemsProps) => {
   const { t } = useTranslation()
+  const [isCoursesOpen, setIsCoursesOpen] = useState(true)
+
   const tabs = [
-    { key: "learn", label: t("tabs.learn") },
-    { key: "courses", label: t("tabs.courses") },
-    { key: "progress", label: t("tabs.progress") },
-    { key: "favorites", label: t("tabs.favorites") },
-    { key: "wishlist", label: t("tabs.wishlist") },
-    { key: "archive", label: t("tabs.archive") },
-    { key: "classes", label: t("tabs.classes") },
-    { key: "notifications", label: t("tabs.notifications") },
+    { key: "learn", label: t("tabs.learn"), icon: "🏠" },
+    { 
+      key: "courses", 
+      label: t("tabs.courses"),
+      icon: "📖",
+      hasSubmenu: true,
+      submenu: [
+        { key: "progress", label: t("tabs.progress") },
+        { key: "favorites", label: t("tabs.favorites") },
+        { key: "wishlist", label: t("tabs.wishlist") },
+        { key: "archive", label: t("tabs.archive") },
+      ]
+    },
+    { key: "classes", label: t("tabs.classes"), icon: "🎓" },
+    { key: "notifications", label: t("tabs.notifications"), icon: "🔔" },
   ]
 
   return (
@@ -27,19 +37,51 @@ const SidebarItems = ({ onClose, tab = "learn", setTab }: SidebarItemsProps) => 
         {t("sidebar.menu")}
       </Text>
       <Box>
-        {tabs.map((t) => (
-          <Flex key={t.key} px={2}>
-            <AppButton
-              variant="ghost"
-              className={`menu-btn${t.key === tab ? " active" : ""}`}
-              onClick={() => {
-                setTab?.(t.key)
-                onClose?.()
-              }}
-            >
-              {t.label}
-            </AppButton>
-          </Flex>
+        {tabs.map((item) => (
+          <div key={item.key}>
+            <Flex px={2}>
+              <AppButton
+                variant="ghost"
+                className={`menu-btn${item.key === tab ? " active" : ""}`}
+                onClick={() => {
+                  if (item.hasSubmenu) {
+                    setIsCoursesOpen(!isCoursesOpen)
+                  } else {
+                    setTab?.(item.key)
+                    onClose?.()
+                  }
+                }}
+              >
+                <span style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+                  {item.icon && <span>{item.icon}</span>}
+                  <span>{item.label}</span>
+                </span>
+                {item.hasSubmenu && (
+                  <span style={{ fontSize: "0.8em" }}>
+                    {isCoursesOpen ? "▼" : "▶"}
+                  </span>
+                )}
+              </AppButton>
+            </Flex>
+            {item.hasSubmenu && isCoursesOpen && item.submenu && (
+              <Box pl={4}>
+                {item.submenu.map((subitem) => (
+                  <Flex key={subitem.key} px={2}>
+                    <AppButton
+                      variant="ghost"
+                      className={`menu-btn submenu-btn${subitem.key === tab ? " active" : ""}`}
+                      onClick={() => {
+                        setTab?.(subitem.key)
+                        onClose?.()
+                      }}
+                    >
+                      {subitem.label}
+                    </AppButton>
+                  </Flex>
+                ))}
+              </Box>
+            )}
+          </div>
         ))}
       </Box>
     </>

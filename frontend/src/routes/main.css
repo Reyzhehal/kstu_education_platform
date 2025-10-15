@@ -31,9 +31,11 @@ a:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .sidebar { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; height: calc(100vh - var(--header-h) - 48px); position: sticky; top: 24px; }
 .sidebar__hero { height: 120px; background: url('/assets/images/header-img-night.png') center/cover no-repeat; }
 .menu { margin: 0; padding: 10px 0; list-style: none; }
-.menu .menu-btn { width: 100%; text-align: left; padding: 10px 14px; color: var(--text); border-left: 3px solid transparent; }
+.menu .menu-btn { width: 100%; text-align: left; padding: 10px 14px; color: var(--text); border-left: 3px solid transparent; display: flex; align-items: center; justify-content: space-between; }
 .menu .menu-btn:hover { background: rgba(255,255,255,.04); }
 .menu .menu-btn.active { background: rgba(76,127,255,.12); border-left-color: var(--accent); font-weight: 600; }
+.menu .menu-btn.submenu-btn { padding-left: 10px; font-size: 0.95em; opacity: 0.9; }
+.menu .menu-btn.submenu-btn:hover { opacity: 1; }
 .content { padding: 8px 8px 24px; }
 h1 { margin: 0 0 16px; font-size: 28px; font-weight: 700; }
 @media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { position: relative; height: auto; } }
