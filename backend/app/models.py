@@ -136,7 +136,7 @@ class CategoryBase(SQLModel):
 
 class Category(CategoryBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    subcategories: list["Subcategory"] = Relationship(
+    meta_categories: list["MetaCategory"] = Relationship(
         back_populates="category", cascade_delete=True
     )
 
@@ -145,10 +145,63 @@ class SubcategoryBase(SQLModel):
     name: str = Field(min_length=1, max_length=255, index=True)
 
 
+class MetaCategoryBase(SQLModel):
+    name: str = Field(min_length=1, max_length=255, index=True)
+
+
+class MetaCategory(MetaCategoryBase, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    category_id: UUID = Field(foreign_key="category.id", ondelete="CASCADE")
+    category: Category | None = Relationship(back_populates="meta_categories")
+    subcategories: list["Subcategory"] = Relationship(back_populates="meta_category")
+
+
 class Subcategory(SubcategoryBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     category_id: UUID = Field(foreign_key="category.id", ondelete="CASCADE")
-    category: Category | None = Relationship(back_populates="subcategories")
+    meta_category_id: UUID | None = Field(
+        default=None, foreign_key="metacategory.id", ondelete="SET NULL"
+    )
+    meta_category: MetaCategory | None = Relationship(back_populates="subcategories")
+
+
+class CategoryPublic(CategoryBase):
+    id: UUID
+
+
+class CategoriesPublic(SQLModel):
+    data: list[CategoryPublic]
+    count: int
+
+
+class SubcategoryPublic(SubcategoryBase):
+    id: UUID
+    category_id: UUID
+    meta_category_id: UUID | None = None
+
+
+class SubcategoriesPublic(SQLModel):
+    data: list[SubcategoryPublic]
+    count: int
+
+
+class MetaCategoryPublic(MetaCategoryBase):
+    id: UUID
+    category_id: UUID
+
+
+class MetaCategoriesPublic(SQLModel):
+    data: list[MetaCategoryPublic]
+    count: int
+
+
+class MetaCategoryWithSubcategoriesPublic(MetaCategoryPublic):
+    subcategories: list[SubcategoryPublic] = []
+
+
+class MetaCategoriesWithChildrenPublic(SQLModel):
+    data: list[MetaCategoryWithSubcategoriesPublic]
+    count: int
 
 
 class CurrencyBase(SQLModel):
@@ -183,9 +236,6 @@ class CourseBase(SQLModel):
     cover_image: str | None = Field(default=None, max_length=255)
     description: str | None = Field(default=None, max_length=4000)
     description_video: str | None = Field(default=None, max_length=255)
-    price: float | None = None
-    discount_price: float | None = None
-    discount_end_date: datetime | None = None
     hours_week: int | None = None
     hours_total: int | None = None
     has_certificate: bool = False
@@ -291,3 +341,19 @@ class Classroom(ClassroomBase, table=True):
     owner_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     owner: User | None = Relationship()
     students: list[User] = Relationship(link_model=ClassroomStudentLink)
+
+
+# Public schemas for Courses
+class CoursePublic(CourseBase):
+    id: UUID
+    datetime_create: datetime
+    datetime_update: datetime
+    author_id: UUID
+    currency_id: UUID | None = None
+    category_id: UUID | None = None
+    subcategory_id: UUID | None = None
+
+
+class CoursesPublic(SQLModel):
+    data: list[CoursePublic]
+    count: int

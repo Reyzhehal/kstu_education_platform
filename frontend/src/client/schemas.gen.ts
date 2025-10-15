@@ -68,6 +68,206 @@ export const Body_users_upload_avatar_meSchema = {
     title: 'Body_users-upload_avatar_me'
 } as const;
 
+export const CategoriesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/CategoryPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'CategoriesPublic'
+} as const;
+
+export const CategoryPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'CategoryPublic'
+} as const;
+
+export const CoursePublicSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Title'
+        },
+        cover_image: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 4000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        description_video: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description Video'
+        },
+        hours_week: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Hours Week'
+        },
+        hours_total: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Hours Total'
+        },
+        has_certificate: {
+            type: 'boolean',
+            title: 'Has Certificate',
+            default: false
+        },
+        difficulty_level: {
+            '$ref': '#/components/schemas/DifficultyLevel',
+            default: 1
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        datetime_create: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Datetime Create'
+        },
+        datetime_update: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Datetime Update'
+        },
+        author_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Author Id'
+        },
+        currency_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Currency Id'
+        },
+        category_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Category Id'
+        },
+        subcategory_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Subcategory Id'
+        }
+    },
+    type: 'object',
+    required: ['title', 'id', 'datetime_create', 'datetime_update', 'author_id'],
+    title: 'CoursePublic'
+} as const;
+
+export const CoursesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/CoursePublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'CoursesPublic'
+} as const;
+
+export const DifficultyLevelSchema = {
+    type: 'integer',
+    enum: [1, 2, 3],
+    title: 'DifficultyLevel'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -135,6 +335,57 @@ export const MessageSchema = {
     title: 'Message'
 } as const;
 
+export const MetaCategoriesWithChildrenPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/MetaCategoryWithSubcategoriesPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'MetaCategoriesWithChildrenPublic'
+} as const;
+
+export const MetaCategoryWithSubcategoriesPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        category_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Category Id'
+        },
+        subcategories: {
+            items: {
+                '$ref': '#/components/schemas/SubcategoryPublic'
+            },
+            type: 'array',
+            title: 'Subcategories',
+            default: []
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'category_id'],
+    title: 'MetaCategoryWithSubcategoriesPublic'
+} as const;
+
 export const NewPasswordSchema = {
     properties: {
         token: {
@@ -194,6 +445,42 @@ export const SetLanguageSchema = {
     },
     type: 'object',
     title: 'SetLanguage'
+} as const;
+
+export const SubcategoryPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Name'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        category_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Category Id'
+        },
+        meta_category_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Meta Category Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'category_id'],
+    title: 'SubcategoryPublic'
 } as const;
 
 export const TokenSchema = {

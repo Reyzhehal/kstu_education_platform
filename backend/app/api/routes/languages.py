@@ -17,5 +17,3 @@ async def read_languages(session: AsyncSessionDep, current_user: CurrentUser, sk
     statement = select(Language).offset(skip).limit(limit)
     languages = (await session.exec(statement)).all()
     return LanguagesPublic(data=languages, count=count)
-
-

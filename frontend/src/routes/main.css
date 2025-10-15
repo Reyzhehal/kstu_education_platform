@@ -8,6 +8,7 @@
   --border: #2a2b30;
   --sidebar-w: 280px;
   --header-h: 50px;
+  --shadow: 0 10px 30px rgba(0,0,0,.4);
 }
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
@@ -35,5 +36,25 @@ a:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .content { padding: 8px 8px 24px; }
 h1 { margin: 0 0 16px; font-size: 28px; font-weight: 700; }
 @media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { position: relative; height: auto; } }
+
+
+/* Catalog popup */
+.catalog { position: fixed; inset: 0; z-index: 50; }
+.catalog__overlay { position: absolute; inset: 0; background: rgba(0,0,0,.5); animation: fadeIn .12s ease-out both; }
+.catalog__panel { position: fixed; left: 0; top: var(--header-h); margin: 0; width: min(1200px, 100%); background: var(--panel); border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px; box-shadow: var(--shadow); overflow: hidden; transform: translateX(-24px); opacity: 0; animation: catalogIn .18s ease-out forwards; }
+.catalog__cols { display: grid; grid-template-columns: 320px 1fr; min-height: 420px; }
+.catalog__left { border-right: 1px solid var(--border); background: var(--bg-2); }
+.catalog__list { list-style: none; margin: 0; padding: 8px 0; }
+.catalog__cat { width: 100%; text-align: left; padding: 10px 16px; background: transparent; border: 0; color: var(--text); cursor: pointer; }
+.catalog__cat:hover { background: rgba(255,255,255,.04); }
+.catalog__cat.is-active { background: rgba(76,127,255,.12); border-left: 3px solid var(--accent); padding-left: 13px; font-weight: 600; }
+.catalog__right { padding: 16px; }
+.catalog__group + .catalog__group { margin-top: 16px; }
+.catalog__meta { font-weight: 700; font-size: 16px; margin: 6px 0 10px; }
+.catalog__sublist { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 16px; list-style: none; margin: 0; padding: 0; }
+.catalog__sub { display: inline-block; padding: 8px 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; }
+
+@keyframes catalogIn { from { transform: translateX(-24px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 

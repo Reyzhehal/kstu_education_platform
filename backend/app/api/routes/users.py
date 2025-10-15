@@ -1,5 +1,6 @@
-import uuid
+from uuid import UUID, uuid4
 from typing import Any
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlmodel import col, func, select
@@ -84,7 +85,9 @@ async def update_user_me(
     """
 
     if user_in.email:
-        existing_user = await crud.get_user_by_email(session=session, email=user_in.email)
+        existing_user = await crud.get_user_by_email(
+            session=session, email=user_in.email
+        )
         if existing_user and existing_user.id != current_user.id:
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
@@ -142,9 +145,9 @@ async def set_language_me(
             raise HTTPException(status_code=404, detail="Language not found")
         current_user.language_id = lang.id
     elif body.code is not None:
-        lang = (await session.exec(
-            select(Language).where(col(Language.code) == body.code)
-        )).first()
+        lang = (
+            await session.exec(select(Language).where(col(Language.code) == body.code))
+        ).first()
         if not lang:
             raise HTTPException(status_code=404, detail="Language not found")
         current_user.language_id = lang.id
@@ -186,7 +189,7 @@ async def register_user(session: AsyncSessionDep, user_in: UserRegister) -> Any:
 
 @router.get("/{user_id}", response_model=UserPublic)
 async def read_user_by_id(
-    user_id: uuid.UUID, session: AsyncSessionDep, current_user: CurrentUser
+    user_id: UUID, session: AsyncSessionDep, current_user: CurrentUser
 ) -> Any:
     """
     Get a specific user by id.
@@ -207,7 +210,9 @@ async def read_user_by_id(
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UserPublic,
 )
-async def update_user(*, session: AsyncSessionDep, user_id: uuid.UUID, user_in: UserUpdate) -> Any:
+async def update_user(
+    *, session: AsyncSessionDep, user_id: UUID, user_in: UserUpdate
+) -> Any:
     """
     Update a user.
     """
@@ -219,7 +224,9 @@ async def update_user(*, session: AsyncSessionDep, user_id: uuid.UUID, user_in: 
             detail="The user with this id does not exist in the system",
         )
     if user_in.email:
-        existing_user = await crud.a_get_user_by_email(session=session, email=user_in.email)
+        existing_user = await crud.a_get_user_by_email(
+            session=session, email=user_in.email
+        )
         if existing_user and existing_user.id != user_id:
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
@@ -231,7 +238,7 @@ async def update_user(*, session: AsyncSessionDep, user_id: uuid.UUID, user_in: 
 
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
 async def delete_user(
-    session: AsyncSessionDep, current_user: CurrentUser, user_id: uuid.UUID
+    session: AsyncSessionDep, current_user: CurrentUser, user_id: UUID
 ) -> Message:
     """
     Delete a user.
@@ -261,9 +268,6 @@ async def upload_avatar_me(
     if content_type not in allowed:
         raise HTTPException(status_code=400, detail="Unsupported content type")
 
-    from pathlib import Path
-    from uuid import uuid4
-
     avatars_dir = Path("app/static/avatars")
     avatars_dir.mkdir(parents=True, exist_ok=True)
     ext = allowed[content_type]
@@ -274,7 +278,9 @@ async def upload_avatar_me(
     filepath.write_bytes(data)
 
     # Remove previous local avatar file if exists under /static/avatars
-    if current_user.avatar_image and current_user.avatar_image.startswith("/static/avatars/"):
+    if current_user.avatar_image and current_user.avatar_image.startswith(
+        "/static/avatars/"
+    ):
         try:
             old_path = Path("app") / current_user.avatar_image.lstrip("/")
             if old_path.exists():

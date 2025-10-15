@@ -13,6 +13,41 @@ export type Body_users_upload_avatar_me = {
     file: (Blob | File);
 };
 
+export type CategoriesPublic = {
+    data: Array<CategoryPublic>;
+    count: number;
+};
+
+export type CategoryPublic = {
+    name: string;
+    id: string;
+};
+
+export type CoursePublic = {
+    title: string;
+    cover_image?: (string | null);
+    description?: (string | null);
+    description_video?: (string | null);
+    hours_week?: (number | null);
+    hours_total?: (number | null);
+    has_certificate?: boolean;
+    difficulty_level?: DifficultyLevel;
+    id: string;
+    datetime_create: string;
+    datetime_update: string;
+    author_id: string;
+    currency_id?: (string | null);
+    category_id?: (string | null);
+    subcategory_id?: (string | null);
+};
+
+export type CoursesPublic = {
+    data: Array<CoursePublic>;
+    count: number;
+};
+
+export type DifficultyLevel = 1 | 2 | 3;
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -32,6 +67,18 @@ export type Message = {
     message: string;
 };
 
+export type MetaCategoriesWithChildrenPublic = {
+    data: Array<MetaCategoryWithSubcategoriesPublic>;
+    count: number;
+};
+
+export type MetaCategoryWithSubcategoriesPublic = {
+    name: string;
+    id: string;
+    category_id: string;
+    subcategories?: Array<SubcategoryPublic>;
+};
+
 export type NewPassword = {
     token: string;
     new_password: string;
@@ -46,6 +93,13 @@ export type PrivateUserCreate = {
 
 export type SetLanguage = {
     language_id?: (number | null);
+};
+
+export type SubcategoryPublic = {
+    name: string;
+    id: string;
+    category_id: string;
+    meta_category_id?: (string | null);
 };
 
 export type Token = {
@@ -114,6 +168,31 @@ export type ValidationError = {
     msg: string;
     type: string;
 };
+
+export type CategoriesReadCategoriesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type CategoriesReadCategoriesResponse = (CategoriesPublic);
+
+export type CategoriesReadMetaCategoriesByCategoryData = {
+    categoryId: string;
+    limit?: number;
+    skip?: number;
+};
+
+export type CategoriesReadMetaCategoriesByCategoryResponse = (MetaCategoriesWithChildrenPublic);
+
+export type CoursesReadCoursesData = {
+    categoryId?: (string | null);
+    limit?: number;
+    q?: (string | null);
+    skip?: number;
+    subcategoryId?: (string | null);
+};
+
+export type CoursesReadCoursesResponse = (CoursesPublic);
 
 export type LanguagesReadLanguagesData = {
     limit?: number;

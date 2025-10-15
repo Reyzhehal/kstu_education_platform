@@ -19,6 +19,7 @@ from app.models import (
     CoursePageCommentReview,
     Currency,
     Language,
+    MetaCategory,
     Subcategory,
     User,
 )
@@ -98,6 +99,10 @@ class SubcategoryAdmin(ModelView, model=Subcategory):
     name = "Subcategory"
 
 
+class MetaCategoryAdmin(ModelView, model=MetaCategory):
+    name = "MetaCategory"
+
+
 class CurrencyAdmin(ModelView, model=Currency):
     name = "Currency"
 
@@ -137,6 +142,7 @@ def setup_admin(app) -> None:
     admin.add_view(LanguageAdmin)
     admin.add_view(CategoryAdmin)
     admin.add_view(SubcategoryAdmin)
+    admin.add_view(MetaCategoryAdmin)
     admin.add_view(CurrencyAdmin)
     admin.add_view(CourseAdmin)
     admin.add_view(CourseDescriptionBlockAdmin)

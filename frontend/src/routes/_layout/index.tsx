@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import AppButton from "@/components/AppButton"
+// import AppButton from "@/components/AppButton"
 import "../main.css"
-import LanguageSelect from "@/components/LanguageSelect"
-import { UserMenuDropdown } from "@/components/UserMenuDropdown"
+import Sidebar from "@/components/Common/Sidebar"
 
 export const Route = createFileRoute("/_layout/")({
   component: IndexPage,
@@ -50,38 +49,8 @@ function IndexPage() {
   }
   return (
     <div>
-      <header className="header" role="banner">
-        <nav className="nav" aria-label={t("nav.searchAria")}>
-          <a href="#">{t("nav.catalog")}</a>
-          <a href="#" className="active">{t("nav.myLearning")}</a>
-          <a href="#">{t("nav.teaching")}</a>
-        </nav>
-        <form className="search" role="search" aria-label={t("nav.searchAria")} onSubmit={(e) => e.preventDefault()}>
-          <input type="search" placeholder={t("nav.searchPlaceholder")!} aria-label={t("nav.searchAria")!} />
-        </form>
-        <div className="tools">
-          <LanguageSelect />
-          <UserMenuDropdown />
-        </div>
-      </header>
-
       <div className="container" role="main">
-        <aside className="sidebar" aria-label={t("nav.sidebarAria")}>
-          <div className="sidebar__hero" aria-hidden="true" />
-          <ul className="menu">
-            {tabs.map((t) => (
-              <li key={t.key}>
-                <AppButton
-                  variant="ghost"
-                  className={`menu-btn${t.key === tab ? " active" : ""}`}
-                  onClick={() => setTab(t.key)}
-                >
-                  {t.label}
-                </AppButton>
-              </li>
-            ))}
-          </ul>
-        </aside>
+        <Sidebar tab={tab} setTab={setTab} />
 
         <main className="content">
           <h1>{currentLabel} {t("content.titleSuffix")}</h1>
