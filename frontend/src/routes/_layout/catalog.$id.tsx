@@ -57,15 +57,16 @@ function CatalogBySubcategory() {
 
   const { data } = useQuery({
     queryKey: ["courses", id, page, langs, levels, q],
-    queryFn: () =>
-      CoursesService.readCourses({ 
+    queryFn: () => {
+      return CoursesService.readCourses({ 
         subcategoryId: id, 
         skip: (page - 1) * 12, 
         limit: 12, 
         languageId: langs.length === 1 ? langs[0] : undefined, 
         difficultyLevel: levels.length === 1 ? levels[0] : undefined,
         q: q || undefined,
-      }),
+      })
+    },
   })
 
   const courses = useMemo(() => data?.data ?? [], [data])

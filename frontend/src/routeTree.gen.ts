@@ -27,8 +27,8 @@ import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
-import { Route as LayoutCatalogRouteImport } from './routes/_layout/catalog'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
 import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog.$id'
 import { Route as LayoutCatalogMetaIdRouteImport } from './routes/_layout/catalog.meta.$id'
 
@@ -121,25 +121,25 @@ const LayoutItemsRoute = LayoutItemsRouteImport.update({
   path: '/items',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutCatalogRoute = LayoutCatalogRouteImport.update({
-  id: '/catalog',
-  path: '/catalog',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutCatalogIndexRoute = LayoutCatalogIndexRouteImport.update({
+  id: '/catalog/',
+  path: '/catalog/',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutCatalogIdRoute = LayoutCatalogIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => LayoutCatalogRoute,
+  id: '/catalog/$id',
+  path: '/catalog/$id',
+  getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutCatalogMetaIdRoute = LayoutCatalogMetaIdRouteImport.update({
-  id: '/meta/$id',
-  path: '/meta/$id',
-  getParentRoute: () => LayoutCatalogRoute,
+  id: '/catalog/meta/$id',
+  path: '/catalog/meta/$id',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -152,7 +152,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/catalog': typeof LayoutCatalogRouteWithChildren
   '/items': typeof LayoutItemsRoute
   '/main': typeof LayoutMainRoute
   '/settings': typeof LayoutSettingsRoute
@@ -163,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
+  '/catalog': typeof LayoutCatalogIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRoutesByTo {
@@ -175,7 +175,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/catalog': typeof LayoutCatalogRouteWithChildren
   '/items': typeof LayoutItemsRoute
   '/main': typeof LayoutMainRoute
   '/settings': typeof LayoutSettingsRoute
@@ -186,6 +185,7 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
+  '/catalog': typeof LayoutCatalogIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRoutesById {
@@ -200,7 +200,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/catalog': typeof LayoutCatalogRouteWithChildren
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/main': typeof LayoutMainRoute
   '/_layout/settings': typeof LayoutSettingsRoute
@@ -211,6 +210,7 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/_layout/catalog/$id': typeof LayoutCatalogIdRoute
+  '/_layout/catalog/': typeof LayoutCatalogIndexRoute
   '/_layout/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRouteTypes {
@@ -225,7 +225,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/catalog'
     | '/items'
     | '/main'
     | '/settings'
@@ -236,6 +235,7 @@ export interface FileRouteTypes {
     | '/'
     | '/courses'
     | '/catalog/$id'
+    | '/catalog'
     | '/catalog/meta/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -248,7 +248,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/catalog'
     | '/items'
     | '/main'
     | '/settings'
@@ -259,6 +258,7 @@ export interface FileRouteTypes {
     | '/'
     | '/courses'
     | '/catalog/$id'
+    | '/catalog'
     | '/catalog/meta/$id'
   id:
     | '__root__'
@@ -272,7 +272,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
-    | '/_layout/catalog'
     | '/_layout/items'
     | '/_layout/main'
     | '/_layout/settings'
@@ -283,6 +282,7 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/courses/'
     | '/_layout/catalog/$id'
+    | '/_layout/catalog/'
     | '/_layout/catalog/meta/$id'
   fileRoutesById: FileRoutesById
 }
@@ -431,13 +431,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutItemsRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/catalog': {
-      id: '/_layout/catalog'
-      path: '/catalog'
-      fullPath: '/catalog'
-      preLoaderRoute: typeof LayoutCatalogRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -445,53 +438,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/catalog/': {
+      id: '/_layout/catalog/'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof LayoutCatalogIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/catalog/$id': {
       id: '/_layout/catalog/$id'
-      path: '/$id'
+      path: '/catalog/$id'
       fullPath: '/catalog/$id'
       preLoaderRoute: typeof LayoutCatalogIdRouteImport
-      parentRoute: typeof LayoutCatalogRoute
+      parentRoute: typeof LayoutRoute
     }
     '/_layout/catalog/meta/$id': {
       id: '/_layout/catalog/meta/$id'
-      path: '/meta/$id'
+      path: '/catalog/meta/$id'
       fullPath: '/catalog/meta/$id'
       preLoaderRoute: typeof LayoutCatalogMetaIdRouteImport
-      parentRoute: typeof LayoutCatalogRoute
+      parentRoute: typeof LayoutRoute
     }
   }
 }
 
-interface LayoutCatalogRouteChildren {
-  LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
-  LayoutCatalogMetaIdRoute: typeof LayoutCatalogMetaIdRoute
-}
-
-const LayoutCatalogRouteChildren: LayoutCatalogRouteChildren = {
-  LayoutCatalogIdRoute: LayoutCatalogIdRoute,
-  LayoutCatalogMetaIdRoute: LayoutCatalogMetaIdRoute,
-}
-
-const LayoutCatalogRouteWithChildren = LayoutCatalogRoute._addFileChildren(
-  LayoutCatalogRouteChildren,
-)
-
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutCatalogRoute: typeof LayoutCatalogRouteWithChildren
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutMainRoute: typeof LayoutMainRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
+  LayoutCatalogIndexRoute: typeof LayoutCatalogIndexRoute
+  LayoutCatalogMetaIdRoute: typeof LayoutCatalogMetaIdRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
-  LayoutCatalogRoute: LayoutCatalogRouteWithChildren,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutMainRoute: LayoutMainRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
+  LayoutCatalogIdRoute: LayoutCatalogIdRoute,
+  LayoutCatalogIndexRoute: LayoutCatalogIndexRoute,
+  LayoutCatalogMetaIdRoute: LayoutCatalogMetaIdRoute,
 }
 
 const LayoutRouteWithChildren =

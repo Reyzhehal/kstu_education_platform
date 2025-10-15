@@ -10,7 +10,7 @@ type SearchParams = {
   q?: string
 }
 
-export const Route = createFileRoute("/_layout/catalog")({
+export const Route = createFileRoute("/_layout/catalog/")({
   component: CatalogPage,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_layout/catalog")({
 function CourseCard({ c }: { c: CoursePublic }) {
   const { t } = useTranslation()
   const apiUrl = import.meta.env.VITE_API_URL || ""
-  const coverImage = c.cover_image ? `${apiUrl}/${c.cover_image}` : "/assets/images/header-img-night.png"
+  const coverImage = c.cover_image ? `${apiUrl}/${c.cover_image}` : `/assets/images/header-img-night.png`
   
   return (
     <div className="course-card">
@@ -101,7 +101,7 @@ function CatalogPage() {
 
         <div className="pagination">
           {Array.from({ length: pages }, (_, i) => i + 1).slice(0, pages).map((p) => (
-            <button key={p} className={`page-btn ${p === page ? "is-active" : ""}`} onClick={() => setPage(p)}>
+            <button key={p} className={`page-btn ${p === page ? `is-active` : ``}`} onClick={() => setPage(p)}>
               {p}
             </button>
           ))}
