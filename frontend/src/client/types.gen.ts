@@ -44,6 +44,8 @@ export type CoursePublic = {
     category_id?: (string | null);
     subcategory_id?: (string | null);
     is_favorite?: boolean;
+    students_count?: number;
+    is_enrolled?: boolean;
 };
 
 export type CoursesPublic = {
@@ -163,6 +165,9 @@ export type UserUpdate = {
     is_superuser?: boolean;
     full_name?: (string | null);
     password?: (string | null);
+    description?: (string | null);
+    description_short?: (string | null);
+    city?: (string | null);
 };
 
 export type UserUpdateMe = {
@@ -207,6 +212,26 @@ export type CoursesReadCoursesData = {
 
 export type CoursesReadCoursesResponse = (CoursesPublic);
 
+export type CoursesReadFavoriteCoursesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type CoursesReadFavoriteCoursesResponse = (CoursesPublic);
+
+export type CoursesReadMyCoursesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type CoursesReadMyCoursesResponse = (CoursesPublic);
+
+export type CoursesReadCourseByIdData = {
+    courseId: string;
+};
+
+export type CoursesReadCourseByIdResponse = (CoursePublic);
+
 export type CoursesAddToFavoritesData = {
     courseId: string;
 };
@@ -223,12 +248,21 @@ export type CoursesRemoveFromFavoritesResponse = ({
     [key: string]: (string);
 });
 
-export type CoursesReadFavoriteCoursesData = {
-    limit?: number;
-    skip?: number;
+export type CoursesEnrollCourseData = {
+    courseId: string;
 };
 
-export type CoursesReadFavoriteCoursesResponse = (CoursesPublic);
+export type CoursesEnrollCourseResponse = ({
+    [key: string]: (string);
+});
+
+export type CoursesUnenrollCourseData = {
+    courseId: string;
+};
+
+export type CoursesUnenrollCourseResponse = ({
+    [key: string]: (string);
+});
 
 export type CoursesReadCourseLearnLinesData = {
     courseId: string;

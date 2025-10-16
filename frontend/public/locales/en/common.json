@@ -43,7 +43,9 @@
     "hoursPerWeek": "h/week",
     "certificate": "Certificate",
     "noCertificate": "No certificate",
-    "youWillLearn": "What you'll learn"
+    "youWillLearn": "What you'll learn",
+    "enroll": "Enroll",
+    "unenroll": "Unenroll"
   }
 }
 

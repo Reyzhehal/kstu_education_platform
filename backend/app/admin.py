@@ -3,6 +3,7 @@ from typing import Optional
 import jwt
 from fastapi import Request
 from sqladmin import Admin, ModelView
+from wtforms.fields import TextAreaField
 from sqladmin.authentication import AuthenticationBackend
 
 from app.core import security
@@ -84,6 +85,14 @@ class UserAdmin(ModelView, model=User):
     name_plural = "Users"
     column_list = [User.id, User.email, User.full_name, User.username, User.language, User.is_superuser, User.is_staff, User.is_teacher]
     column_searchable_list = [User.email, User.username, User.full_name]
+    form_overrides = {
+        "description": TextAreaField,
+        "description_short": TextAreaField,
+    }
+    form_widget_args = {
+        "description": {"rows": 6},
+        "description_short": {"rows": 3},
+    }
 
 
 class LanguageAdmin(ModelView, model=Language):
@@ -125,18 +134,36 @@ class CourseAdmin(ModelView, model=Course):
         Course.subcategory,
         Course.difficulty_level,
     ]
+    form_overrides = {
+        "description": TextAreaField,
+    }
+    form_widget_args = {
+        "description": {"rows": 8},
+    }
 
 
 class CourseDescriptionBlockAdmin(ModelView, model=CourseDescriptionBlock):
     name = "Course Block"
     name_plural = "Course Blocks"
     column_list = [CourseDescriptionBlock.id, CourseDescriptionBlock.title, CourseDescriptionBlock.course]
+    form_overrides = {
+        "text": TextAreaField,
+    }
+    form_widget_args = {
+        "text": {"rows": 8},
+    }
 
 
 class CourseDescriptionLineAdmin(ModelView, model=CourseDescriptionLine):
     name = "Course Line"
     name_plural = "Course Lines"
     column_list = [CourseDescriptionLine.id, CourseDescriptionLine.course, CourseDescriptionLine.text]
+    form_overrides = {
+        "text": TextAreaField,
+    }
+    form_widget_args = {
+        "text": {"rows": 4},
+    }
 
 
 class CoursePageAdmin(ModelView, model=CoursePage):
@@ -149,6 +176,12 @@ class CoursePageCommentAdmin(ModelView, model=CoursePageComment):
     name = "Comment"
     name_plural = "Comments"
     column_list = [CoursePageComment.id, CoursePageComment.course_page, CoursePageComment.author, CoursePageComment.text]
+    form_overrides = {
+        "text": TextAreaField,
+    }
+    form_widget_args = {
+        "text": {"rows": 6},
+    }
 
 
 class CoursePageCommentReviewAdmin(ModelView, model=CoursePageCommentReview):

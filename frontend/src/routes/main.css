@@ -668,10 +668,13 @@ h1 {
   max-width: 1100px;
   margin: 0 auto;
   padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px; /* почти вплотную */
+  position: relative; /* для абсолютного сайдбара */
 }
 
-.course-learn { 
-  margin-top: 12px;
+.course-learn {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -709,6 +712,73 @@ h1 {
   margin-top: 16px;
 }
 
+.course-sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  height: fit-content;
+}
+
+.btn-enroll {
+  background: #22c55e; /* green-500 */
+  color: #0a0a0a;
+  border: 1px solid #16a34a; /* green-600 */
+  font-weight: 700;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.btn-enroll:hover { background: #16a34a; color: #ffffff; }
+.btn-enroll:disabled { opacity: .6; cursor: not-allowed; }
+
+.btn-enroll.btn-enroll-lg {
+  padding: 16px 22px;
+  font-size: 18px;
+}
+
+.btn-unenroll {
+  background: #ef4444; /* red-500 */
+  color: #ffffff;
+  border: 1px solid #dc2626; /* red-600 */
+  padding: 14px 18px;
+  border-radius: 10px;
+}
+.btn-unenroll:hover { background: #dc2626; }
+
+/* Unified enroll button component */
+.enroll-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 260px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.enroll-btn--not {
+  background: #22c55e;
+  border-color: #16a34a;
+  color: #0a0a0a;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.5); /* более жирная и темнее */
+}
+.enroll-btn--not:hover { background: #16a34a; color: #ffffff; box-shadow: 0 0 0 5px rgba(22, 163, 74, 0.6); }
+.enroll-btn--enrolled {
+  background: #ef4444;
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.5);
+}
+.enroll-btn--enrolled:hover { background: #dc2626; box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.6); }
+
+.enroll-btn:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
 .course-block {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -728,6 +798,8 @@ h1 {
 .course-block__text {
   margin: 0;
   color: var(--muted);
+  white-space: pre-wrap; /* сохраняем перевод строк и отступы из текста */
+  tab-size: 4;
 }
 
 /* Markdown styles (compact) */
@@ -751,7 +823,25 @@ h1 {
   .course-hero__image {
     height: 180px;
   }
+
+  .course-body__inner { grid-template-columns: 1fr; }
 }
+
+/* Sidebar, вынесенный правее контейнера и не влияющий на ширину контента */
+.course-body__inner > .course-sidebar {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 24px;
+  width: 300px;
+}
+
+@media (max-width: 1500px) {
+  .course-body__inner > .course-sidebar {
+    position: static;
+    width: auto;
+  }
+}
+
 
 /* Settings tabs */
 [data-scope="tabs"][data-part="trigger"] {

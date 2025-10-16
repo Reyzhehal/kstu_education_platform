@@ -395,6 +395,8 @@ class CoursePublic(CourseBase):
     category_id: UUID | None = None
     subcategory_id: UUID | None = None
     is_favorite: bool = False
+    students_count: int = 0
+    is_enrolled: bool = False
 
 
 class CoursesPublic(SQLModel):

@@ -66,13 +66,20 @@
       "next": "Далее →"
     }
   },
+  "course": {
+    "card": {
+      "author": "Автор:"
+    }
+  },
   "coursePage": {
     "notFound": "Курс не найден",
     "level": "Уровень",
     "hoursPerWeek": "ч/нед",
     "certificate": "Сертификат",
     "noCertificate": "Без сертификата",
-    "youWillLearn": "Чему вы научитесь"
+    "youWillLearn": "Чему вы научитесь",
+    "enroll": "Записаться",
+    "unenroll": "Отписаться"
   },
   "settings": {
     "title": "Настройки пользователя",

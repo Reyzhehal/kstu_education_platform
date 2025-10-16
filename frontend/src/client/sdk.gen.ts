@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class CategoriesService {
     /**
@@ -93,6 +93,72 @@ export class CoursesService {
     }
     
     /**
+     * Read Favorite Courses
+     * Получить список избранных курсов текущего пользователя
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns CoursesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readFavoriteCourses(data: CoursesReadFavoriteCoursesData = {}): CancelablePromise<CoursesReadFavoriteCoursesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/courses/favorites',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read My Courses
+     * Курсы, на которые записан текущий пользователь
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns CoursesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMyCourses(data: CoursesReadMyCoursesData = {}): CancelablePromise<CoursesReadMyCoursesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/courses/progress',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Course By Id
+     * @param data The data for the request.
+     * @param data.courseId
+     * @returns CoursePublic Successful Response
+     * @throws ApiError
+     */
+    public static readCourseById(data: CoursesReadCourseByIdData): CancelablePromise<CoursesReadCourseByIdResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/courses/{course_id}',
+            path: {
+                course_id: data.courseId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
      * Add To Favorites
      * Добавить курс в избранное
      * @param data The data for the request.
@@ -135,21 +201,40 @@ export class CoursesService {
     }
     
     /**
-     * Read Favorite Courses
-     * Получить список избранных курсов текущего пользователя
+     * Enroll Course
+     * Записаться на курс
      * @param data The data for the request.
-     * @param data.skip
-     * @param data.limit
-     * @returns CoursesPublic Successful Response
+     * @param data.courseId
+     * @returns string Successful Response
      * @throws ApiError
      */
-    public static readFavoriteCourses(data: CoursesReadFavoriteCoursesData = {}): CancelablePromise<CoursesReadFavoriteCoursesResponse> {
+    public static enrollCourse(data: CoursesEnrollCourseData): CancelablePromise<CoursesEnrollCourseResponse> {
         return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/courses/favorites',
-            query: {
-                skip: data.skip,
-                limit: data.limit
+            method: 'POST',
+            url: '/api/v1/courses/{course_id}/enroll',
+            path: {
+                course_id: data.courseId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Unenroll Course
+     * Отписаться от курса
+     * @param data The data for the request.
+     * @param data.courseId
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static unenrollCourse(data: CoursesUnenrollCourseData): CancelablePromise<CoursesUnenrollCourseResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/courses/{course_id}/enroll',
+            path: {
+                course_id: data.courseId
             },
             errors: {
                 422: 'Validation Error'
@@ -196,20 +281,6 @@ export class CoursesService {
             errors: {
                 422: 'Validation Error'
             }
-        });
-    }
-
-    public static readCourseById(data: CoursesReadCourseByIdData): CancelablePromise<CoursesReadCourseByIdResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/courses/{course_id}',
-            path: {
-                course_id: data.courseId,
-            },
-            errors: {
-                404: 'Course not found',
-                422: 'Validation Error',
-            },
         });
     }
 }

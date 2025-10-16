@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { useTranslation } from "react-i18next"
 type Block = {
   title: string
   text: string
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export default function CourseDescriptionBlocks({ blocks }: Props) {
+  useTranslation()
   if (!blocks || blocks.length === 0) return null
 
   return (

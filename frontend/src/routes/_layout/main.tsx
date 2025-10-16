@@ -62,7 +62,9 @@ function MainPage() {
       case "courses":
         return <p>{t("content.coursesListSoon")}</p>
       case "progress":
-        return <p>{t("content.yourProgress")}</p>
+        return (
+          <ProgressCourses />
+        )
       case "favorites":
         return (
           <div className="courses-grid">
@@ -95,6 +97,26 @@ function MainPage() {
           {renderContent()}
         </main>
       </div>
+    </div>
+  )
+}
+
+function ProgressCourses() {
+  const { t } = useTranslation()
+  const { data } = useQuery({
+    queryKey: ["progress"],
+    queryFn: () => CoursesService.readMyCourses({ limit: 100 }),
+  })
+  const courses = (data?.data ?? []) as any[]
+  return (
+    <div className="courses-grid">
+      {courses.length === 0 ? (
+        <p>{t("content.yourProgress")}</p>
+      ) : (
+        courses.map((course) => (
+          <CourseCard key={course.id} course={course as any} />
+        ))
+      )}
     </div>
   )
 }

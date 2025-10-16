@@ -246,6 +246,16 @@ export const CoursePublicSchema = {
             type: 'boolean',
             title: 'Is Favorite',
             default: false
+        },
+        students_count: {
+            type: 'integer',
+            title: 'Students Count',
+            default: 0
+        },
+        is_enrolled: {
+            type: 'boolean',
+            title: 'Is Enrolled',
+            default: false
         }
     },
     type: 'object',
@@ -807,6 +817,42 @@ export const UserUpdateSchema = {
                 }
             ],
             title: 'Password'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        description_short: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description Short'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 30
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
         }
     },
     type: 'object',

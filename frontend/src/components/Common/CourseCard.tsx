@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { CoursesService, UsersService, type CoursePublic, type CoursesPublic } from "@/client"
@@ -145,12 +145,15 @@ export default function CourseCard({ course }: CourseCardProps) {
         <div className="course-card__title">{course.title}</div>
         <div className="course-card__desc">{course.description ?? ""}</div>
         <div className="course-card__owner">
-          Автор:{" "}
-          <Link to={`/profile/${owner?.id ?? course.author_id}`} className="course-card__owner-link" onClick={(e) => e.stopPropagation()}>
+          {t("course.card.author", { defaultValue: "Автор:" })}{" "}
+          <a href={`/profile/${owner?.id ?? course.author_id}`} className="course-card__owner-link" onClick={(e) => e.stopPropagation()}>
             {ownerName}
-          </Link>
+          </a>
         </div>
-        <div className="course-card__meta">{course.hours_total ?? 0} {t("catalog.course.hoursTotal")}</div>
+        <div className="course-card__meta">
+          {course.hours_total ?? 0} {t("catalog.course.hoursTotal")} 
+          {((course.students_count ?? 0) > 0) ? ` · ${course.students_count}` : ""}
+        </div>
       </div>
       <button 
         className={`course-card__like ${course.is_favorite ? "is-favorite" : ""} ${isAnimating ? "animate" : ""}`}

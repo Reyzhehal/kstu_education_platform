@@ -1,10 +1,11 @@
 import { useMemo } from "react"
 import { createFileRoute } from "@tanstack/react-router"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { CoursesService } from "@/client"
 import { useTranslation } from "react-i18next"
 import CourseLearnList from "@/components/Common/CourseLearnList"
 import CourseDescriptionBlocks from "@/components/Common/CourseDescriptionBlocks"
+import CoursePageSidebar from "@/components/Common/CoursePageSidebar"
 
 export const Route = createFileRoute("/_layout/course/$id")({
   component: CoursePage,
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_layout/course/$id")({
 function CoursePage() {
   const { id } = Route.useParams()
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
 
   const { data: course } = useQuery({
     queryKey: ["course", id],
@@ -35,6 +37,71 @@ function CoursePage() {
       .map((b: any) => ({ title: String(b?.title ?? ""), text: String(b?.text ?? "") }))
       .filter((b) => b.title || b.text)
   }, [blocksData])
+
+  const enrollMutation = useMutation({
+    mutationFn: () => CoursesService.enrollCourse({ courseId: id }),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["course", id] })
+      await queryClient.cancelQueries({ queryKey: ["progress"] })
+
+      const prevCourse = queryClient.getQueryData<any>(["course", id])
+      const prevProgress = queryClient.getQueryData<any>(["progress"])
+
+      // Обновляем текущий курс
+      if (prevCourse) {
+        queryClient.setQueryData(["course", id], {
+          ...prevCourse,
+          is_enrolled: true,
+          students_count: (prevCourse.students_count ?? 0) + 1,
+        })
+      }
+
+      // Добавляем в список прогресса
+      if (prevProgress?.data) {
+        const exists = prevProgress.data.some((c: any) => c.id === id)
+        const newData = exists ? prevProgress.data : [{ ...(prevCourse || {}), is_enrolled: true }, ...prevProgress.data]
+        queryClient.setQueryData(["progress"], { ...prevProgress, data: newData, count: exists ? prevProgress.count : (prevProgress.count ?? newData.length) })
+      }
+
+      return { prevCourse, prevProgress }
+    },
+    onError: (_err, _vars, ctx) => {
+      if (!ctx) return
+      if (ctx.prevCourse) queryClient.setQueryData(["course", id], ctx.prevCourse)
+      if (ctx.prevProgress) queryClient.setQueryData(["progress"], ctx.prevProgress)
+    },
+  })
+
+  const unenrollMutation = useMutation({
+    mutationFn: () => CoursesService.unenrollCourse({ courseId: id }),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["course", id] })
+      await queryClient.cancelQueries({ queryKey: ["progress"] })
+
+      const prevCourse = queryClient.getQueryData<any>(["course", id])
+      const prevProgress = queryClient.getQueryData<any>(["progress"])
+
+      if (prevCourse) {
+        queryClient.setQueryData(["course", id], {
+          ...prevCourse,
+          is_enrolled: false,
+          students_count: Math.max(0, (prevCourse.students_count ?? 0) - 1),
+        })
+      }
+
+      if (prevProgress?.data) {
+        const newData = prevProgress.data.filter((c: any) => c.id !== id)
+        queryClient.setQueryData(["progress"], { ...prevProgress, data: newData, count: Math.max(0, (prevProgress.count ?? newData.length)) })
+      }
+
+      return { prevCourse, prevProgress }
+    },
+    onError: (_err, _vars, ctx) => {
+      if (!ctx) return
+      if (ctx.prevCourse) queryClient.setQueryData(["course", id], ctx.prevCourse)
+      if (ctx.prevProgress) queryClient.setQueryData(["progress"], ctx.prevProgress)
+    },
+  })
 
   if (!course) {
     return <div className="content"><p>{t("coursePage.notFound")}</p></div>
@@ -70,9 +137,16 @@ function CoursePage() {
 
       <section className="course-body">
         <div className="course-body__inner">
-          <CourseLearnList items={learnData ?? []} />
-
-          <CourseDescriptionBlocks blocks={normalizedBlocks} />
+          <div>
+            <CourseLearnList items={learnData ?? []} />
+            <CourseDescriptionBlocks blocks={normalizedBlocks} />
+          </div>
+          <CoursePageSidebar
+            onEnroll={() => enrollMutation.mutate()}
+            onUnenroll={() => unenrollMutation.mutate()}
+            isEnrolled={course.is_enrolled}
+            isLoading={enrollMutation.isPending || unenrollMutation.isPending}
+          />
         </div>
       </section>
     </div>
