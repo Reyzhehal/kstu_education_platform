@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException
 from sqlmodel import col, func, select
 
-from app.models import Course, CoursesPublic, CoursePublic, CourseFavoriteLink, User
+from app.models import Course, CoursesPublic, CoursePublic, CourseFavoriteLink, User, CourseDescriptionLine, CourseDescriptionBlock
 from app.api.deps import AsyncSessionDep, CurrentUser
 
 
@@ -90,6 +90,27 @@ async def read_courses(
         courses_public.append(CoursePublic(**course_dict))
 
     return CoursesPublic(data=courses_public, count=count)
+
+
+@router.get("/{course_id}", response_model=CoursePublic)
+async def read_course_by_id(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    course = await session.get(Course, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    # проверяем избранное
+    favorite_statement = select(CourseFavoriteLink.course_id).where(
+        CourseFavoriteLink.user_id == current_user.id
+    )
+    favorite_course_ids = set((await session.exec(favorite_statement)).all())
+
+    course_dict = course.model_dump()
+    course_dict['is_favorite'] = course.id in favorite_course_ids
+    return CoursePublic(**course_dict)
 
 
 @router.post("/{course_id}/favorite")
@@ -190,5 +211,29 @@ async def read_favorite_courses(
         courses_public.append(CoursePublic(**course_dict))
     
     return CoursesPublic(data=courses_public, count=count)
+
+
+@router.get("/{course_id}/learn", response_model=list[str])
+async def read_course_learn_lines(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> list[str]:
+    """Вернуть список CourseDescriptionLine.text для курса"""
+    statement = select(CourseDescriptionLine.text).where(col(CourseDescriptionLine.course_id) == course_id)
+    results = (await session.exec(statement)).all()
+    return [r for r in results]
+
+
+@router.get("/{course_id}/blocks", response_model=list[dict])
+async def read_course_description_blocks(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> list[dict]:
+    """Вернуть список CourseDescriptionBlock для курса (title, text)"""
+    statement = select(CourseDescriptionBlock.title, CourseDescriptionBlock.text).where(col(CourseDescriptionBlock.course_id) == course_id)
+    rows = (await session.exec(statement)).all()
+    return [{"title": title, "text": text} for title, text in rows]
 
 

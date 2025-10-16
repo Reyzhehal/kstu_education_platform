@@ -5,6 +5,7 @@
     "teaching": "Teaching",
     "searchAria": "Site search",
     "searchPlaceholder": "Search…",
+    "searchButton": "Search",
     "sidebarAria": "Learning navigation"
   },
   "tabs": {
@@ -26,24 +27,23 @@
     "welcome": "Welcome! The learning feed will be here.",
     "titleSuffix": "– Polytechnic"
   },
-  "sidebar": {
-    "menu": "Menu"
-  },
-  "lang": {
-    "choose": "Choose a language"
-  },
-  "common": {
-    "inDev": "Page under construction."
-  },
-  "course": {
-    "in_favorites": "In favorites"
-  },
+  "sidebar": { "menu": "Menu" },
+  "lang": { "choose": "Choose a language" },
+  "common": { "inDev": "Page under construction." },
   "menu": {
     "profile": "Profile",
     "settings": "Settings",
     "notifications": "Notifications",
     "whatsNew": "What's new",
     "logout": "Log out"
+  },
+  "coursePage": {
+    "notFound": "Course not found",
+    "level": "Level",
+    "hoursPerWeek": "h/week",
+    "certificate": "Certificate",
+    "noCertificate": "No certificate",
+    "youWillLearn": "What you'll learn"
   }
 }
 

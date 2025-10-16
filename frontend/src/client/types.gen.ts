@@ -230,6 +230,20 @@ export type CoursesReadFavoriteCoursesData = {
 
 export type CoursesReadFavoriteCoursesResponse = (CoursesPublic);
 
+export type CoursesReadCourseLearnLinesData = {
+    courseId: string;
+};
+
+export type CoursesReadCourseLearnLinesResponse = (Array<(string)>);
+
+export type CoursesReadCourseDescriptionBlocksData = {
+    courseId: string;
+};
+
+export type CoursesReadCourseDescriptionBlocksResponse = (Array<{
+    [key: string]: unknown;
+}>);
+
 export type LanguagesReadLanguagesData = {
     limit?: number;
     skip?: number;

@@ -27,6 +27,8 @@ import { Route as LayoutNewsRouteImport } from './routes/_layout/news'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
+import { Route as LayoutProfileIdRouteImport } from './routes/_layout/profile.$id'
+import { Route as LayoutCourseIdRouteImport } from './routes/_layout/course.$id'
 import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog.$id'
 import { Route as LayoutCatalogMetaIdRouteImport } from './routes/_layout/catalog.meta.$id'
 
@@ -119,6 +121,16 @@ const LayoutCatalogIndexRoute = LayoutCatalogIndexRouteImport.update({
   path: '/catalog/',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutProfileIdRoute = LayoutProfileIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LayoutProfileRoute,
+} as any)
+const LayoutCourseIdRoute = LayoutCourseIdRouteImport.update({
+  id: '/course/$id',
+  path: '/course/$id',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutCatalogIdRoute = LayoutCatalogIdRouteImport.update({
   id: '/catalog/$id',
   path: '/catalog/$id',
@@ -140,7 +152,7 @@ export interface FileRoutesByFullPath {
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
-  '/profile': typeof LayoutProfileRoute
+  '/profile': typeof LayoutProfileRouteWithChildren
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -148,6 +160,8 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
+  '/course/$id': typeof LayoutCourseIdRoute
+  '/profile/$id': typeof LayoutProfileIdRoute
   '/catalog': typeof LayoutCatalogIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
@@ -161,7 +175,7 @@ export interface FileRoutesByTo {
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
-  '/profile': typeof LayoutProfileRoute
+  '/profile': typeof LayoutProfileRouteWithChildren
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -169,6 +183,8 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
+  '/course/$id': typeof LayoutCourseIdRoute
+  '/profile/$id': typeof LayoutProfileIdRoute
   '/catalog': typeof LayoutCatalogIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
@@ -184,7 +200,7 @@ export interface FileRoutesById {
   '/_layout/main': typeof LayoutMainRoute
   '/_layout/news': typeof LayoutNewsRoute
   '/_layout/notifications': typeof LayoutNotificationsRoute
-  '/_layout/profile': typeof LayoutProfileRoute
+  '/_layout/profile': typeof LayoutProfileRouteWithChildren
   '/_layout/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -192,6 +208,8 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/_layout/catalog/$id': typeof LayoutCatalogIdRoute
+  '/_layout/course/$id': typeof LayoutCourseIdRoute
+  '/_layout/profile/$id': typeof LayoutProfileIdRoute
   '/_layout/catalog/': typeof LayoutCatalogIndexRoute
   '/_layout/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
@@ -215,6 +233,8 @@ export interface FileRouteTypes {
     | '/'
     | '/courses'
     | '/catalog/$id'
+    | '/course/$id'
+    | '/profile/$id'
     | '/catalog'
     | '/catalog/meta/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -236,6 +256,8 @@ export interface FileRouteTypes {
     | '/'
     | '/courses'
     | '/catalog/$id'
+    | '/course/$id'
+    | '/profile/$id'
     | '/catalog'
     | '/catalog/meta/$id'
   id:
@@ -258,6 +280,8 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/courses/'
     | '/_layout/catalog/$id'
+    | '/_layout/course/$id'
+    | '/_layout/profile/$id'
     | '/_layout/catalog/'
     | '/_layout/catalog/meta/$id'
   fileRoutesById: FileRoutesById
@@ -403,6 +427,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutCatalogIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/profile/$id': {
+      id: '/_layout/profile/$id'
+      path: '/$id'
+      fullPath: '/profile/$id'
+      preLoaderRoute: typeof LayoutProfileIdRouteImport
+      parentRoute: typeof LayoutProfileRoute
+    }
+    '/_layout/course/$id': {
+      id: '/_layout/course/$id'
+      path: '/course/$id'
+      fullPath: '/course/$id'
+      preLoaderRoute: typeof LayoutCourseIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/catalog/$id': {
       id: '/_layout/catalog/$id'
       path: '/catalog/$id'
@@ -420,15 +458,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface LayoutProfileRouteChildren {
+  LayoutProfileIdRoute: typeof LayoutProfileIdRoute
+}
+
+const LayoutProfileRouteChildren: LayoutProfileRouteChildren = {
+  LayoutProfileIdRoute: LayoutProfileIdRoute,
+}
+
+const LayoutProfileRouteWithChildren = LayoutProfileRoute._addFileChildren(
+  LayoutProfileRouteChildren,
+)
+
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutMainRoute: typeof LayoutMainRoute
   LayoutNewsRoute: typeof LayoutNewsRoute
   LayoutNotificationsRoute: typeof LayoutNotificationsRoute
-  LayoutProfileRoute: typeof LayoutProfileRoute
+  LayoutProfileRoute: typeof LayoutProfileRouteWithChildren
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
+  LayoutCourseIdRoute: typeof LayoutCourseIdRoute
   LayoutCatalogIndexRoute: typeof LayoutCatalogIndexRoute
   LayoutCatalogMetaIdRoute: typeof LayoutCatalogMetaIdRoute
 }
@@ -438,10 +489,11 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutMainRoute: LayoutMainRoute,
   LayoutNewsRoute: LayoutNewsRoute,
   LayoutNotificationsRoute: LayoutNotificationsRoute,
-  LayoutProfileRoute: LayoutProfileRoute,
+  LayoutProfileRoute: LayoutProfileRouteWithChildren,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutCatalogIdRoute: LayoutCatalogIdRoute,
+  LayoutCourseIdRoute: LayoutCourseIdRoute,
   LayoutCatalogIndexRoute: LayoutCatalogIndexRoute,
   LayoutCatalogMetaIdRoute: LayoutCatalogMetaIdRoute,
 }

@@ -302,8 +302,8 @@ class CourseDescriptionLineBase(SQLModel):
 
 class CourseDescriptionLine(CourseDescriptionLineBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    block_id: UUID = Field(foreign_key="coursedescriptionblock.id", ondelete="CASCADE")
-    block: CourseDescriptionBlock | None = Relationship()
+    course_id: UUID = Field(foreign_key="course.id", ondelete="CASCADE")
+    course: Course | None = Relationship()
 
     def __str__(self) -> str:
         return self.text[:50] + ("…" if len(self.text) > 50 else "")

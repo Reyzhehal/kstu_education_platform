@@ -66,6 +66,14 @@
       "next": "Далее →"
     }
   },
+  "coursePage": {
+    "notFound": "Курс не найден",
+    "level": "Уровень",
+    "hoursPerWeek": "ч/нед",
+    "certificate": "Сертификат",
+    "noCertificate": "Без сертификата",
+    "youWillLearn": "Чему вы научитесь"
+  },
   "settings": {
     "title": "Настройки пользователя",
     "tabs": {

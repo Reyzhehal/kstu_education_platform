@@ -136,7 +136,7 @@ class CourseDescriptionBlockAdmin(ModelView, model=CourseDescriptionBlock):
 class CourseDescriptionLineAdmin(ModelView, model=CourseDescriptionLine):
     name = "Course Line"
     name_plural = "Course Lines"
-    column_list = [CourseDescriptionLine.id, CourseDescriptionLine.block, CourseDescriptionLine.text]
+    column_list = [CourseDescriptionLine.id, CourseDescriptionLine.course, CourseDescriptionLine.text]
 
 
 class CoursePageAdmin(ModelView, model=CoursePage):
