@@ -6,6 +6,7 @@ import {
   Flex,
   Input,
   Text,
+  Textarea,
   VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -34,6 +35,8 @@ interface EditUserProps {
 
 interface UserUpdateForm extends UserUpdate {
   confirm_password?: string
+  description?: string | null
+  description_short?: string | null
 }
 
 const EditUser = ({ user }: EditUserProps) => {
@@ -122,6 +125,30 @@ const EditUser = ({ user }: EditUserProps) => {
                   {...register("full_name")}
                   placeholder="Full name"
                   type="text"
+                />
+              </Field>
+
+              <Field
+                invalid={!!errors.description_short}
+                errorText={errors.description_short?.message}
+                label="Short Description"
+              >
+                <Textarea
+                  {...register("description_short", { maxLength: 255 })}
+                  placeholder="Short description (max 255 characters)"
+                  rows={3}
+                />
+              </Field>
+
+              <Field
+                invalid={!!errors.description}
+                errorText={errors.description?.message}
+                label="Description"
+              >
+                <Textarea
+                  {...register("description", { maxLength: 2000 })}
+                  placeholder="Full description (max 2000 characters)"
+                  rows={6}
                 />
               </Field>
 

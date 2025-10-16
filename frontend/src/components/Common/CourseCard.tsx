@@ -50,18 +50,21 @@ export default function CourseCard({ course }: CourseCardProps) {
       queryClient.setQueryData<CoursesPublic>(
         ["favorites"],
         (old) => {
-          if (!old) return old
-          return {
-            ...old,
-            data: old.data.map((c) =>
-              c.id === course.id ? { ...c, is_favorite: true } : c
-            ),
+          if (!old) {
+            return { data: [{ ...course, is_favorite: true }], count: 1 }
           }
+          const exists = old.data.some((c) => c.id === course.id)
+          const newData = exists
+            ? old.data.map((c) => (c.id === course.id ? { ...c, is_favorite: true } : c))
+            : [{ ...course, is_favorite: true }, ...old.data]
+          return { ...old, data: newData, count: exists ? old.count : old.count + 1 }
         }
       )
     },
     onSuccess: () => {
       showSuccessToast(t("catalog.course.addedToFavorites"))
+      queryClient.invalidateQueries({ queryKey: ["favorites"] })
+      queryClient.invalidateQueries({ queryKey: ["courses"] })
     },
     onError: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] })
@@ -89,24 +92,22 @@ export default function CourseCard({ course }: CourseCardProps) {
         }
       )
 
-      // Оптимистически обновляем для списка избранных (не удаляем, а меняем флаг)
+      // Оптимистически обновляем для списка избранных: удаляем курс из списка
       await queryClient.cancelQueries({ queryKey: ["favorites"] })
       
       queryClient.setQueryData<CoursesPublic>(
         ["favorites"],
         (old) => {
           if (!old) return old
-          return {
-            ...old,
-            data: old.data.map((c) =>
-              c.id === course.id ? { ...c, is_favorite: false } : c
-            ),
-          }
+          const newData = old.data.filter((c) => c.id !== course.id)
+          return { ...old, data: newData, count: Math.max(0, old.count - 1) }
         }
       )
     },
     onSuccess: () => {
       showSuccessToast(t("catalog.course.removedFromFavorites"))
+      queryClient.invalidateQueries({ queryKey: ["favorites"] })
+      queryClient.invalidateQueries({ queryKey: ["courses"] })
     },
     onError: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] })

@@ -92,6 +92,46 @@ async def read_courses(
     return CoursesPublic(data=courses_public, count=count)
 
 
+@router.get("/favorites", response_model=CoursesPublic)
+async def read_favorite_courses(
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Получить список избранных курсов текущего пользователя
+    """
+    # Получаем ID избранных курсов
+    favorite_links_statement = select(CourseFavoriteLink.course_id).where(
+        CourseFavoriteLink.user_id == current_user.id
+    )
+    favorite_course_ids = (await session.exec(favorite_links_statement)).all()
+    
+    if not favorite_course_ids:
+        return CoursesPublic(data=[], count=0)
+    
+    # Получаем курсы по ID
+    statement = select(Course).where(col(Course.id).in_(favorite_course_ids))
+    
+    # Подсчет
+    count_statement = statement.with_only_columns(func.count()).order_by(None)
+    count = (await session.exec(count_statement)).one()
+    
+    # Пагинация
+    statement = statement.offset(skip).limit(limit)
+    courses = (await session.exec(statement)).all()
+    
+    # Все курсы в избранном, поэтому is_favorite = True для всех
+    courses_public = []
+    for course in courses:
+        course_dict = course.model_dump()
+        course_dict['is_favorite'] = True
+        courses_public.append(CoursePublic(**course_dict))
+    
+    return CoursesPublic(data=courses_public, count=count)
+
+
 @router.get("/{course_id}", response_model=CoursePublic)
 async def read_course_by_id(
     course_id: UUID,
@@ -171,46 +211,6 @@ async def remove_from_favorites(
     await session.commit()
     
     return {"message": "Course removed from favorites"}
-
-
-@router.get("/favorites", response_model=CoursesPublic)
-async def read_favorite_courses(
-    session: AsyncSessionDep,
-    current_user: CurrentUser,
-    skip: int = 0,
-    limit: int = 100,
-) -> Any:
-    """
-    Получить список избранных курсов текущего пользователя
-    """
-    # Получаем ID избранных курсов
-    favorite_links_statement = select(CourseFavoriteLink.course_id).where(
-        CourseFavoriteLink.user_id == current_user.id
-    )
-    favorite_course_ids = (await session.exec(favorite_links_statement)).all()
-    
-    if not favorite_course_ids:
-        return CoursesPublic(data=[], count=0)
-    
-    # Получаем курсы по ID
-    statement = select(Course).where(col(Course.id).in_(favorite_course_ids))
-    
-    # Подсчет
-    count_statement = statement.with_only_columns(func.count()).order_by(None)
-    count = (await session.exec(count_statement)).one()
-    
-    # Пагинация
-    statement = statement.offset(skip).limit(limit)
-    courses = (await session.exec(statement)).all()
-    
-    # Все курсы в избранном, поэтому is_favorite = True для всех
-    courses_public = []
-    for course in courses:
-        course_dict = course.model_dump()
-        course_dict['is_favorite'] = True
-        courses_public.append(CoursePublic(**course_dict))
-    
-    return CoursesPublic(data=courses_public, count=count)
 
 
 @router.get("/{course_id}/learn", response_model=list[str])
