@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
+import usePageTitle from "@/hooks/usePageTitle"
 
 export const Route = createFileRoute("/_layout/notifications")({
   component: NotificationsPage,
@@ -7,6 +8,7 @@ export const Route = createFileRoute("/_layout/notifications")({
 
 function NotificationsPage() {
   const { t } = useTranslation()
+  usePageTitle("tabs.notifications")
   
   return (
     <div style={{ padding: 24 }}>

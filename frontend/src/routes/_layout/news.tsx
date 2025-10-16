@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
+import usePageTitle from "@/hooks/usePageTitle"
 
 export const Route = createFileRoute("/_layout/news")({
   component: NewsPage,
@@ -7,6 +8,7 @@ export const Route = createFileRoute("/_layout/news")({
 
 function NewsPage() {
   const { t } = useTranslation()
+  usePageTitle("menu.whatsNew")
   
   return (
     <div style={{ padding: 24 }}>

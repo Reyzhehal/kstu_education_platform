@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useMemo } from "react"
+import usePageTitle from "@/hooks/usePageTitle"
 import { useTranslation } from "react-i18next"
 import { useQuery } from "@tanstack/react-query"
 import "../main.css"
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/_layout/main" as any)({
 
 function MainPage() {
   const { t } = useTranslation()
+  usePageTitle("pages.main")
   const navigate = useNavigate()
   const { tab: urlTab } = Route.useSearch()
   

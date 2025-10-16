@@ -2,6 +2,7 @@ import { Container, Heading, Text } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import usePageTitle from "@/hooks/usePageTitle"
 import { FiLock } from "react-icons/fi"
 
 import { type ApiError, LoginService, type NewPassword } from "@/client"
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/reset-password")({
 })
 
 function ResetPassword() {
+  usePageTitle("pages.resetPassword")
   const {
     register,
     handleSubmit,

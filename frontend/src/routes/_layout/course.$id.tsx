@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next"
 import CourseLearnList from "@/components/Common/CourseLearnList"
 import CourseDescriptionBlocks from "@/components/Common/CourseDescriptionBlocks"
 import CoursePageSidebar from "@/components/Common/CoursePageSidebar"
+import usePageTitle from "@/hooks/usePageTitle"
 
 export const Route = createFileRoute("/_layout/course/$id")({
   component: CoursePage,
@@ -21,6 +22,7 @@ function CoursePage() {
     queryKey: ["course", id],
     queryFn: () => CoursesService.readCourseById({ courseId: id }),
   })
+  usePageTitle("coursePage.title", { title: course?.title ?? "" })
 
   const { data: learnData } = useQuery({
     queryKey: ["course", id, "learn"],

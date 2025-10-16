@@ -72,6 +72,7 @@
     }
   },
   "coursePage": {
+    "title": "Курс: {{title}}",
     "notFound": "Курс не найден",
     "level": "Уровень",
     "hoursPerWeek": "ч/нед",
@@ -81,7 +82,22 @@
     "enroll": "Записаться",
     "unenroll": "Отписаться"
   },
+  "pages": {
+    "login": "Вход",
+    "signup": "Регистрация",
+    "recoverPassword": "Восстановление пароля",
+    "resetPassword": "Сброс пароля",
+    "catalog": "Каталог",
+    "favorites": "Избранные курсы",
+    "progress": "Мои курсы",
+    "archive": "Архив курсов",
+    "classes": "Классы",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "main": "Главная"
+  },
   "profilePage": {
+    "title": "Профиль: {{title}}",
     "courses": "Курсы автора",
     "coursesCount": "Курсов",
     "noDescription": "Описание пока отсутствует"

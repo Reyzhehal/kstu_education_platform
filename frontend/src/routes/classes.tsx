@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
+import usePageTitle from "@/hooks/usePageTitle"
 
 export const Route = createFileRoute("/classes")({
   component: () => <PlaceholderTranslated pageKey="tabs.classes" />,
@@ -7,6 +8,7 @@ export const Route = createFileRoute("/classes")({
 
 function PlaceholderTranslated({ pageKey }: { pageKey: string }) {
   const { t } = useTranslation()
+  usePageTitle("pages.classes")
   return (
     <div style={{ padding: 24 }}>
       <h1>{t(pageKey)}</h1>

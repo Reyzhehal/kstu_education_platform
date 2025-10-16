@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import usePageTitle from "@/hooks/usePageTitle"
 import { useQuery } from "@tanstack/react-query"
 import { CoursesService, LanguagesService, type LanguagePublic } from "@/client"
 import { useMemo, useState, useEffect } from "react"
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_layout/catalog/")({
 })
 
 function CatalogPage() {
+  usePageTitle("pages.catalog")
   const { user } = useAuth()
   const { q } = Route.useSearch()
   const [page, setPage] = useState(1)

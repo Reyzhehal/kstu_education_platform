@@ -2,6 +2,7 @@ import { Container, Heading, Input, Text } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import usePageTitle from "@/hooks/usePageTitle"
 import { FiMail } from "react-icons/fi"
 
 import { type ApiError, LoginService } from "@/client"
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/recover-password")({
 })
 
 function RecoverPassword() {
+  usePageTitle("pages.recoverPassword")
   const {
     register,
     handleSubmit,

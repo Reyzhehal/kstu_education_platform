@@ -25,7 +25,7 @@
     "classes": "Your classes.",
     "notifications": "Your notifications.",
     "welcome": "Welcome! The learning feed will be here.",
-    "titleSuffix": "– Polytechnic"
+    "titleSuffix": "– KSTU"
   },
   "sidebar": { "menu": "Menu" },
   "lang": { "choose": "Choose a language" },
@@ -37,7 +37,33 @@
     "whatsNew": "What's new",
     "logout": "Log out"
   },
+  "catalog": {
+    "filters": {
+      "language": "Course language",
+      "difficulty": "Difficulty"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "course": {
+      "removeFromWishlist": "Remove from favorites",
+      "in_favorites": "Add to favorites",
+      "hoursTotal": "h total",
+      "addedToFavorites": "Course added to favorites",
+      "removedFromFavorites": "Course removed from favorites",
+      "favoriteError": "Favorites action failed"
+    },
+    "pagination": { "next": "Next →" }
+  },
+  "course": {
+    "card": {
+      "author": "Author:"
+    }
+  },
   "coursePage": {
+    "title": "Course: {{title}}",
     "notFound": "Course not found",
     "level": "Level",
     "hoursPerWeek": "h/week",
@@ -48,9 +74,24 @@
     "unenroll": "Unenroll"
   },
   "profilePage": {
+    "title": "Profile: {{title}}",
     "courses": "Author's courses",
     "coursesCount": "Courses",
     "noDescription": "No description yet"
+  },
+  "pages": {
+    "login": "Login",
+    "signup": "Sign up",
+    "recoverPassword": "Password recovery",
+    "resetPassword": "Reset password",
+    "catalog": "Catalog",
+    "favorites": "Favorites",
+    "progress": "My courses",
+    "archive": "Archive",
+    "classes": "Classes",
+    "settings": "Settings",
+    "profile": "Profile",
+    "main": "Home"
   }
 }
 

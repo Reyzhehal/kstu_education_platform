@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import CourseCard from "@/components/Common/CourseCard"
 import Pagination from "@/components/Common/Pagination"
 import { withApiBase } from "@/utils"
+import usePageTitle from "@/hooks/usePageTitle"
 
 export const Route = createFileRoute("/_layout/profile/$id")({
   component: ProfileByIdPage,
@@ -19,7 +20,8 @@ function ProfileByIdPage() {
     queryKey: ["user", id],
     queryFn: () => UsersService.readUserById({ userId: id }),
   })
-
+  usePageTitle("profilePage.title", { title: user?.full_name || user?.username || "" })
+  
   const { data: coursesResp } = useQuery({
     queryKey: ["courses", "by-author", id],
     // пока нет фильтра по author_id — берём список и считаем на клиенте

@@ -5,6 +5,7 @@ import {
   redirect,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import usePageTitle from "@/hooks/usePageTitle"
 import { FiLock, FiUser } from "react-icons/fi"
 
 import type { UserRegister } from "@/client"
@@ -32,6 +33,7 @@ interface UserRegisterForm extends UserRegister {
 }
 
 function SignUp() {
+  usePageTitle("pages.signup")
   const { signUpMutation } = useAuth()
   const {
     register,

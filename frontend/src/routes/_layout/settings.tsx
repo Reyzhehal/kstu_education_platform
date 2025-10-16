@@ -1,5 +1,6 @@
 import { Container, Heading, Tabs } from "@chakra-ui/react"
 import { createFileRoute } from "@tanstack/react-router"
+import usePageTitle from "@/hooks/usePageTitle"
 import { useTranslation } from "react-i18next"
 
 import Appearance from "@/components/UserSettings/Appearance"
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_layout/settings")({
 
 function UserSettings() {
   const { t } = useTranslation()
+  usePageTitle("pages.settings")
   const { user: currentUser } = useAuth()
 
   const tabsConfig = [

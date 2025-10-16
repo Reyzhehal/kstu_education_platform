@@ -5,6 +5,7 @@ import {
   redirect,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import usePageTitle from "@/hooks/usePageTitle"
 import { FiLock, FiMail } from "react-icons/fi"
 
 import type { Body_login_login_access_token as AccessToken } from "@/client"
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/login")({
 })
 
 function Login() {
+  usePageTitle("pages.login")
   const { loginMutation, error, resetError } = useAuth()
   const {
     register,
