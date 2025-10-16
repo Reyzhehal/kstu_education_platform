@@ -53,3 +53,11 @@ export const handleError = (err: ApiError) => {
   }
   showErrorToast(errorMessage)
 }
+
+export const withApiBase = (path?: string | null) => {
+  const base = import.meta.env.VITE_API_URL || ""
+  if (!path) return ""
+  if (path.startsWith("http://") || path.startsWith("https://")) return path
+  const trimmed = path.replace(/^\/+/, "")
+  return `${base}/${trimmed}`
+}

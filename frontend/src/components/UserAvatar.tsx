@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import type { UserPublic } from "@/client"
-import { OpenAPI } from "@/client"
 import { UsersService as Users } from "@/client"
+import { withApiBase } from "@/utils"
 
 type Props = {
   size?: number
@@ -17,9 +17,7 @@ export default function UserAvatar({ size = 32, onClick }: Props) {
   const [bg] = useState(() => palette[Math.floor(Math.random() * palette.length)])
   const username = (user as any)?.username || user?.full_name || user?.email || "?"
   const initial = useMemo(() => username.trim().charAt(0).toUpperCase(), [username])
-  const url = user?.avatar_image
-    ? `${OpenAPI.BASE?.replace(/\/$/, "")}${user.avatar_image.startsWith("/") ? user.avatar_image : `/${user.avatar_image}`}`
-    : undefined
+  const url = user?.avatar_image ? withApiBase(user.avatar_image) : undefined
   const style: React.CSSProperties = {
     width: size,
     height: size,

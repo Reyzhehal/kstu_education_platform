@@ -146,6 +146,7 @@ export type UserPublic = {
     cover_image?: (string | null);
     city?: string;
     date_joined: string;
+    courses_count?: number;
 };
 
 export type UserRegister = {

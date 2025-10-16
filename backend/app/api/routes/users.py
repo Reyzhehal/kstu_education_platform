@@ -18,6 +18,7 @@ from app.models import (
     SetLanguage,
     UpdatePassword,
     User,
+    Course,
     UserCreate,
     UserPublic,
     UserRegister,
@@ -121,11 +122,20 @@ async def update_password_me(
 
 
 @router.get("/me", response_model=UserPublic)
-async def read_user_me(current_user: CurrentUser) -> Any:
+async def read_user_me(current_user: CurrentUser, session: AsyncSessionDep) -> Any:
     """
     Get current user.
     """
-    return current_user
+    # compute authored courses count
+    count_statement = (
+        select(func.count())
+        .select_from(Course)
+        .where(col(Course.author_id) == current_user.id)
+    )
+    courses_count = (await session.exec(count_statement)).one()
+    data = current_user.model_dump()
+    data["courses_count"] = courses_count
+    return UserPublic(**data)
 
 
 @router.post("/me/language", response_model=UserPublic)
@@ -195,14 +205,15 @@ async def read_user_by_id(
     Get a specific user by id.
     """
     user = await session.get(User, user_id)
-    if user == current_user:
-        return user
-    if not current_user.is_superuser:
-        raise HTTPException(
-            status_code=403,
-            detail="The user doesn't have enough privileges",
-        )
-    return user
+    count_statement = (
+        select(func.count())
+        .select_from(Course)
+        .where(col(Course.author_id) == user_id)
+    )
+    courses_count = (await session.exec(count_statement)).one()
+    data = user.model_dump()
+    data["courses_count"] = courses_count
+    return UserPublic(**data)
 
 
 @router.patch(

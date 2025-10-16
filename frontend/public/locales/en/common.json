@@ -46,6 +46,11 @@
     "youWillLearn": "What you'll learn",
     "enroll": "Enroll",
     "unenroll": "Unenroll"
+  },
+  "profilePage": {
+    "courses": "Author's courses",
+    "coursesCount": "Courses",
+    "noDescription": "No description yet"
   }
 }
 

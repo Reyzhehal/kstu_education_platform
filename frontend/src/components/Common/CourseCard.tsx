@@ -3,20 +3,21 @@ import { useNavigate } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { CoursesService, UsersService, type CoursePublic, type CoursesPublic } from "@/client"
+import { withApiBase } from "@/utils"
 import useCustomToast from "@/hooks/useCustomToast"
 
 type CourseCardProps = {
   course: CoursePublic
+  variant?: "default" | "compact"
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, variant = "default" }: CourseCardProps) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const [isAnimating, setIsAnimating] = useState(false)
   const navigate = useNavigate()
-  const apiUrl = import.meta.env.VITE_API_URL || ""
-  const coverImage = course.cover_image ? `${apiUrl}/${course.cover_image}` : "/assets/images/header-img-night.png"
+  const coverImage = course.cover_image ? withApiBase(course.cover_image) : "/assets/images/header-img-night.png"
   
   const { data: owner } = useQuery({
     queryKey: ["user", course.author_id],
@@ -58,6 +59,19 @@ export default function CourseCard({ course }: CourseCardProps) {
             ? old.data.map((c) => (c.id === course.id ? { ...c, is_favorite: true } : c))
             : [{ ...course, is_favorite: true }, ...old.data]
           return { ...old, data: newData, count: exists ? old.count : old.count + 1 }
+        }
+      )
+
+      // Оптимистически обновляем список "Прохожу"
+      await queryClient.cancelQueries({ queryKey: ["progress"] })
+      queryClient.setQueryData<CoursesPublic>(
+        ["progress"],
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            data: old.data.map((c) => (c.id === course.id ? { ...c, is_favorite: true } : c)),
+          }
         }
       )
     },
@@ -103,6 +117,19 @@ export default function CourseCard({ course }: CourseCardProps) {
           return { ...old, data: newData, count: Math.max(0, old.count - 1) }
         }
       )
+
+      // Оптимистически обновляем список "Прохожу"
+      await queryClient.cancelQueries({ queryKey: ["progress"] })
+      queryClient.setQueryData<CoursesPublic>(
+        ["progress"],
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            data: old.data.map((c) => (c.id === course.id ? { ...c, is_favorite: false } : c)),
+          }
+        }
+      )
     },
     onSuccess: () => {
       showSuccessToast(t("catalog.course.removedFromFavorites"))
@@ -129,7 +156,7 @@ export default function CourseCard({ course }: CourseCardProps) {
   
   return (
     <div
-      className="course-card"
+      className={`course-card ${variant === "compact" ? "course-card--compact" : ""}`}
       role="link"
       tabIndex={0}
       onClick={() => navigate({ to: `/course/${course.id}` })}

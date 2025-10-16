@@ -81,6 +81,11 @@
     "enroll": "Записаться",
     "unenroll": "Отписаться"
   },
+  "profilePage": {
+    "courses": "Курсы автора",
+    "coursesCount": "Курсов",
+    "noDescription": "Описание пока отсутствует"
+  },
   "settings": {
     "title": "Настройки пользователя",
     "tabs": {

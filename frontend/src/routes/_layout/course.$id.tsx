@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { CoursesService } from "@/client"
+import { withApiBase } from "@/utils"
 import { useTranslation } from "react-i18next"
 import CourseLearnList from "@/components/Common/CourseLearnList"
 import CourseDescriptionBlocks from "@/components/Common/CourseDescriptionBlocks"
@@ -107,8 +108,7 @@ function CoursePage() {
     return <div className="content"><p>{t("coursePage.notFound")}</p></div>
   }
 
-  const apiUrl = import.meta.env.VITE_API_URL || ""
-  const cover = course.cover_image ? `${apiUrl}/${course.cover_image}` : "/assets/images/header-img-night.png"
+  const cover = course.cover_image ? withApiBase(course.cover_image) : "/assets/images/header-img-night.png"
 
   return (
     <div className="course-page">
@@ -146,6 +146,7 @@ function CoursePage() {
             onUnenroll={() => unenrollMutation.mutate()}
             isEnrolled={course.is_enrolled}
             isLoading={enrollMutation.isPending || unenrollMutation.isPending}
+            authorId={course.author_id}
           />
         </div>
       </section>

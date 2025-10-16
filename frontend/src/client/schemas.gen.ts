@@ -729,6 +729,11 @@ export const UserPublicSchema = {
             type: 'string',
             format: 'date-time',
             title: 'Date Joined'
+        },
+        courses_count: {
+            type: 'integer',
+            title: 'Courses Count',
+            default: 0
         }
     },
     type: 'object',

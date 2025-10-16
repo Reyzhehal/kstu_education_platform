@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "@tanstack/react-router"
+import useAuth from "@/hooks/useAuth"
 import { useTranslation } from "react-i18next"
 import UserAvatar from "./UserAvatar"
 
@@ -27,6 +28,7 @@ export function UserMenuDropdown() {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation("common")
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { user } = useAuth()
 
   const handleLogout = () => {
     localStorage.removeItem("access_token")
@@ -54,7 +56,7 @@ export function UserMenuDropdown() {
       <UserAvatar size={32} onClick={() => setOpen((o) => !o)} />
       {open && (
         <div className="user-menu-panel">
-          <MenuItem label={t("menu.profile", { defaultValue: "Профиль" })} to="/profile" />
+          <MenuItem label={t("menu.profile", { defaultValue: "Профиль" })} to={user ? `/profile/${user.id}` : "/login"} />
           <MenuItem label={t("menu.settings", { defaultValue: "Настройки" })} to="/settings" />
           <MenuItem label={t("menu.notifications", { defaultValue: "Уведомления" })} to="/notifications" />
           <MenuItem label={t("menu.whatsNew", { defaultValue: "Что нового" })} to="/news" />

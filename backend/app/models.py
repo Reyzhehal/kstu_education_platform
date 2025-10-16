@@ -103,6 +103,8 @@ class UserPublic(UserBase):
     cover_image: str | None = None
     city: str = "Bishkek"
     date_joined: datetime
+    # extra computed fields
+    courses_count: int = 0
 
 
 class UsersPublic(SQLModel):

@@ -146,6 +146,13 @@ async def read_favorite_courses(
     for course in courses:
         course_dict = course.model_dump()
         course_dict["is_favorite"] = True
+        # считаем студентов для каждого курса
+        students_statement = (
+            select(func.count())
+            .select_from(CourseStudentLink)
+            .where(CourseStudentLink.course_id == course.id)
+        )
+        course_dict["students_count"] = (await session.exec(students_statement)).one()
         courses_public.append(CoursePublic(**course_dict))
 
     return CoursesPublic(data=courses_public, count=count)

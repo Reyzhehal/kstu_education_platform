@@ -21,7 +21,6 @@ import { Route as CoursesProgressRouteImport } from './routes/courses.progress'
 import { Route as CoursesFavoritesRouteImport } from './routes/courses.favorites'
 import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
-import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
 import { Route as LayoutNotificationsRouteImport } from './routes/_layout/notifications'
 import { Route as LayoutNewsRouteImport } from './routes/_layout/news'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
@@ -91,11 +90,6 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutProfileRoute = LayoutProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutNotificationsRoute = LayoutNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
@@ -122,9 +116,9 @@ const LayoutCatalogIndexRoute = LayoutCatalogIndexRouteImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutProfileIdRoute = LayoutProfileIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => LayoutProfileRoute,
+  id: '/profile/$id',
+  path: '/profile/$id',
+  getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutCourseIdRoute = LayoutCourseIdRouteImport.update({
   id: '/course/$id',
@@ -152,7 +146,6 @@ export interface FileRoutesByFullPath {
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
-  '/profile': typeof LayoutProfileRouteWithChildren
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -175,7 +168,6 @@ export interface FileRoutesByTo {
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
-  '/profile': typeof LayoutProfileRouteWithChildren
   '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -200,7 +192,6 @@ export interface FileRoutesById {
   '/_layout/main': typeof LayoutMainRoute
   '/_layout/news': typeof LayoutNewsRoute
   '/_layout/notifications': typeof LayoutNotificationsRoute
-  '/_layout/profile': typeof LayoutProfileRouteWithChildren
   '/_layout/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
@@ -225,7 +216,6 @@ export interface FileRouteTypes {
     | '/main'
     | '/news'
     | '/notifications'
-    | '/profile'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -248,7 +238,6 @@ export interface FileRouteTypes {
     | '/main'
     | '/news'
     | '/notifications'
-    | '/profile'
     | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -272,7 +261,6 @@ export interface FileRouteTypes {
     | '/_layout/main'
     | '/_layout/news'
     | '/_layout/notifications'
-    | '/_layout/profile'
     | '/_layout/settings'
     | '/courses/archive'
     | '/courses/favorites'
@@ -385,13 +373,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/profile': {
-      id: '/_layout/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof LayoutProfileRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/notifications': {
       id: '/_layout/notifications'
       path: '/notifications'
@@ -429,10 +410,10 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/profile/$id': {
       id: '/_layout/profile/$id'
-      path: '/$id'
+      path: '/profile/$id'
       fullPath: '/profile/$id'
       preLoaderRoute: typeof LayoutProfileIdRouteImport
-      parentRoute: typeof LayoutProfileRoute
+      parentRoute: typeof LayoutRoute
     }
     '/_layout/course/$id': {
       id: '/_layout/course/$id'
@@ -458,28 +439,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LayoutProfileRouteChildren {
-  LayoutProfileIdRoute: typeof LayoutProfileIdRoute
-}
-
-const LayoutProfileRouteChildren: LayoutProfileRouteChildren = {
-  LayoutProfileIdRoute: LayoutProfileIdRoute,
-}
-
-const LayoutProfileRouteWithChildren = LayoutProfileRoute._addFileChildren(
-  LayoutProfileRouteChildren,
-)
-
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutMainRoute: typeof LayoutMainRoute
   LayoutNewsRoute: typeof LayoutNewsRoute
   LayoutNotificationsRoute: typeof LayoutNotificationsRoute
-  LayoutProfileRoute: typeof LayoutProfileRouteWithChildren
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
   LayoutCourseIdRoute: typeof LayoutCourseIdRoute
+  LayoutProfileIdRoute: typeof LayoutProfileIdRoute
   LayoutCatalogIndexRoute: typeof LayoutCatalogIndexRoute
   LayoutCatalogMetaIdRoute: typeof LayoutCatalogMetaIdRoute
 }
@@ -489,11 +458,11 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutMainRoute: LayoutMainRoute,
   LayoutNewsRoute: LayoutNewsRoute,
   LayoutNotificationsRoute: LayoutNotificationsRoute,
-  LayoutProfileRoute: LayoutProfileRouteWithChildren,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutCatalogIdRoute: LayoutCatalogIdRoute,
   LayoutCourseIdRoute: LayoutCourseIdRoute,
+  LayoutProfileIdRoute: LayoutProfileIdRoute,
   LayoutCatalogIndexRoute: LayoutCatalogIndexRoute,
   LayoutCatalogMetaIdRoute: LayoutCatalogMetaIdRoute,
 }
