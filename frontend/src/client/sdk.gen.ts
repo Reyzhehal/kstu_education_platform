@@ -680,7 +680,7 @@ export class UsersService {
     
     /**
      * Upload Cover Me
-     * Upload and set current user's cover image. Only for teachers. Accepts image/jpeg, image/png, image/webp.
+     * Upload and set current user's cover image. Accepts image/jpeg, image/png, image/webp.
      * Returns updated user.
      * @param data The data for the request.
      * @param data.formData

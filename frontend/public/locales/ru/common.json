@@ -121,6 +121,12 @@
     "recover": { "sent": "Письмо для восстановления отправлено" },
     "password": { "updated": "Пароль обновлён" }
   },
+  "validation": {
+    "urlHttp": "Ссылка должна начинаться с http:// или https://",
+    "urlTelegram": "Ссылка должна начинаться с https://t.me/",
+    "urlGithub": "Ссылка должна начинаться с https://github.com/",
+    "urlYoutube": "Ссылка должна начинаться с https://youtube.com/ или https://youtu.be/"
+  },
   "profilePage": {
     "title": "Профиль: {{title}}",
     "courses": "Курсы автора",
@@ -141,10 +147,12 @@
     "deleteAccount": "Удалить аккаунт",
     "fields": {
       "fullName": "Полное имя",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
       "email": "Email",
       "city": "Город",
-      "descriptionShort": "Краткое описание",
-      "description": "Описание"
+      "descriptionShort": "Краткая биография (до 255 символов)",
+      "description": "Обо мне"
     },
     "placeholders": {
       "descriptionShort": "Краткая биография или слоган",

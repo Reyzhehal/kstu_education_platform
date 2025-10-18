@@ -25,6 +25,7 @@ import useAuth from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
 import { Field } from "../ui/field"
+import React from "react"
 
 const UserInformation = () => {
   const { t } = useTranslation()  
@@ -56,6 +57,10 @@ const UserInformation = () => {
       city: currentUser?.city,
       description: currentUser?.description,
       description_short: currentUser?.description_short,
+      website_url: (currentUser as any)?.website_url,
+      telegram_url: (currentUser as any)?.telegram_url,
+      github_url: (currentUser as any)?.github_url,
+      youtube_url: (currentUser as any)?.youtube_url,
     },
   })
 
@@ -177,6 +182,7 @@ const UserInformation = () => {
       </Heading>
       <VStack align="stretch" gap={6}>
         <Box
+          id="profile"
           w={{ sm: "full", md: "xl" }}
           as="form"
           onSubmit={handleSubmit(onSubmit)}
@@ -199,6 +205,7 @@ const UserInformation = () => {
               </Text>
             )}
           </Field>
+          {/* Соцсети перенесены в отдельную вкладку */}
           <Field
             mt={4}
             label={t("settings.fields.email")}
@@ -261,14 +268,16 @@ const UserInformation = () => {
                 placeholder={t("settings.placeholders.description")!}
                 rows={4}
               />
+            ) : currentUser?.description ? (
+              <Box py={2}>
+                <div
+                  className="markdown-body"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(currentUser.description) }}
+                />
+              </Box>
             ) : (
-              <Text
-                fontSize="md"
-                py={2}
-                color={!currentUser?.description ? "gray" : "inherit"}
-                maxW="sm"
-              >
-                {currentUser?.description || t("settings.validation.notAvailable")}
+              <Text fontSize="md" py={2} color="gray" maxW="sm">
+                {t("settings.validation.notAvailable")}
               </Text>
             )}
           </Field>
@@ -296,7 +305,7 @@ const UserInformation = () => {
         </Box>
 
         {/* Avatar Section */}
-        <Box>
+        <Box id="avatar">
           <Heading size="xs" mb={2}>
             {t("settings.avatar.title")}
           </Heading>
@@ -355,13 +364,10 @@ const UserInformation = () => {
 
         {/* Cover Section - Only for teachers */}
         {currentUser?.is_teacher && (
-          <Box>
+          <Box id="cover">
             <Heading size="xs" mb={2}>
               {t("settings.cover.title")}
             </Heading>
-            <Text fontSize="sm" color="gray.600" mb={2}>
-              {t("settings.cover.description")}
-            </Text>
             {coverPreview && (
               <Image
                 src={coverPreview}
@@ -424,3 +430,25 @@ const UserInformation = () => {
 }
 
 export default UserInformation
+
+function renderMarkdown(src: string) {
+  const escapeHtml = (s: string) =>
+    s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+  const withBasicMd = (s: string) =>
+    s
+      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+
+  const escaped = escapeHtml(src)
+  const md = withBasicMd(escaped)
+  const withParagraphs = md
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.replace(/\n/g, '<br/>')}</p>`) // поддержка отступов/переводов строки
+    .join("")
+  return withParagraphs
+}

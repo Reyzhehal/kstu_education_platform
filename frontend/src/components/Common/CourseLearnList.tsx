@@ -15,7 +15,7 @@ export default function CourseLearnList({ title, items }: LearnListProps) {
       <ul className="course-learn__list" aria-label={title}>
         {items.map((text, idx) => (
           <li key={idx} className="course-learn__item">
-            <img className="course-learn__icon" src="/assets/images/list-check-mark.svg" alt="" aria-hidden="true" />
+            <img className="course-learn__icon" src="/assets/icons/list-check-mark.svg" alt="" aria-hidden="true" />
             <span className="course-learn__text">{text}</span>
           </li>
         ))}

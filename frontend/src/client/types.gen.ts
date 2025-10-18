@@ -147,6 +147,10 @@ export type UserPublic = {
     city?: string;
     date_joined: string;
     courses_count?: number;
+    website_url?: (string | null);
+    telegram_url?: (string | null);
+    github_url?: (string | null);
+    youtube_url?: (string | null);
 };
 
 export type UserRegister = {
@@ -180,6 +184,10 @@ export type UserUpdateMe = {
     city?: (string | null);
     description?: (string | null);
     description_short?: (string | null);
+    website_url?: (string | null);
+    telegram_url?: (string | null);
+    github_url?: (string | null);
+    youtube_url?: (string | null);
 };
 
 export type ValidationError = {

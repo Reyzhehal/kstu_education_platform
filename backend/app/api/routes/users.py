@@ -3,6 +3,7 @@ from typing import Any
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
+import re
 from sqlmodel import col, func, select
 
 from app import crud
@@ -29,6 +30,39 @@ from app.models import (
 from app.utils import generate_new_account_email, send_email
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+_RE_WEBSITE = re.compile(r"^https?://[^\s]+$")
+_RE_TELEGRAM = re.compile(r"^https?://t\.me/[^\s]+$")
+_RE_GITHUB = re.compile(r"^https?://(?:www\.)?github\.com/[^\s]+$")
+_RE_YOUTUBE = re.compile(r"^https?://(?:www\.)?(?:youtube\.com/[^\s]+|youtu\.be/[^\s]+)$")
+
+
+def _validate_social_links(payload: dict) -> None:
+    website = payload.get("website_url")
+    telegram = payload.get("telegram_url")
+    github = payload.get("github_url")
+    youtube = payload.get("youtube_url")
+
+    def _has_value(v: str | None) -> bool:
+        return bool(v and v.strip())
+
+    if _has_value(website):
+        website = website.strip()
+        if not _RE_WEBSITE.fullmatch(website):
+            raise HTTPException(status_code=422, detail="website_url must start with http:// or https://")
+    if _has_value(telegram):
+        telegram = telegram.strip()
+        if not _RE_TELEGRAM.fullmatch(telegram):
+            raise HTTPException(status_code=422, detail="telegram_url must start with https://t.me/")
+    if _has_value(github):
+        github = github.strip()
+        if not _RE_GITHUB.fullmatch(github):
+            raise HTTPException(status_code=422, detail="github_url must start with https://github.com/")
+    if _has_value(youtube):
+        youtube = youtube.strip()
+        if not _RE_YOUTUBE.fullmatch(youtube):
+            raise HTTPException(status_code=422, detail="youtube_url must start with https://youtube.com/ or https://youtu.be/")
 
 
 @router.get(
@@ -94,6 +128,7 @@ async def update_user_me(
                 status_code=409, detail="User with this email already exists"
             )
     user_data = user_in.model_dump(exclude_unset=True)
+    _validate_social_links(user_data)
     current_user.sqlmodel_update(user_data)
     session.add(current_user)
     await session.commit()
@@ -335,11 +370,9 @@ async def upload_cover_me(
     *, session: AsyncSessionDep, current_user: CurrentUser, file: UploadFile = File(...)
 ) -> Any:
     """
-    Upload and set current user's cover image. Only for teachers. Accepts image/jpeg, image/png, image/webp.
+    Upload and set current user's cover image. Accepts image/jpeg, image/png, image/webp.
     Returns updated user.
     """
-    if not current_user.is_teacher:
-        raise HTTPException(status_code=403, detail="Only teachers can upload cover images")
 
     content_type = file.content_type or ""
     allowed = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}

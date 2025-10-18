@@ -45,6 +45,10 @@ class UserUpdateMe(SQLModel):
     city: str | None = Field(default=None, max_length=30)
     description: str | None = Field(default=None, max_length=2000)
     description_short: str | None = Field(default=None, max_length=255)
+    website_url: str | None = Field(default=None, max_length=255)
+    telegram_url: str | None = Field(default=None, max_length=255)
+    github_url: str | None = Field(default=None, max_length=255)
+    youtube_url: str | None = Field(default=None, max_length=255)
 
 
 class UpdatePassword(SQLModel):
@@ -73,10 +77,8 @@ class User(UserBase, table=True):
         default=None, foreign_key="language.id", ondelete="SET NULL"
     )
     language: Language | None = Relationship(back_populates="users")
-    # username removed
     is_staff: bool = False
     is_teacher: bool = False
-    # first_name, last_name already provided by UserBase
     description: str | None = Field(default=None, max_length=2000)
     description_short: str | None = Field(default=None, max_length=255)
     is_profile_private: bool = False
@@ -84,6 +86,11 @@ class User(UserBase, table=True):
     cover_image: str | None = Field(default=None, max_length=255)
     city: str = Field(default="Bishkek", max_length=30)
     date_joined: datetime = Field(default_factory=datetime.now)
+    # social links
+    website_url: str | None = Field(default=None, max_length=120)
+    telegram_url: str | None = Field(default=None, max_length=120)
+    github_url: str | None = Field(default=None, max_length=120)
+    youtube_url: str | None = Field(default=None, max_length=120)
 
     def __str__(self) -> str:
         name = " ".join([p for p in [self.first_name, self.last_name] if p])
@@ -94,7 +101,6 @@ class User(UserBase, table=True):
 class UserPublic(UserBase):
     id: UUID
     language_id: int | None = None
-    # username removed
     is_staff: bool = False
     is_teacher: bool = False
     description: str | None = None
@@ -106,6 +112,11 @@ class UserPublic(UserBase):
     date_joined: datetime
     # extra computed fields
     courses_count: int = 0
+    # social links
+    website_url: str | None = None
+    telegram_url: str | None = None
+    github_url: str | None = None
+    youtube_url: str | None = None
 
 
 class UsersPublic(SQLModel):

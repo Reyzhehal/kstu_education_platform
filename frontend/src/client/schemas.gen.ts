@@ -743,6 +743,50 @@ export const UserPublicSchema = {
             type: 'integer',
             title: 'Courses Count',
             default: 0
+        },
+        website_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Website Url'
+        },
+        telegram_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Telegram Url'
+        },
+        github_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Github Url'
+        },
+        youtube_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Youtube Url'
         }
     },
     type: 'object',
@@ -971,6 +1015,54 @@ export const UserUpdateMeSchema = {
                 }
             ],
             title: 'Description Short'
+        },
+        website_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Website Url'
+        },
+        telegram_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Telegram Url'
+        },
+        github_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Github Url'
+        },
+        youtube_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Youtube Url'
         }
     },
     type: 'object',

@@ -91,11 +91,42 @@ function ProfileByIdPage() {
                 </div>
               </div>
             ) : null}
+
+            {/* Social links in sidebar */}
+            <div className="profile-links">
+              {user.website_url ? (
+                <a className="profile-link" href={user.website_url} target="_blank" rel="noopener noreferrer">
+                  <img className="profile-link__icon" src="/assets/icons/website.svg" alt="" />
+                  <span className="profile-link__text">{getHost(user.website_url)}</span>
+                </a>
+              ) : null}
+              {user.telegram_url ? (
+                <a className="profile-link" href={user.telegram_url} target="_blank" rel="noopener noreferrer">
+                  <img className="profile-link__icon" src="/assets/icons/telegram.svg" alt="" />
+                  <span className="profile-link__text">{extractLastSegment(user.telegram_url)}</span>
+                </a>
+              ) : null}
+              {user.github_url ? (
+                <a className="profile-link" href={user.github_url} target="_blank" rel="noopener noreferrer">
+                  <img className="profile-link__icon" src="/assets/icons/github.svg" alt="" />
+                  <span className="profile-link__text">{extractLastSegment(user.github_url)}</span>
+                </a>
+              ) : null}
+              {user.youtube_url ? (
+                <a className="profile-link" href={user.youtube_url} target="_blank" rel="noopener noreferrer">
+                  <img className="profile-link__icon" src="/assets/icons/youtube.svg" alt="" />
+                  <span className="profile-link__text">{extractLastSegment(user.youtube_url)}</span>
+                </a>
+              ) : null}
+            </div>
           </aside>
           <div className="profile-content">
             <h1 className="profile-title">{[user.first_name, user.last_name].filter(Boolean).join(" ") || t("menu.profile")}</h1>
             {user.description ? (
-              <div className="profile-desc markdown-body">{user.description}</div>
+              <div
+                className="profile-desc markdown-body"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(user.description) }}
+              />
             ) : (
               <p className="profile-desc is-muted">{t("profilePage.noDescription", { defaultValue: "Описание пока отсутствует" })}</p>
             )}
@@ -116,5 +147,45 @@ function ProfileByIdPage() {
       </section>
     </div>
   )
+}
+
+function renderMarkdown(src: string) {
+  const escapeHtml = (s: string) =>
+    s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+  const withBasicMd = (s: string) =>
+    s
+      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+
+  const escaped = escapeHtml(src)
+  const md = withBasicMd(escaped)
+  const withParagraphs = md
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.replace(/\n/g, '<br/>')}</p>`)
+    .join("")
+  return withParagraphs
+}
+
+function extractLastSegment(url: string): string {
+  try {
+    const u = new URL(url)
+    const seg = u.pathname.split("/").filter(Boolean).pop() || ""
+    return seg || url
+  } catch {
+    return url
+  }
+}
+
+function getHost(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "")
+  } catch {
+    return url
+  }
 }
 

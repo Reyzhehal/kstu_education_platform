@@ -25,7 +25,13 @@ import { Route as LayoutNotificationsRouteImport } from './routes/_layout/notifi
 import { Route as LayoutNewsRouteImport } from './routes/_layout/news'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutSettingsIndexRouteImport } from './routes/_layout/settings/index'
 import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
+import { Route as LayoutSettingsSocialRouteImport } from './routes/_layout/settings/social'
+import { Route as LayoutSettingsProfileRouteImport } from './routes/_layout/settings/profile'
+import { Route as LayoutSettingsPasswordRouteImport } from './routes/_layout/settings/password'
+import { Route as LayoutSettingsDangerRouteImport } from './routes/_layout/settings/danger'
+import { Route as LayoutSettingsAppearanceRouteImport } from './routes/_layout/settings/appearance'
 import { Route as LayoutProfileIdRouteImport } from './routes/_layout/profile.$id'
 import { Route as LayoutCourseIdRouteImport } from './routes/_layout/course.$id'
 import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog.$id'
@@ -110,11 +116,42 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutSettingsIndexRoute = LayoutSettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LayoutSettingsRoute,
+} as any)
 const LayoutCatalogIndexRoute = LayoutCatalogIndexRouteImport.update({
   id: '/catalog/',
   path: '/catalog/',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutSettingsSocialRoute = LayoutSettingsSocialRouteImport.update({
+  id: '/social',
+  path: '/social',
+  getParentRoute: () => LayoutSettingsRoute,
+} as any)
+const LayoutSettingsProfileRoute = LayoutSettingsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LayoutSettingsRoute,
+} as any)
+const LayoutSettingsPasswordRoute = LayoutSettingsPasswordRouteImport.update({
+  id: '/password',
+  path: '/password',
+  getParentRoute: () => LayoutSettingsRoute,
+} as any)
+const LayoutSettingsDangerRoute = LayoutSettingsDangerRouteImport.update({
+  id: '/danger',
+  path: '/danger',
+  getParentRoute: () => LayoutSettingsRoute,
+} as any)
+const LayoutSettingsAppearanceRoute =
+  LayoutSettingsAppearanceRouteImport.update({
+    id: '/appearance',
+    path: '/appearance',
+    getParentRoute: () => LayoutSettingsRoute,
+  } as any)
 const LayoutProfileIdRoute = LayoutProfileIdRouteImport.update({
   id: '/profile/$id',
   path: '/profile/$id',
@@ -146,7 +183,7 @@ export interface FileRoutesByFullPath {
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
-  '/settings': typeof LayoutSettingsRoute
+  '/settings': typeof LayoutSettingsRouteWithChildren
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
   '/courses/progress': typeof CoursesProgressRoute
@@ -155,7 +192,13 @@ export interface FileRoutesByFullPath {
   '/catalog/$id': typeof LayoutCatalogIdRoute
   '/course/$id': typeof LayoutCourseIdRoute
   '/profile/$id': typeof LayoutProfileIdRoute
+  '/settings/appearance': typeof LayoutSettingsAppearanceRoute
+  '/settings/danger': typeof LayoutSettingsDangerRoute
+  '/settings/password': typeof LayoutSettingsPasswordRoute
+  '/settings/profile': typeof LayoutSettingsProfileRoute
+  '/settings/social': typeof LayoutSettingsSocialRoute
   '/catalog': typeof LayoutCatalogIndexRoute
+  '/settings/': typeof LayoutSettingsIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRoutesByTo {
@@ -168,7 +211,6 @@ export interface FileRoutesByTo {
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
-  '/settings': typeof LayoutSettingsRoute
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
   '/courses/progress': typeof CoursesProgressRoute
@@ -177,7 +219,13 @@ export interface FileRoutesByTo {
   '/catalog/$id': typeof LayoutCatalogIdRoute
   '/course/$id': typeof LayoutCourseIdRoute
   '/profile/$id': typeof LayoutProfileIdRoute
+  '/settings/appearance': typeof LayoutSettingsAppearanceRoute
+  '/settings/danger': typeof LayoutSettingsDangerRoute
+  '/settings/password': typeof LayoutSettingsPasswordRoute
+  '/settings/profile': typeof LayoutSettingsProfileRoute
+  '/settings/social': typeof LayoutSettingsSocialRoute
   '/catalog': typeof LayoutCatalogIndexRoute
+  '/settings': typeof LayoutSettingsIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRoutesById {
@@ -192,7 +240,7 @@ export interface FileRoutesById {
   '/_layout/main': typeof LayoutMainRoute
   '/_layout/news': typeof LayoutNewsRoute
   '/_layout/notifications': typeof LayoutNotificationsRoute
-  '/_layout/settings': typeof LayoutSettingsRoute
+  '/_layout/settings': typeof LayoutSettingsRouteWithChildren
   '/courses/archive': typeof CoursesArchiveRoute
   '/courses/favorites': typeof CoursesFavoritesRoute
   '/courses/progress': typeof CoursesProgressRoute
@@ -201,7 +249,13 @@ export interface FileRoutesById {
   '/_layout/catalog/$id': typeof LayoutCatalogIdRoute
   '/_layout/course/$id': typeof LayoutCourseIdRoute
   '/_layout/profile/$id': typeof LayoutProfileIdRoute
+  '/_layout/settings/appearance': typeof LayoutSettingsAppearanceRoute
+  '/_layout/settings/danger': typeof LayoutSettingsDangerRoute
+  '/_layout/settings/password': typeof LayoutSettingsPasswordRoute
+  '/_layout/settings/profile': typeof LayoutSettingsProfileRoute
+  '/_layout/settings/social': typeof LayoutSettingsSocialRoute
   '/_layout/catalog/': typeof LayoutCatalogIndexRoute
+  '/_layout/settings/': typeof LayoutSettingsIndexRoute
   '/_layout/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRouteTypes {
@@ -225,7 +279,13 @@ export interface FileRouteTypes {
     | '/catalog/$id'
     | '/course/$id'
     | '/profile/$id'
+    | '/settings/appearance'
+    | '/settings/danger'
+    | '/settings/password'
+    | '/settings/profile'
+    | '/settings/social'
     | '/catalog'
+    | '/settings/'
     | '/catalog/meta/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -238,7 +298,6 @@ export interface FileRouteTypes {
     | '/main'
     | '/news'
     | '/notifications'
-    | '/settings'
     | '/courses/archive'
     | '/courses/favorites'
     | '/courses/progress'
@@ -247,7 +306,13 @@ export interface FileRouteTypes {
     | '/catalog/$id'
     | '/course/$id'
     | '/profile/$id'
+    | '/settings/appearance'
+    | '/settings/danger'
+    | '/settings/password'
+    | '/settings/profile'
+    | '/settings/social'
     | '/catalog'
+    | '/settings'
     | '/catalog/meta/$id'
   id:
     | '__root__'
@@ -270,7 +335,13 @@ export interface FileRouteTypes {
     | '/_layout/catalog/$id'
     | '/_layout/course/$id'
     | '/_layout/profile/$id'
+    | '/_layout/settings/appearance'
+    | '/_layout/settings/danger'
+    | '/_layout/settings/password'
+    | '/_layout/settings/profile'
+    | '/_layout/settings/social'
     | '/_layout/catalog/'
+    | '/_layout/settings/'
     | '/_layout/catalog/meta/$id'
   fileRoutesById: FileRoutesById
 }
@@ -401,12 +472,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/settings/': {
+      id: '/_layout/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof LayoutSettingsIndexRouteImport
+      parentRoute: typeof LayoutSettingsRoute
+    }
     '/_layout/catalog/': {
       id: '/_layout/catalog/'
       path: '/catalog'
       fullPath: '/catalog'
       preLoaderRoute: typeof LayoutCatalogIndexRouteImport
       parentRoute: typeof LayoutRoute
+    }
+    '/_layout/settings/social': {
+      id: '/_layout/settings/social'
+      path: '/social'
+      fullPath: '/settings/social'
+      preLoaderRoute: typeof LayoutSettingsSocialRouteImport
+      parentRoute: typeof LayoutSettingsRoute
+    }
+    '/_layout/settings/profile': {
+      id: '/_layout/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof LayoutSettingsProfileRouteImport
+      parentRoute: typeof LayoutSettingsRoute
+    }
+    '/_layout/settings/password': {
+      id: '/_layout/settings/password'
+      path: '/password'
+      fullPath: '/settings/password'
+      preLoaderRoute: typeof LayoutSettingsPasswordRouteImport
+      parentRoute: typeof LayoutSettingsRoute
+    }
+    '/_layout/settings/danger': {
+      id: '/_layout/settings/danger'
+      path: '/danger'
+      fullPath: '/settings/danger'
+      preLoaderRoute: typeof LayoutSettingsDangerRouteImport
+      parentRoute: typeof LayoutSettingsRoute
+    }
+    '/_layout/settings/appearance': {
+      id: '/_layout/settings/appearance'
+      path: '/appearance'
+      fullPath: '/settings/appearance'
+      preLoaderRoute: typeof LayoutSettingsAppearanceRouteImport
+      parentRoute: typeof LayoutSettingsRoute
     }
     '/_layout/profile/$id': {
       id: '/_layout/profile/$id'
@@ -439,12 +552,34 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface LayoutSettingsRouteChildren {
+  LayoutSettingsAppearanceRoute: typeof LayoutSettingsAppearanceRoute
+  LayoutSettingsDangerRoute: typeof LayoutSettingsDangerRoute
+  LayoutSettingsPasswordRoute: typeof LayoutSettingsPasswordRoute
+  LayoutSettingsProfileRoute: typeof LayoutSettingsProfileRoute
+  LayoutSettingsSocialRoute: typeof LayoutSettingsSocialRoute
+  LayoutSettingsIndexRoute: typeof LayoutSettingsIndexRoute
+}
+
+const LayoutSettingsRouteChildren: LayoutSettingsRouteChildren = {
+  LayoutSettingsAppearanceRoute: LayoutSettingsAppearanceRoute,
+  LayoutSettingsDangerRoute: LayoutSettingsDangerRoute,
+  LayoutSettingsPasswordRoute: LayoutSettingsPasswordRoute,
+  LayoutSettingsProfileRoute: LayoutSettingsProfileRoute,
+  LayoutSettingsSocialRoute: LayoutSettingsSocialRoute,
+  LayoutSettingsIndexRoute: LayoutSettingsIndexRoute,
+}
+
+const LayoutSettingsRouteWithChildren = LayoutSettingsRoute._addFileChildren(
+  LayoutSettingsRouteChildren,
+)
+
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutMainRoute: typeof LayoutMainRoute
   LayoutNewsRoute: typeof LayoutNewsRoute
   LayoutNotificationsRoute: typeof LayoutNotificationsRoute
-  LayoutSettingsRoute: typeof LayoutSettingsRoute
+  LayoutSettingsRoute: typeof LayoutSettingsRouteWithChildren
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
   LayoutCourseIdRoute: typeof LayoutCourseIdRoute
@@ -458,7 +593,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutMainRoute: LayoutMainRoute,
   LayoutNewsRoute: LayoutNewsRoute,
   LayoutNotificationsRoute: LayoutNotificationsRoute,
-  LayoutSettingsRoute: LayoutSettingsRoute,
+  LayoutSettingsRoute: LayoutSettingsRouteWithChildren,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutCatalogIdRoute: LayoutCatalogIdRoute,
   LayoutCourseIdRoute: LayoutCourseIdRoute,
