@@ -7,12 +7,12 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 Before you begin, ensure that you have either the Node Version Manager (nvm) or Fast Node Manager (fnm) installed on your system.
 
 * To install fnm follow the [official fnm guide](https://github.com/Schniz/fnm#installation). If you prefer nvm, you can install it using the [official nvm guide](https://github.com/nvm-sh/nvm#installing-and-updating).
-
 * After installing either nvm or fnm, proceed to the `frontend` directory:
 
 ```bash
 cd frontend
 ```
+
 * If the Node.js version specified in the `.nvmrc` file isn't installed on your system, you can install it using the appropriate command:
 
 ```bash
@@ -51,27 +51,6 @@ Notice that this live server is not running inside Docker, it's for local develo
 
 Check the file `package.json` to see other available options.
 
-### Removing the frontend
-
-If you are developing an API-only app and want to remove the frontend, you can do it easily:
-
-* Remove the `./frontend` directory.
-
-* In the `docker-compose.yml` file, remove the whole service / section `frontend`.
-
-* In the `docker-compose.override.yml` file, remove the whole service / section `frontend` and `playwright`.
-
-Done, you have a frontend-less (api-only) app. 🤓
-
----
-
-If you want, you can also remove the `FRONTEND` environment variables from:
-
-* `.env`
-* `./scripts/*.sh`
-
-But it would be only to clean them up, leaving them won't really have any effect either way.
-
 ## Generate Client
 
 ### Automatically
@@ -88,9 +67,7 @@ But it would be only to clean them up, leaving them won't really have any effect
 ### Manually
 
 * Start the Docker Compose stack.
-
 * Download the OpenAPI JSON file from `http://localhost/api/v1/openapi.json` and copy it to a new file `openapi.json` at the root of the `frontend` directory.
-
 * To generate the frontend client, run:
 
 ```bash

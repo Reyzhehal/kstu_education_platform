@@ -1,0 +1,19 @@
+.root {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  height: calc(100vh - var(--header-h) - 48px);
+  position: sticky;
+  top: 24px;
+}
+.hero {
+  height: 120px;
+  background:
+    url("/assets/images/header-img-night.png") center / cover no-repeat;
+}
+.menu {
+  margin: 0;
+  padding: 10px 0;
+  list-style: none;
+}

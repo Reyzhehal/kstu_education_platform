@@ -24,7 +24,6 @@ import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutNotificationsRouteImport } from './routes/_layout/notifications'
 import { Route as LayoutNewsRouteImport } from './routes/_layout/news'
 import { Route as LayoutMainRouteImport } from './routes/_layout/main'
-import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 import { Route as LayoutSettingsIndexRouteImport } from './routes/_layout/settings/index'
 import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
 import { Route as LayoutSettingsSocialRouteImport } from './routes/_layout/settings/social'
@@ -111,11 +110,6 @@ const LayoutMainRoute = LayoutMainRouteImport.update({
   path: '/main',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutAdminRoute = LayoutAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutSettingsIndexRoute = LayoutSettingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -179,7 +173,6 @@ export interface FileRoutesByFullPath {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof LayoutAdminRoute
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
@@ -207,7 +200,6 @@ export interface FileRoutesByTo {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof LayoutAdminRoute
   '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
@@ -236,7 +228,6 @@ export interface FileRoutesById {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/main': typeof LayoutMainRoute
   '/_layout/news': typeof LayoutNewsRoute
   '/_layout/notifications': typeof LayoutNotificationsRoute
@@ -266,7 +257,6 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/admin'
     | '/main'
     | '/news'
     | '/notifications'
@@ -294,7 +284,6 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/admin'
     | '/main'
     | '/news'
     | '/notifications'
@@ -322,7 +311,6 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/_layout/admin'
     | '/_layout/main'
     | '/_layout/news'
     | '/_layout/notifications'
@@ -465,13 +453,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutMainRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/admin': {
-      id: '/_layout/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof LayoutAdminRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/settings/': {
       id: '/_layout/settings/'
       path: '/'
@@ -575,7 +556,6 @@ const LayoutSettingsRouteWithChildren = LayoutSettingsRoute._addFileChildren(
 )
 
 interface LayoutRouteChildren {
-  LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutMainRoute: typeof LayoutMainRoute
   LayoutNewsRoute: typeof LayoutNewsRoute
   LayoutNotificationsRoute: typeof LayoutNotificationsRoute
@@ -589,7 +569,6 @@ interface LayoutRouteChildren {
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutAdminRoute: LayoutAdminRoute,
   LayoutMainRoute: LayoutMainRoute,
   LayoutNewsRoute: LayoutNewsRoute,
   LayoutNotificationsRoute: LayoutNotificationsRoute,

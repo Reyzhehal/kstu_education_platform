@@ -4,17 +4,17 @@ import {
   Container,
   Flex,
   Heading,
+  Image,
   Input,
   Text,
   Textarea,
-  Image,
   VStack,
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState, useRef } from "react"
+import type React from "react"
+import { useRef, useState } from "react"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-
 import {
   type ApiError,
   type UserPublic,
@@ -24,11 +24,12 @@ import {
 import useAuth from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
+import { renderMarkdown } from "@/utils/markdown"
+import { getFullName } from "@/utils/user"
 import { Field } from "../ui/field"
-import React from "react"
 
 const UserInformation = () => {
-  const { t } = useTranslation()  
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const [editMode, setEditMode] = useState(false)
@@ -36,10 +37,14 @@ const UserInformation = () => {
   const avatarInputRef = useRef<HTMLInputElement>(null)
   const coverInputRef = useRef<HTMLInputElement>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
-    currentUser?.avatar_image ? `${import.meta.env.VITE_API_URL}${currentUser.avatar_image}` : null
+    currentUser?.avatar_image
+      ? `${import.meta.env.VITE_API_URL}${currentUser.avatar_image}`
+      : null,
   )
   const [coverPreview, setCoverPreview] = useState<string | null>(
-    currentUser?.cover_image ? `${import.meta.env.VITE_API_URL}${currentUser.cover_image}` : null
+    currentUser?.cover_image
+      ? `${import.meta.env.VITE_API_URL}${currentUser.cover_image}`
+      : null,
   )
   const {
     register,
@@ -190,18 +195,34 @@ const UserInformation = () => {
           <Field label={t("settings.fields.fullName")}>
             {editMode ? (
               <Flex gap={2}>
-                <Input {...register("first_name", { maxLength: 255 })} type="text" size="md" placeholder={t("settings.fields.firstName")!} />
-                <Input {...register("last_name", { maxLength: 255 })} type="text" size="md" placeholder={t("settings.fields.lastName")!} />
+                <Input
+                  {...register("first_name", { maxLength: 255 })}
+                  type="text"
+                  size="md"
+                  placeholder={t("settings.fields.firstName")!}
+                />
+                <Input
+                  {...register("last_name", { maxLength: 255 })}
+                  type="text"
+                  size="md"
+                  placeholder={t("settings.fields.lastName")!}
+                />
               </Flex>
             ) : (
               <Text
                 fontSize="md"
                 py={2}
-                color={!currentUser?.first_name && !currentUser?.last_name ? "gray" : "inherit"}
+                color={
+                  !currentUser?.first_name && !currentUser?.last_name
+                    ? "gray"
+                    : "inherit"
+                }
                 truncate
                 maxW="sm"
               >
-                {[currentUser?.first_name, currentUser?.last_name].filter(Boolean).join(" ") || t("settings.validation.notAvailable")}
+                {getFullName(currentUser, {
+                  fallback: t("settings.validation.notAvailable")!,
+                })}
               </Text>
             )}
           </Field>
@@ -256,7 +277,8 @@ const UserInformation = () => {
                 truncate
                 maxW="sm"
               >
-                {currentUser?.description_short || t("settings.validation.notAvailable")}
+                {currentUser?.description_short ||
+                  t("settings.validation.notAvailable")}
               </Text>
             )}
           </Field>
@@ -272,7 +294,9 @@ const UserInformation = () => {
               <Box py={2}>
                 <div
                   className="markdown-body"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(currentUser.description) }}
+                  dangerouslySetInnerHTML={{
+                    __html: renderMarkdown(currentUser.description),
+                  }}
                 />
               </Box>
             ) : (
@@ -289,7 +313,9 @@ const UserInformation = () => {
               loading={editMode ? isSubmitting : false}
               disabled={editMode ? !isDirty || !getValues("email") : false}
             >
-              {editMode ? t("settings.buttons.save") : t("settings.buttons.edit")}
+              {editMode
+                ? t("settings.buttons.save")
+                : t("settings.buttons.edit")}
             </Button>
             {editMode && (
               <Button
@@ -430,25 +456,3 @@ const UserInformation = () => {
 }
 
 export default UserInformation
-
-function renderMarkdown(src: string) {
-  const escapeHtml = (s: string) =>
-    s
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-  const withBasicMd = (s: string) =>
-    s
-      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-
-  const escaped = escapeHtml(src)
-  const md = withBasicMd(escaped)
-  const withParagraphs = md
-    .split(/\n{2,}/)
-    .map((p) => `<p>${p.replace(/\n/g, '<br/>')}</p>`) // поддержка отступов/переводов строки
-    .join("")
-  return withParagraphs
-}

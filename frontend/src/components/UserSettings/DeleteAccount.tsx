@@ -11,9 +11,7 @@ const DeleteAccount = () => {
       <Heading size="sm" py={4}>
         {t("settings.deleteAccount")}
       </Heading>
-      <Text>
-        {t("settings.deleteAccountWarning")}
-      </Text>
+      <Text>{t("settings.deleteAccountWarning")}</Text>
       <DeleteConfirmation />
     </Container>
   )

@@ -1,25 +1,51 @@
+type Option = { label: string; value: string | number }
+
 type Props = {
-  title: string
-  options: { label: string; value: string | number }[]
-  values: (string | number)[]
-  onToggle: (v: string | number) => void
+  title?: string
+  options: Option[]
+  values: Array<string | number>
+  onToggle: (value: string | number) => void
 }
 
-export default function CheckboxList({ title, options, values, onToggle }: Props) {
+export default function CheckboxList({
+  title,
+  options,
+  values,
+  onToggle,
+}: Props) {
   return (
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ fontWeight: 700, marginBottom: 8 }}>{title}</div>
-      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 6 }}>
-        {options.map((o) => (
-          <li key={o.value}>
-            <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
-              <input type="checkbox" checked={values.includes(o.value)} onChange={() => onToggle(o.value)} />
-              <span>{o.label}</span>
-            </label>
-          </li>
-        ))}
+    <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
+      {title ? (
+        <legend style={{ fontWeight: 700, margin: "0 0 8px" }}>{title}</legend>
+      ) : null}
+      <ul
+        style={{
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          display: "grid",
+          gap: 6,
+        }}
+      >
+        {options.map((opt) => {
+          const id = String(opt.value)
+          const checked = values.includes(opt.value)
+          return (
+            <li key={id}>
+              <label
+                style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => onToggle(opt.value)}
+                />
+                <span>{opt.label}</span>
+              </label>
+            </li>
+          )
+        })}
       </ul>
-    </div>
+    </fieldset>
   )
 }
-

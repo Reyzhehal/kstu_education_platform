@@ -1,13 +1,16 @@
-import { useMemo } from "react"
-import { createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { CoursesService } from "@/client"
-import { withApiBase } from "@/utils"
+import { createFileRoute } from "@tanstack/react-router"
+import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import CourseLearnList from "@/components/Common/CourseLearnList"
-import CourseDescriptionBlocks from "@/components/Common/CourseDescriptionBlocks"
-import CoursePageSidebar from "@/components/Common/CoursePageSidebar"
+import { CoursesService } from "@/client"
+import {
+  CourseDescriptionBlocks,
+  CourseLearnList,
+  CoursePageSidebar,
+} from "@/components/Common"
 import usePageTitle from "@/hooks/usePageTitle"
+import { withApiBase } from "@/utils"
+import styles from "./course.module.css"
 
 export const Route = createFileRoute("/_layout/course/$id")({
   component: CoursePage,
@@ -37,7 +40,10 @@ function CoursePage() {
   const normalizedBlocks = useMemo(() => {
     const arr = Array.isArray(blocksData) ? blocksData : []
     return arr
-      .map((b: any) => ({ title: String(b?.title ?? ""), text: String(b?.text ?? "") }))
+      .map((b: any) => ({
+        title: String(b?.title ?? ""),
+        text: String(b?.text ?? ""),
+      }))
       .filter((b) => b.title || b.text)
   }, [blocksData])
 
@@ -62,16 +68,26 @@ function CoursePage() {
       // Добавляем в список прогресса
       if (prevProgress?.data) {
         const exists = prevProgress.data.some((c: any) => c.id === id)
-        const newData = exists ? prevProgress.data : [{ ...(prevCourse || {}), is_enrolled: true }, ...prevProgress.data]
-        queryClient.setQueryData(["progress"], { ...prevProgress, data: newData, count: exists ? prevProgress.count : (prevProgress.count ?? newData.length) })
+        const newData = exists
+          ? prevProgress.data
+          : [{ ...(prevCourse || {}), is_enrolled: true }, ...prevProgress.data]
+        queryClient.setQueryData(["progress"], {
+          ...prevProgress,
+          data: newData,
+          count: exists
+            ? prevProgress.count
+            : (prevProgress.count ?? newData.length),
+        })
       }
 
       return { prevCourse, prevProgress }
     },
     onError: (_err, _vars, ctx) => {
       if (!ctx) return
-      if (ctx.prevCourse) queryClient.setQueryData(["course", id], ctx.prevCourse)
-      if (ctx.prevProgress) queryClient.setQueryData(["progress"], ctx.prevProgress)
+      if (ctx.prevCourse)
+        queryClient.setQueryData(["course", id], ctx.prevCourse)
+      if (ctx.prevProgress)
+        queryClient.setQueryData(["progress"], ctx.prevProgress)
     },
   })
 
@@ -94,62 +110,87 @@ function CoursePage() {
 
       if (prevProgress?.data) {
         const newData = prevProgress.data.filter((c: any) => c.id !== id)
-        queryClient.setQueryData(["progress"], { ...prevProgress, data: newData, count: Math.max(0, (prevProgress.count ?? newData.length)) })
+        queryClient.setQueryData(["progress"], {
+          ...prevProgress,
+          data: newData,
+          count: Math.max(0, prevProgress.count ?? newData.length),
+        })
       }
 
       return { prevCourse, prevProgress }
     },
     onError: (_err, _vars, ctx) => {
       if (!ctx) return
-      if (ctx.prevCourse) queryClient.setQueryData(["course", id], ctx.prevCourse)
-      if (ctx.prevProgress) queryClient.setQueryData(["progress"], ctx.prevProgress)
+      if (ctx.prevCourse)
+        queryClient.setQueryData(["course", id], ctx.prevCourse)
+      if (ctx.prevProgress)
+        queryClient.setQueryData(["progress"], ctx.prevProgress)
     },
   })
 
   if (!course) {
-    return <div className="content"><p>{t("coursePage.notFound")}</p></div>
+    return (
+      <div className={styles.body}>
+        <div className={styles.bodyInner}>
+          <p>{t("coursePage.notFound")}</p>
+        </div>
+      </div>
+    )
   }
 
-  const cover = course.cover_image ? withApiBase(course.cover_image) : "/assets/images/header-img-night.png"
+  const cover = course.cover_image
+    ? withApiBase(course.cover_image)
+    : "/assets/images/header-img-night.png"
 
   return (
-    <div className="course-page">
-      <section className="course-hero">
-        <div className="course-hero__inner">
-          <div className="course-hero__text">
-            <h1 className="course-hero__title">{course.title}</h1>
-            <p className="course-hero__desc">{course.description ?? ""}</p>
-            <div className="course-hero__meta">
-              <span className="course-hero__badge">{t("coursePage.level")}: {levelLabel(course.difficulty_level, t)}</span>
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
+          <div>
+            <h1 className={styles.heroTitle}>{course.title}</h1>
+            <p className={styles.heroDesc}>{course.description ?? ""}</p>
+            <div className={styles.heroMeta}>
+              <span className={styles.badge}>
+                {t("coursePage.level")}:{" "}
+                {levelLabel(course.difficulty_level, t)}
+              </span>
               {course.hours_week ? (
-                <span className="course-hero__badge">{course.hours_week} {t("coursePage.hoursPerWeek")}</span>
+                <span className={styles.badge}>
+                  {course.hours_week} {t("coursePage.hoursPerWeek")}
+                </span>
               ) : null}
               {course.has_certificate ? (
-                <span className="course-hero__badge">{t("coursePage.certificate")}</span>
+                <span className={styles.badge}>
+                  {t("coursePage.certificate")}
+                </span>
               ) : (
-                <span className="course-hero__badge is-muted">{t("coursePage.noCertificate")}</span>
+                <span className={`${styles.badge} ${styles.badgeMuted}`}>
+                  {t("coursePage.noCertificate")}
+                </span>
               )}
             </div>
           </div>
-          <div className="course-hero__image-wrap">
-            <img className="course-hero__image" src={cover} alt="" />
+          <div>
+            <img className={styles.heroImage} src={cover} alt="" />
           </div>
         </div>
       </section>
 
-      <section className="course-body">
-        <div className="course-body__inner">
+      <section className={styles.body}>
+        <div className={styles.bodyInner}>
           <div>
             <CourseLearnList items={learnData ?? []} />
             <CourseDescriptionBlocks blocks={normalizedBlocks} />
           </div>
-          <CoursePageSidebar
-            onEnroll={() => enrollMutation.mutate()}
-            onUnenroll={() => unenrollMutation.mutate()}
-            isEnrolled={course.is_enrolled}
-            isLoading={enrollMutation.isPending || unenrollMutation.isPending}
-            authorId={course.author_id}
-          />
+          <div className={styles.sidebarAbs}>
+            <CoursePageSidebar
+              onEnroll={() => enrollMutation.mutate()}
+              onUnenroll={() => unenrollMutation.mutate()}
+              isEnrolled={course.is_enrolled}
+              isLoading={enrollMutation.isPending || unenrollMutation.isPending}
+              authorId={course.author_id}
+            />
+          </div>
         </div>
       </section>
     </div>
@@ -158,15 +199,17 @@ function CoursePage() {
 
 function levelLabel(level: number | undefined, t: any) {
   switch (level) {
-    case 1: return t("catalog.difficulty.beginner")
-    case 2: return t("catalog.difficulty.intermediate")
-    case 3: return t("catalog.difficulty.advanced")
-    default: return t("catalog.difficulty.beginner")
+    case 1:
+      return t("catalog.difficulty.beginner")
+    case 2:
+      return t("catalog.difficulty.intermediate")
+    case 3:
+      return t("catalog.difficulty.advanced")
+    default:
+      return t("catalog.difficulty.beginner")
   }
 }
 
 // резервный метод больше не нужен, список берём с бэка
 
 // блоки теперь приходят с бэка
-
- 

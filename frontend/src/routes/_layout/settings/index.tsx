@@ -6,5 +6,3 @@ export const Route = createFileRoute("/_layout/settings/")({
   },
   component: () => null,
 })
-
-

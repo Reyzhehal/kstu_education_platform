@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 import { isLoggedIn } from "@/hooks/useAuth"
 import "./main.css"
-import Header from "@/components/Common/Header"
+import { Header } from "@/components/Common"
 
 export const Route = createFileRoute("/_layout")({
   component: Layout,

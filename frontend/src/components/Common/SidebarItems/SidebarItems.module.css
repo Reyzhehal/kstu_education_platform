@@ -1,0 +1,26 @@
+.menuBtn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--text);
+  border-left: 3px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.menuBtn:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.menuBtnActive {
+  background: rgba(76, 127, 255, 0.12);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+.submenuBtn {
+  padding-left: 10px;
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+.submenuBtn:hover {
+  opacity: 1;
+}

@@ -1,0 +1,65 @@
+.header {
+  height: var(--header-h);
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.nav a,
+.nav button {
+  color: var(--text);
+  opacity: 0.9;
+  font-weight: 400;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: none;
+}
+.nav button {
+  padding: 0;
+}
+.active {
+  opacity: 1;
+}
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.searchInput {
+  width: min(460px, 100%);
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text);
+}
+.pill {
+  cursor: pointer;
+  font: inherit;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.tools {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+  align-items: center;
+}

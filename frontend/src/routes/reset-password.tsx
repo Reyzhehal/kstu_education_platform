@@ -2,7 +2,7 @@ import { Container, Heading, Text } from "@chakra-ui/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import usePageTitle from "@/hooks/usePageTitle"
+import { useTranslation } from "react-i18next"
 import { FiLock } from "react-icons/fi"
 
 import { type ApiError, LoginService, type NewPassword } from "@/client"
@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button"
 import { PasswordInput } from "@/components/ui/password-input"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
+import usePageTitle from "@/hooks/usePageTitle"
 import { confirmPasswordRules, handleError, passwordRules } from "@/utils"
-import { useTranslation } from "react-i18next"
 
 interface NewPasswordForm extends NewPassword {
   confirm_password: string
@@ -58,7 +58,9 @@ function ResetPassword() {
   const mutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
-      showSuccessToast(t("auth.password.updated", { defaultValue: "Пароль обновлён" }))
+      showSuccessToast(
+        t("auth.password.updated", { defaultValue: "Пароль обновлён" }),
+      )
       reset()
       navigate({ to: "/login" })
     },

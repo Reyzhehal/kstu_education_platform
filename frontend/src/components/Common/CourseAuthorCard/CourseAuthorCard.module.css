@@ -1,0 +1,30 @@
+.root {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 260px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+}
+
+.avatarPlaceholder {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--text);
+}
+
+.name {
+  font-weight: 700;
+  text-align: center;
+}

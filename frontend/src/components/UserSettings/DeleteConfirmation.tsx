@@ -71,7 +71,12 @@ const DeleteConfirmation = () => {
             <DialogTitle>{t("settings.deleteConfirmation.title")}</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4} dangerouslySetInnerHTML={{ __html: t("settings.deleteConfirmation.message") }} />
+            <Text
+              mb={4}
+              dangerouslySetInnerHTML={{
+                __html: t("settings.deleteConfirmation.message"),
+              }}
+            />
           </DialogBody>
 
           <DialogFooter gap={2}>

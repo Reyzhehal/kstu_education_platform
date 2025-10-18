@@ -1,12 +1,12 @@
+import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useMemo } from "react"
-import usePageTitle from "@/hooks/usePageTitle"
 import { useTranslation } from "react-i18next"
-import { useQuery } from "@tanstack/react-query"
+import usePageTitle from "@/hooks/usePageTitle"
 import "../main.css"
-import Sidebar from "@/components/Common/Sidebar"
-import CourseCard from "@/components/Common/CourseCard"
 import { CoursesService } from "@/client"
+import { CourseCard, Sidebar } from "@/components/Common"
+import styles from "./main.module.css"
 
 type SearchParams = {
   tab?: string
@@ -26,7 +26,7 @@ function MainPage() {
   usePageTitle("pages.main")
   const navigate = useNavigate()
   const { tab: urlTab } = Route.useSearch()
-  
+
   const tabs = useMemo(
     () => [
       { key: "learn", label: t("tabs.learn") },
@@ -37,7 +37,7 @@ function MainPage() {
       { key: "classes", label: t("tabs.classes") },
       { key: "notifications", label: t("tabs.notifications") },
     ],
-    [t]
+    [t],
   )
 
   const tab = urlTab || "learn"
@@ -56,7 +56,10 @@ function MainPage() {
     enabled: tab === "favorites",
   })
 
-  const favoriteCourses = useMemo(() => favoritesData?.data ?? [], [favoritesData])
+  const favoriteCourses = useMemo(
+    () => favoritesData?.data ?? [],
+    [favoritesData],
+  )
 
   const currentLabel = tabs.find((t) => t.key === tab)?.label ?? tabs[0].label
   const renderContent = () => {
@@ -64,9 +67,7 @@ function MainPage() {
       case "courses":
         return <p>{t("content.coursesListSoon")}</p>
       case "progress":
-        return (
-          <ProgressCourses />
-        )
+        return <ProgressCourses />
       case "favorites":
         return (
           <div className="courses-grid">
@@ -91,11 +92,13 @@ function MainPage() {
   }
   return (
     <div>
-      <div className="container" role="main">
+      <div className={styles.container} role="main">
         <Sidebar tab={tab} setTab={setTab} />
 
-        <main className="content">
-          <h1>{currentLabel} {t("content.titleSuffix")}</h1>
+        <main className={styles.content}>
+          <h1>
+            {currentLabel} {t("content.titleSuffix")}
+          </h1>
           {renderContent()}
         </main>
       </div>
@@ -111,7 +114,7 @@ function ProgressCourses() {
   })
   const courses = (data?.data ?? []) as any[]
   return (
-    <div className="courses-grid">
+    <div className={styles.grid}>
       {courses.length === 0 ? (
         <p>{t("content.yourProgress")}</p>
       ) : (

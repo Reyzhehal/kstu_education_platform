@@ -1,4 +1,4 @@
-import React from "react"
+import type React from "react"
 
 type AppButtonProps = {
   children: React.ReactNode
@@ -26,12 +26,15 @@ export function AppButton({
     .join(" ")
 
   return (
-    <button type={type} onClick={onClick} aria-label={ariaLabel} className={classes}>
+    <button
+      type={type}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      className={classes}
+    >
       {children}
     </button>
   )
 }
 
 export default AppButton
-
-

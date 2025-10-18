@@ -5,18 +5,18 @@ import {
   redirect,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import usePageTitle from "@/hooks/usePageTitle"
+import { useTranslation } from "react-i18next"
 import { FiLock, FiUser } from "react-icons/fi"
 
 import type { UserRegister } from "@/client"
+import LanguageSwitcherInline from "@/components/Common/LanguageSwitcherInline"
 import { Button } from "@/components/ui/button"
 import { Field } from "@/components/ui/field"
 import { InputGroup } from "@/components/ui/input-group"
 import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
+import usePageTitle from "@/hooks/usePageTitle"
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils"
-import { useTranslation } from "react-i18next"
-import LanguageSwitcherInline from "@/components/Common/LanguageSwitcherInline"
 import Logo from "/assets/images/fastapi-logo.svg"
 
 export const Route = createFileRoute("/signup")({
@@ -102,7 +102,7 @@ function SignUp() {
         <Field invalid={!!errors.email} errorText={errors.email?.message}>
           <InputGroup w="100%" startElement={<FiUser />}>
             <Input
-            {...register("email", {
+              {...register("email", {
                 required: t("forms.required") || "Required",
                 pattern: emailPattern,
               })}

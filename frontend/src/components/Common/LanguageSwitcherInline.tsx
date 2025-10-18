@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { LanguagesService, UsersService } from "@/client"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import i18n from "@/i18n"
+import { LanguagesService, UsersService } from "@/client"
 import { isLoggedIn } from "@/hooks/useAuth"
+import i18n from "@/i18n"
 
 type Props = {
   className?: string
@@ -17,7 +17,11 @@ export default function LanguageSwitcherInline({ className }: Props) {
     queryKey: ["languages"],
     queryFn: () => LanguagesService.readLanguages({ skip: 0, limit: 100 }),
   })
-  const languages = (data as any)?.data as Array<{ id: number; name: string; code: string }>
+  const languages = (data as any)?.data as Array<{
+    id: number
+    name: string
+    code: string
+  }>
 
   const setLanguage = useMutation({
     mutationFn: (payload: { language_id?: number; code?: string | null }) =>
@@ -64,5 +68,3 @@ export default function LanguageSwitcherInline({ className }: Props) {
     </div>
   )
 }
-
-

@@ -1,0 +1,9 @@
+.root {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  height: fit-content;
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+}

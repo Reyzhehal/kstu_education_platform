@@ -1,0 +1,8 @@
+.root {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  height: fit-content;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}

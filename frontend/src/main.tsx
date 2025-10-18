@@ -12,6 +12,7 @@ import { CustomProvider } from "./components/ui/provider"
 import { routeTree } from "./routeTree.gen"
 import "./i18n"
 import { Suspense } from "react"
+import "./styles/markdown.css"
 
 OpenAPI.BASE = import.meta.env.VITE_API_URL
 OpenAPI.TOKEN = async () => {

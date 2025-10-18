@@ -1,0 +1,39 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 260px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.not {
+  background: #22c55e;
+  border-color: #16a34a;
+  color: #0a0a0a;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.5);
+}
+.not:hover {
+  background: #16a34a;
+  color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(22, 163, 74, 0.6);
+}
+.enrolled {
+  background: #ef4444;
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.5);
+}
+.enrolled:hover {
+  background: #dc2626;
+  box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.6);
+}

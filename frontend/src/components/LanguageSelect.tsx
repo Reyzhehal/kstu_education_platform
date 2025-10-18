@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
-import { LanguagesService, UsersService, UsersService as Users } from "@/client"
 import { useTranslation } from "react-i18next"
+import { LanguagesService, UsersService as Users, UsersService } from "@/client"
 import i18n from "@/i18n"
 
 type Props = {
@@ -68,5 +68,3 @@ export default function LanguageSelect({ className }: Props) {
     </div>
   )
 }
-
-
