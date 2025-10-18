@@ -20,7 +20,7 @@ function ProfileByIdPage() {
     queryKey: ["user", id],
     queryFn: () => UsersService.readUserById({ userId: id }),
   })
-  usePageTitle("profilePage.title", { title: user?.full_name || user?.username || "" })
+  usePageTitle("profilePage.title", { title: [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "" })
   
   const { data: coursesResp } = useQuery({
     queryKey: ["courses", "by-author", id],
@@ -63,7 +63,7 @@ function ProfileByIdPage() {
 
   const avatarUrl = user.avatar_image ? withApiBase(user.avatar_image) : null
   const cover = user.cover_image ? withApiBase(user.cover_image) : "/assets/images/header-img-night.png"
-  const name = user.full_name || user.username || "?"
+  const name = [user.first_name, user.last_name].filter(Boolean).join(" ") || "?"
 
   return (
     <div className="profile-page">
@@ -93,7 +93,7 @@ function ProfileByIdPage() {
             ) : null}
           </aside>
           <div className="profile-content">
-            <h1 className="profile-title">{user.full_name || user.username || t("menu.profile")}</h1>
+            <h1 className="profile-title">{[user.first_name, user.last_name].filter(Boolean).join(" ") || t("menu.profile")}</h1>
             {user.description ? (
               <div className="profile-desc markdown-body">{user.description}</div>
             ) : (

@@ -96,6 +96,31 @@
     "profile": "Профиль",
     "main": "Главная"
   },
+  "forms": {
+    "required": "Обязательно",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "email": "Email",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "forgotPassword": "Забыли пароль?",
+    "login": "Войти",
+    "signUp": "Зарегистрироваться",
+    "noAccount": "Нет аккаунта?",
+    "haveAccount": "Уже есть аккаунт?"
+  },
+  "admin": {
+    "users": {
+      "created": "Пользователь создан",
+      "updated": "Пользователь обновлён",
+      "deleted": "Пользователь удалён",
+      "deleteError": "Ошибка при удалении пользователя"
+    }
+  },
+  "auth": {
+    "recover": { "sent": "Письмо для восстановления отправлено" },
+    "password": { "updated": "Пароль обновлён" }
+  },
   "profilePage": {
     "title": "Профиль: {{title}}",
     "courses": "Курсы автора",

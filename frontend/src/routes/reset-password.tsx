@@ -11,6 +11,7 @@ import { PasswordInput } from "@/components/ui/password-input"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { confirmPasswordRules, handleError, passwordRules } from "@/utils"
+import { useTranslation } from "react-i18next"
 
 interface NewPasswordForm extends NewPassword {
   confirm_password: string
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPassword() {
   usePageTitle("pages.resetPassword")
+  const { t } = useTranslation("common")
   const {
     register,
     handleSubmit,
@@ -56,7 +58,7 @@ function ResetPassword() {
   const mutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
-      showSuccessToast("Password updated successfully.")
+      showSuccessToast(t("auth.password.updated", { defaultValue: "Пароль обновлён" }))
       reset()
       navigate({ to: "/login" })
     },

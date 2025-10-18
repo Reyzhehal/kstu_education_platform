@@ -16,7 +16,8 @@ router = APIRouter(tags=["private"], prefix="/private")
 class PrivateUserCreate(BaseModel):
     email: str
     password: str
-    full_name: str
+    first_name: str | None = None
+    last_name: str | None = None
     is_verified: bool = False
 
 
@@ -28,7 +29,8 @@ async def create_user(user_in: PrivateUserCreate, session: AsyncSessionDep) -> A
 
     user = User(
         email=user_in.email,
-        full_name=user_in.full_name,
+        first_name=user_in.first_name,
+        last_name=user_in.last_name,
         hashed_password=get_password_hash(user_in.password),
     )
 

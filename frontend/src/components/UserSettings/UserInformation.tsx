@@ -50,7 +50,8 @@ const UserInformation = () => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      full_name: currentUser?.full_name,
+      first_name: currentUser?.first_name as any,
+      last_name: currentUser?.last_name as any,
       email: currentUser?.email,
       city: currentUser?.city,
       description: currentUser?.description,
@@ -182,20 +183,19 @@ const UserInformation = () => {
         >
           <Field label={t("settings.fields.fullName")}>
             {editMode ? (
-              <Input
-                {...register("full_name", { maxLength: 255 })}
-                type="text"
-                size="md"
-              />
+              <Flex gap={2}>
+                <Input {...register("first_name", { maxLength: 255 })} type="text" size="md" placeholder={t("settings.fields.firstName")!} />
+                <Input {...register("last_name", { maxLength: 255 })} type="text" size="md" placeholder={t("settings.fields.lastName")!} />
+              </Flex>
             ) : (
               <Text
                 fontSize="md"
                 py={2}
-                color={!currentUser?.full_name ? "gray" : "inherit"}
+                color={!currentUser?.first_name && !currentUser?.last_name ? "gray" : "inherit"}
                 truncate
                 maxW="sm"
               >
-                {currentUser?.full_name || t("settings.validation.notAvailable")}
+                {[currentUser?.first_name, currentUser?.last_name].filter(Boolean).join(" ") || t("settings.validation.notAvailable")}
               </Text>
             )}
           </Field>

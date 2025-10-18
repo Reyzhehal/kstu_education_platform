@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import usePageTitle from "@/hooks/usePageTitle"
+import { useTranslation } from "react-i18next"
+import LanguageSwitcherInline from "@/components/Common/LanguageSwitcherInline"
 import { FiLock, FiMail } from "react-icons/fi"
 
 import type { Body_login_login_access_token as AccessToken } from "@/client"
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   usePageTitle("pages.login")
+  const { t } = useTranslation("common")
   const { loginMutation, error, resetError } = useAuth()
   const {
     register,
@@ -75,6 +78,7 @@ function Login() {
         alignSelf="center"
         mb={4}
       />
+      <LanguageSwitcherInline />
       <Field
         invalid={!!errors.username}
         errorText={errors.username?.message || !!error}
@@ -82,10 +86,10 @@ function Login() {
         <InputGroup w="100%" startElement={<FiMail />}>
           <Input
             {...register("username", {
-              required: "Username is required",
+              required: t("forms.required") || "Required",
               pattern: emailPattern,
             })}
-            placeholder="Email"
+            placeholder={t("forms.email") || "Email"}
             type="email"
           />
         </InputGroup>
@@ -94,19 +98,19 @@ function Login() {
         type="password"
         startElement={<FiLock />}
         {...register("password", passwordRules())}
-        placeholder="Password"
+        placeholder={t("forms.password") || "Password"}
         errors={errors}
       />
       <RouterLink to="/recover-password" className="main-link">
-        Forgot Password?
+        {t("forms.forgotPassword") || "Forgot Password?"}
       </RouterLink>
       <Button variant="solid" type="submit" loading={isSubmitting} size="md">
-        Log In
+        {t("forms.login") || "Log In"}
       </Button>
       <Text>
-        Don't have an account?{" "}
+        {t("forms.noAccount") || "Don't have an account?"}{" "}
         <RouterLink to="/signup" className="main-link">
-          Sign Up
+          {t("forms.signUp") || "Sign Up"}
         </RouterLink>
       </Text>
     </Container>

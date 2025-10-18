@@ -33,11 +33,11 @@ const DeleteUser = ({ id }: { id: string }) => {
   const mutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      showSuccessToast("The user was deleted successfully")
+      showSuccessToast(t("admin.users.deleted", { defaultValue: "Пользователь удалён" }))
       setIsOpen(false)
     },
     onError: () => {
-      showErrorToast("An error occurred while deleting the user")
+      showErrorToast(t("admin.users.deleteError", { defaultValue: "Ошибка при удалении пользователя" }))
     },
     onSettled: () => {
       queryClient.invalidateQueries()

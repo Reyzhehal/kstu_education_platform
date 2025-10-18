@@ -60,7 +60,7 @@ const EditUser = ({ user }: EditUserProps) => {
     mutationFn: (data: UserUpdateForm) =>
       UsersService.updateUser({ userId: user.id, requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User updated successfully.")
+      showSuccessToast(t("admin.users.updated", { defaultValue: "Пользователь обновлён" }))
       reset()
       setIsOpen(false)
     },
@@ -116,14 +116,17 @@ const EditUser = ({ user }: EditUserProps) => {
                 />
               </Field>
 
-              <Field
-                invalid={!!errors.full_name}
-                errorText={errors.full_name?.message}
-                label="Full Name"
-              >
+              <Field label="First Name">
                 <Input
-                  {...register("full_name")}
-                  placeholder="Full name"
+                  {...register("first_name")}
+                  placeholder="First name"
+                  type="text"
+                />
+              </Field>
+              <Field label="Last Name">
+                <Input
+                  {...register("last_name")}
+                  placeholder="Last name"
                   type="text"
                 />
               </Field>

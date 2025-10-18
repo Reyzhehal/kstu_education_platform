@@ -24,7 +24,7 @@ export default function CourseCard({ course, variant = "default" }: CourseCardPr
     queryFn: () => UsersService.readUserById({ userId: course.author_id }),
     enabled: Boolean(course.author_id),
   })
-  const ownerName = owner?.full_name || owner?.username || "Неизвестно"
+  const ownerName = [owner?.first_name, owner?.last_name].filter(Boolean).join(" ") || "Неизвестно"
   
   const addToFavorites = useMutation({
     mutationFn: () => CoursesService.addToFavorites({ courseId: course.id }),

@@ -36,9 +36,9 @@ class AdminAuth(AuthenticationBackend):
             return False
 
         async with AsyncSessionLocal() as session:
-            # ищем по email или username — подстройте под свою логику
+            # ищем по email
             from sqlmodel import select
-            stmt = select(User).where((User.email == username) | (User.username == username))
+            stmt = select(User).where(User.email == username)
             user = (await session.exec(stmt)).first()
 
             if not user or not user.is_superuser:
@@ -83,8 +83,8 @@ class AdminAuth(AuthenticationBackend):
 class UserAdmin(ModelView, model=User):
     name = "User"
     name_plural = "Users"
-    column_list = [User.id, User.email, User.full_name, User.username, User.language, User.is_superuser, User.is_staff, User.is_teacher]
-    column_searchable_list = [User.email, User.username, User.full_name]
+    column_list = [User.id, User.email, User.first_name, User.last_name, User.language, User.is_superuser, User.is_staff, User.is_teacher]
+    column_searchable_list = [User.email, User.first_name, User.last_name]
     form_overrides = {
         "description": TextAreaField,
         "description_short": TextAreaField,

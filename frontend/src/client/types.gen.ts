@@ -94,7 +94,8 @@ export type NewPassword = {
 export type PrivateUserCreate = {
     email: string;
     password: string;
-    full_name: string;
+    first_name?: (string | null);
+    last_name?: (string | null);
     is_verified?: boolean;
 };
 
@@ -123,7 +124,8 @@ export type UserCreate = {
     email: string;
     is_active?: boolean;
     is_superuser?: boolean;
-    full_name?: (string | null);
+    first_name?: (string | null);
+    last_name?: (string | null);
     password: string;
 };
 
@@ -131,14 +133,12 @@ export type UserPublic = {
     email: string;
     is_active?: boolean;
     is_superuser?: boolean;
-    full_name?: (string | null);
-    id: string;
-    language_id?: (number | null);
-    username?: (string | null);
-    is_staff?: boolean;
-    is_teacher?: boolean;
     first_name?: (string | null);
     last_name?: (string | null);
+    id: string;
+    language_id?: (number | null);
+    is_staff?: boolean;
+    is_teacher?: boolean;
     description?: (string | null);
     description_short?: (string | null);
     is_profile_private?: boolean;
@@ -152,7 +152,8 @@ export type UserPublic = {
 export type UserRegister = {
     email: string;
     password: string;
-    full_name?: (string | null);
+    first_name?: (string | null);
+    last_name?: (string | null);
 };
 
 export type UsersPublic = {
@@ -164,7 +165,8 @@ export type UserUpdate = {
     email?: (string | null);
     is_active?: boolean;
     is_superuser?: boolean;
-    full_name?: (string | null);
+    first_name?: (string | null);
+    last_name?: (string | null);
     password?: (string | null);
     description?: (string | null);
     description_short?: (string | null);
@@ -172,7 +174,8 @@ export type UserUpdate = {
 };
 
 export type UserUpdateMe = {
-    full_name?: (string | null);
+    first_name?: (string | null);
+    last_name?: (string | null);
     email?: (string | null);
     city?: (string | null);
     description?: (string | null);

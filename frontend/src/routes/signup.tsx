@@ -15,6 +15,8 @@ import { InputGroup } from "@/components/ui/input-group"
 import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils"
+import { useTranslation } from "react-i18next"
+import LanguageSwitcherInline from "@/components/Common/LanguageSwitcherInline"
 import Logo from "/assets/images/fastapi-logo.svg"
 
 export const Route = createFileRoute("/signup")({
@@ -34,6 +36,7 @@ interface UserRegisterForm extends UserRegister {
 
 function SignUp() {
   usePageTitle("pages.signup")
+  const { t } = useTranslation("common")
   const { signUpMutation } = useAuth()
   const {
     register,
@@ -45,7 +48,8 @@ function SignUp() {
     criteriaMode: "all",
     defaultValues: {
       email: "",
-      full_name: "",
+      first_name: "" as any,
+      last_name: "" as any,
       password: "",
       confirm_password: "",
     },
@@ -75,17 +79,21 @@ function SignUp() {
           alignSelf="center"
           mb={4}
         />
-        <Field
-          invalid={!!errors.full_name}
-          errorText={errors.full_name?.message}
-        >
+        <LanguageSwitcherInline />
+        <Field>
           <InputGroup w="100%" startElement={<FiUser />}>
             <Input
-              minLength={3}
-              {...register("full_name", {
-                required: "Full Name is required",
-              })}
-              placeholder="Full Name"
+              {...register("first_name")}
+              placeholder={t("forms.firstName") || "First Name"}
+              type="text"
+            />
+          </InputGroup>
+        </Field>
+        <Field>
+          <InputGroup w="100%" startElement={<FiUser />}>
+            <Input
+              {...register("last_name")}
+              placeholder={t("forms.lastName") || "Last Name"}
               type="text"
             />
           </InputGroup>
@@ -94,11 +102,11 @@ function SignUp() {
         <Field invalid={!!errors.email} errorText={errors.email?.message}>
           <InputGroup w="100%" startElement={<FiUser />}>
             <Input
-              {...register("email", {
-                required: "Email is required",
+            {...register("email", {
+                required: t("forms.required") || "Required",
                 pattern: emailPattern,
               })}
-              placeholder="Email"
+              placeholder={t("forms.email") || "Email"}
               type="email"
             />
           </InputGroup>
@@ -107,23 +115,23 @@ function SignUp() {
           type="password"
           startElement={<FiLock />}
           {...register("password", passwordRules())}
-          placeholder="Password"
+          placeholder={t("forms.password") || "Password"}
           errors={errors}
         />
         <PasswordInput
           type="confirm_password"
           startElement={<FiLock />}
           {...register("confirm_password", confirmPasswordRules(getValues))}
-          placeholder="Confirm Password"
+          placeholder={t("forms.confirmPassword") || "Confirm Password"}
           errors={errors}
         />
         <Button variant="solid" type="submit" loading={isSubmitting}>
-          Sign Up
+          {t("forms.signUp") || "Sign Up"}
         </Button>
         <Text>
-          Already have an account?{" "}
+          {t("forms.haveAccount") || "Already have an account?"}{" "}
           <RouterLink to="/login" className="main-link">
-            Log In
+            {t("forms.login") || "Log In"}
           </RouterLink>
         </Text>
       </Container>

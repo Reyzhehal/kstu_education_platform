@@ -12,7 +12,8 @@ class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
-    full_name: str | None = Field(default=None, max_length=255)
+    first_name: str | None = Field(default=None, max_length=255)
+    last_name: str | None = Field(default=None, max_length=255)
 
 
 # Properties to receive via API on creation
@@ -23,7 +24,8 @@ class UserCreate(UserBase):
 class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
-    full_name: str | None = Field(default=None, max_length=255)
+    first_name: str | None = Field(default=None, max_length=255)
+    last_name: str | None = Field(default=None, max_length=255)
 
 
 # Properties to receive via API on update, all are optional
@@ -37,7 +39,8 @@ class UserUpdate(UserBase):
 
 
 class UserUpdateMe(SQLModel):
-    full_name: str | None = Field(default=None, max_length=255)
+    first_name: str | None = Field(default=None, max_length=255)
+    last_name: str | None = Field(default=None, max_length=255)
     email: EmailStr | None = Field(default=None, max_length=255)
     city: str | None = Field(default=None, max_length=30)
     description: str | None = Field(default=None, max_length=2000)
@@ -70,11 +73,10 @@ class User(UserBase, table=True):
         default=None, foreign_key="language.id", ondelete="SET NULL"
     )
     language: Language | None = Relationship(back_populates="users")
-    username: str | None = Field(default=None, unique=True, index=True, max_length=50)
+    # username removed
     is_staff: bool = False
     is_teacher: bool = False
-    first_name: str | None = Field(default=None, max_length=255)
-    last_name: str | None = Field(default=None, max_length=255)
+    # first_name, last_name already provided by UserBase
     description: str | None = Field(default=None, max_length=2000)
     description_short: str | None = Field(default=None, max_length=255)
     is_profile_private: bool = False
@@ -84,18 +86,17 @@ class User(UserBase, table=True):
     date_joined: datetime = Field(default_factory=datetime.now)
 
     def __str__(self) -> str:
-        return self.full_name or (self.username or self.email)
+        name = " ".join([p for p in [self.first_name, self.last_name] if p])
+        return name or self.email
 
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
     id: UUID
     language_id: int | None = None
-    username: str | None = None
+    # username removed
     is_staff: bool = False
     is_teacher: bool = False
-    first_name: str | None = None
-    last_name: str | None = None
     description: str | None = None
     description_short: str | None = None
     is_profile_private: bool = False

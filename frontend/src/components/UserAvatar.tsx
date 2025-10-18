@@ -15,8 +15,8 @@ export default function UserAvatar({ size = 32, onClick }: Props) {
   const me = useQuery({ queryKey: ["currentUser"], queryFn: Users.readUserMe })
   const user = (me.data as UserPublic) || null
   const [bg] = useState(() => palette[Math.floor(Math.random() * palette.length)])
-  const username = (user as any)?.username || user?.full_name || user?.email || "?"
-  const initial = useMemo(() => username.trim().charAt(0).toUpperCase(), [username])
+  const displayName = [user?.first_name, user?.last_name].filter(Boolean).join(" ") || user?.email || "?"
+  const initial = useMemo(() => displayName.trim().charAt(0).toUpperCase(), [displayName])
   const url = user?.avatar_image ? withApiBase(user.avatar_image) : undefined
   const style: React.CSSProperties = {
     width: size,

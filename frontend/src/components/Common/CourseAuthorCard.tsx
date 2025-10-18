@@ -15,7 +15,7 @@ export default function CourseAuthorCard({ authorId }: Props) {
   })
 
   const avatar = data?.avatar_image ? withApiBase(data.avatar_image) : undefined
-  const name = data?.full_name || data?.username || ""
+  const name = [data?.first_name, data?.last_name].filter(Boolean).join(" ") || ""
 
   return (
     <Link to="/profile/$id" params={{ id: authorId }} className="author-card">

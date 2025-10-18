@@ -8,6 +8,18 @@
     "searchButton": "Search",
     "sidebarAria": "Learning navigation"
   },
+  "forms": {
+    "required": "Required",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "forgotPassword": "Forgot Password?",
+    "login": "Log In",
+    "signUp": "Sign Up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?"
+  },
   "tabs": {
     "learn": "My Learning",
     "courses": "Courses",
@@ -28,7 +40,7 @@
     "titleSuffix": "– KSTU"
   },
   "sidebar": { "menu": "Menu" },
-  "lang": { "choose": "Choose a language" },
+  "lang": { "choose": "Choose a language", "label": "Language" },
   "common": { "inDev": "Page under construction." },
   "menu": {
     "profile": "Profile",
@@ -75,6 +87,8 @@
   },
   "profilePage": {
     "title": "Profile: {{title}}",
+    "loading": "Loading profile…",
+    "notFound": "User not found",
     "courses": "Author's courses",
     "coursesCount": "Courses",
     "noDescription": "No description yet"

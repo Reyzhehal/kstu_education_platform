@@ -64,14 +64,15 @@ async def read_courses(
     if difficulty_level is not None:
         statement = statement.where(col(Course.difficulty_level) == difficulty_level)
 
-    # Поиск по тексту (title, description, author.full_name, author.username)
+    # Поиск по тексту (title, description, author first/last name, author.username)
     if q:
         pattern = f"%{q}%"
         statement = statement.join(User, col(User.id) == col(Course.author_id)).where(
             (col(Course.title).ilike(pattern))
             | (col(Course.description).ilike(pattern))
-            | (col(User.full_name).ilike(pattern))
-            | (col(User.username).ilike(pattern))
+            | (col(User.first_name).ilike(pattern))
+            | (col(User.last_name).ilike(pattern))
+            | False
         )
 
     # Подсчет общего количества с учетом фильтров

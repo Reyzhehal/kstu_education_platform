@@ -11,6 +11,7 @@ import { Field } from "@/components/ui/field"
 import { InputGroup } from "@/components/ui/input-group"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
+import { useTranslation } from "react-i18next"
 import { emailPattern, handleError } from "@/utils"
 
 interface FormData {
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/recover-password")({
 
 function RecoverPassword() {
   usePageTitle("pages.recoverPassword")
+  const { t } = useTranslation("common")
   const {
     register,
     handleSubmit,
@@ -47,7 +49,7 @@ function RecoverPassword() {
   const mutation = useMutation({
     mutationFn: recoverPassword,
     onSuccess: () => {
-      showSuccessToast("Password recovery email sent successfully.")
+      showSuccessToast(t("auth.recover.sent", { defaultValue: "Письмо для восстановления отправлено" }))
       reset()
     },
     onError: (err: ApiError) => {

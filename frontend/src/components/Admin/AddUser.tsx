@@ -47,7 +47,8 @@ const AddUser = () => {
     criteriaMode: "all",
     defaultValues: {
       email: "",
-      full_name: "",
+      first_name: "",
+      last_name: "",
       password: "",
       confirm_password: "",
       is_superuser: false,
@@ -59,7 +60,7 @@ const AddUser = () => {
     mutationFn: (data: UserCreate) =>
       UsersService.createUser({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User created successfully.")
+      showSuccessToast(t("admin.users.created", { defaultValue: "Пользователь создан" }))
       reset()
       setIsOpen(false)
     },
@@ -114,14 +115,17 @@ const AddUser = () => {
                 />
               </Field>
 
-              <Field
-                invalid={!!errors.full_name}
-                errorText={errors.full_name?.message}
-                label="Full Name"
-              >
+              <Field label="First Name">
                 <Input
-                  {...register("full_name")}
-                  placeholder="Full name"
+                  {...register("first_name")}
+                  placeholder="First name"
+                  type="text"
+                />
+              </Field>
+              <Field label="Last Name">
+                <Input
+                  {...register("last_name")}
+                  placeholder="Last name"
                   type="text"
                 />
               </Field>

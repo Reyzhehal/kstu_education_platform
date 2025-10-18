@@ -434,9 +434,27 @@ export const PrivateUserCreateSchema = {
             type: 'string',
             title: 'Password'
         },
-        full_name: {
-            type: 'string',
-            title: 'Full Name'
+        first_name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         },
         is_verified: {
             type: 'boolean',
@@ -445,7 +463,7 @@ export const PrivateUserCreateSchema = {
         }
     },
     type: 'object',
-    required: ['email', 'password', 'full_name'],
+    required: ['email', 'password'],
     title: 'PrivateUserCreate'
 } as const;
 
@@ -558,7 +576,7 @@ export const UserCreateSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
+        first_name: {
             anyOf: [
                 {
                     type: 'string',
@@ -568,7 +586,19 @@ export const UserCreateSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         },
         password: {
             type: 'string',
@@ -600,7 +630,7 @@ export const UserPublicSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
+        first_name: {
             anyOf: [
                 {
                     type: 'string',
@@ -610,7 +640,19 @@ export const UserPublicSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         },
         id: {
             type: 'string',
@@ -628,17 +670,6 @@ export const UserPublicSchema = {
             ],
             title: 'Language Id'
         },
-        username: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Username'
-        },
         is_staff: {
             type: 'boolean',
             title: 'Is Staff',
@@ -648,28 +679,6 @@ export const UserPublicSchema = {
             type: 'boolean',
             title: 'Is Teacher',
             default: false
-        },
-        first_name: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'First Name'
-        },
-        last_name: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Last Name'
         },
         description: {
             anyOf: [
@@ -755,7 +764,7 @@ export const UserRegisterSchema = {
             minLength: 8,
             title: 'Password'
         },
-        full_name: {
+        first_name: {
             anyOf: [
                 {
                     type: 'string',
@@ -765,7 +774,19 @@ export const UserRegisterSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         }
     },
     type: 'object',
@@ -798,7 +819,7 @@ export const UserUpdateSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
+        first_name: {
             anyOf: [
                 {
                     type: 'string',
@@ -808,7 +829,19 @@ export const UserUpdateSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         },
         password: {
             anyOf: [
@@ -866,7 +899,7 @@ export const UserUpdateSchema = {
 
 export const UserUpdateMeSchema = {
     properties: {
-        full_name: {
+        first_name: {
             anyOf: [
                 {
                     type: 'string',
@@ -876,7 +909,19 @@ export const UserUpdateMeSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         },
         email: {
             anyOf: [
