@@ -3,7 +3,7 @@ import { useMemo, useState } from "react"
 import type { UserPublic } from "@/client"
 import { UsersService as Users } from "@/client"
 import { withApiBase } from "@/utils"
-import { getFullName, getInitial } from "@/utils/user"
+import { getInitial } from "@/utils/user"
 
 type Props = {
   size?: number
@@ -25,7 +25,6 @@ export default function UserAvatar({ size = 32, onClick }: Props) {
   const [bg] = useState(
     () => palette[Math.floor(Math.random() * palette.length)],
   )
-  getFullName(user)
   const initial = useMemo(() => getInitial(user), [user])
   const url = user?.avatar_image ? withApiBase(user.avatar_image) : undefined
   const style: React.CSSProperties = {
