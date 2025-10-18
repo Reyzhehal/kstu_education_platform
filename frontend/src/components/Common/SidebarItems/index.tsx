@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import AppButton from "@/components/AppButton"
+import { AppButton } from "@/components/AppButton"
 import styles from "./SidebarItems.module.css"
 
 interface SidebarItemsProps {

@@ -1,4 +1,5 @@
 import type React from "react"
+import styles from "./AppButton.module.css"
 
 type AppButtonProps = {
   children: React.ReactNode
@@ -18,8 +19,8 @@ export function AppButton({
   type = "button",
 }: AppButtonProps) {
   const classes = [
-    "btn",
-    variant === "pill" ? "btn-pill" : "btn-ghost",
+    styles.root,
+    variant === "pill" ? styles.pill : styles.ghost,
     className ?? "",
   ]
     .filter(Boolean)
