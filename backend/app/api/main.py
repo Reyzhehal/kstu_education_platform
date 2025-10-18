@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
+    categories,
+    courses,
+    languages,
     login,
     private,
     users,
     utils,
-    courses,
-    languages,
-    categories,
 )
 from app.core.config import settings
 

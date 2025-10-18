@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app import crud
-from app.api.deps import CurrentUser, AsyncSessionDep, get_current_active_superuser
+from app.api.deps import AsyncSessionDep, CurrentUser, get_current_active_superuser
 from app.core import security
 from app.core.config import settings
 from app.core.security import get_password_hash
@@ -57,22 +57,20 @@ async def recover_password(email: str, session: AsyncSessionDep) -> Message:
     Password Recovery
     """
     user = await crud.get_user_by_email(session=session, email=email)
-
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="The user with this email does not exist in the system.",
-        )
-    password_reset_token = generate_password_reset_token(email=email)
-    email_data = generate_reset_password_email(
-        email_to=user.email, email=email, token=password_reset_token
-    )
-    send_email(
-        email_to=user.email,
-        subject=email_data.subject,
-        html_content=email_data.html_content,
-    )
-    return Message(message="Password recovery email sent")
+    if user:
+        try:
+            password_reset_token = generate_password_reset_token(email=email)
+            email_data = generate_reset_password_email(
+                email_to=user.email, email=email, token=password_reset_token
+            )
+            send_email(
+                email_to=user.email,
+                subject=email_data.subject,
+                html_content=email_data.html_content,
+            )
+        except Exception:
+            pass
+    return Message(message="If the email exists, a recovery message was sent")
 
 
 @router.post("/reset-password/")
@@ -120,5 +118,5 @@ async def recover_password_html_content(email: str, session: AsyncSessionDep) ->
     )
 
     return HTMLResponse(
-        content=email_data.html_content, headers={"subject:": email_data.subject}
+        content=email_data.html_content, headers={"subject": email_data.subject}
     )

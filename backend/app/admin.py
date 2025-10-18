@@ -1,14 +1,12 @@
-from typing import Optional
 
-import jwt
 from fastapi import Request
 from sqladmin import Admin, ModelView
-from wtforms.fields import TextAreaField
 from sqladmin.authentication import AuthenticationBackend
+from wtforms.fields import TextAreaField
 
-from app.core import security
 from app.core.config import settings
-from app.core.db import async_engine, AsyncSessionLocal
+from app.core.db import AsyncSessionLocal, async_engine
+from app.core.security import verify_password
 from app.models import (
     Category,
     Classroom,
@@ -23,7 +21,6 @@ from app.models import (
     Subcategory,
     User,
 )
-from app.core.security import verify_password
 
 
 class AdminAuth(AuthenticationBackend):
@@ -65,6 +62,7 @@ class AdminAuth(AuthenticationBackend):
             token = auth[7:].strip()
             try:
                 import jwt
+
                 from app.core import security
                 from app.core.config import settings
                 payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])

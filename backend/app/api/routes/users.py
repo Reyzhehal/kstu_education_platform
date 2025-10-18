@@ -1,25 +1,25 @@
-from uuid import UUID, uuid4
-from typing import Any
-from pathlib import Path
-
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 import re
+from pathlib import Path
+from typing import Any
+from uuid import UUID, uuid4
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlmodel import col, func, select
 
 from app import crud
 from app.api.deps import (
-    CurrentUser,
     AsyncSessionDep,
+    CurrentUser,
     get_current_active_superuser,
 )
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
 from app.models import (
+    Course,
     Message,
     SetLanguage,
     UpdatePassword,
     User,
-    Course,
     UserCreate,
     UserPublic,
     UserRegister,
@@ -63,6 +63,22 @@ def _validate_social_links(payload: dict) -> None:
         youtube = youtube.strip()
         if not _RE_YOUTUBE.fullmatch(youtube):
             raise HTTPException(status_code=422, detail="youtube_url must start with https://youtube.com/ or https://youtu.be/")
+
+
+MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
+def _detect_image_ext_by_magic(data: bytes) -> str | None:
+    # JPEG: FF D8 FF
+    if len(data) >= 3 and data[0:3] == b"\xFF\xD8\xFF":
+        return "jpg"
+    # PNG: 89 50 4E 47 0D 0A 1A 0A
+    if len(data) >= 8 and data[0:8] == b"\x89PNG\r\n\x1a\n":
+        return "png"
+    # WEBP: RIFF....WEBP
+    if len(data) >= 12 and data[0:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "webp"
+    return None
 
 
 @router.get(
@@ -240,6 +256,8 @@ async def read_user_by_id(
     Get a specific user by id.
     """
     user = await session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     count_statement = (
         select(func.count())
         .select_from(Course)
@@ -270,7 +288,7 @@ async def update_user(
             detail="The user with this id does not exist in the system",
         )
     if user_in.email:
-        existing_user = await crud.a_get_user_by_email(
+        existing_user = await crud.get_user_by_email(
             session=session, email=user_in.email
         )
         if existing_user and existing_user.id != user_id:
@@ -321,6 +339,11 @@ async def upload_avatar_me(
     filepath = avatars_dir / filename
 
     data = await file.read()
+    if len(data) > MAX_IMAGE_SIZE_BYTES:
+        raise HTTPException(status_code=413, detail="File too large")
+    magic_ext = _detect_image_ext_by_magic(data)
+    if magic_ext is None or magic_ext != allowed[content_type]:
+        raise HTTPException(status_code=400, detail="Invalid image data")
     filepath.write_bytes(data)
 
     # Remove previous local avatar file if exists under /static/avatars
@@ -386,6 +409,11 @@ async def upload_cover_me(
     filepath = covers_dir / filename
 
     data = await file.read()
+    if len(data) > MAX_IMAGE_SIZE_BYTES:
+        raise HTTPException(status_code=413, detail="File too large")
+    magic_ext = _detect_image_ext_by_magic(data)
+    if magic_ext is None or magic_ext != allowed[content_type]:
+        raise HTTPException(status_code=400, detail="Invalid image data")
     filepath.write_bytes(data)
 
     # Remove previous local cover file if exists under /static/covers

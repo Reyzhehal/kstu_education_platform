@@ -1,5 +1,5 @@
-from typing import Annotated
 from collections.abc import AsyncGenerator, Generator
+from typing import Annotated
 
 import jwt
 from fastapi import Depends, HTTPException, status

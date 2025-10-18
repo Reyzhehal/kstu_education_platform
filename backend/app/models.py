@@ -1,10 +1,10 @@
-from uuid import UUID, uuid4
+from datetime import datetime, timezone
 from enum import IntEnum
-from datetime import datetime
+from uuid import UUID, uuid4
 
 from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy import UniqueConstraint
+from sqlmodel import Field, Relationship, SQLModel
 
 
 # Shared properties
@@ -85,7 +85,7 @@ class User(UserBase, table=True):
     avatar_image: str | None = Field(default=None, max_length=255)
     cover_image: str | None = Field(default=None, max_length=255)
     city: str = Field(default="Bishkek", max_length=30)
-    date_joined: datetime = Field(default_factory=datetime.now)
+    date_joined: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     # social links
     website_url: str | None = Field(default=None, max_length=120)
     telegram_url: str | None = Field(default=None, max_length=120)
@@ -276,8 +276,8 @@ class CourseBase(SQLModel):
 
 class Course(CourseBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    datetime_create: datetime = Field(default_factory=datetime.now)
-    datetime_update: datetime = Field(default_factory=datetime.now)
+    datetime_create: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    datetime_update: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
     language_id: int = Field(foreign_key="language.id", ondelete="RESTRICT", default=1)
@@ -344,7 +344,7 @@ class CoursePage(CoursePageBase, table=True):
 
 class CoursePageCommentBase(SQLModel):
     text: str = Field(min_length=1, max_length=4000)
-    datetime_create: datetime = Field(default_factory=datetime.now)
+    datetime_create: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class CoursePageComment(CoursePageCommentBase, table=True):

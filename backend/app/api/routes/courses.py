@@ -4,18 +4,17 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException
 from sqlmodel import col, func, select
 
+from app.api.deps import AsyncSessionDep, CurrentUser
 from app.models import (
     Course,
-    CoursesPublic,
-    CoursePublic,
-    CourseFavoriteLink,
-    User,
-    CourseDescriptionLine,
     CourseDescriptionBlock,
+    CourseDescriptionLine,
+    CourseFavoriteLink,
+    CoursePublic,
+    CoursesPublic,
     CourseStudentLink,
+    User,
 )
-from app.api.deps import AsyncSessionDep, CurrentUser
-
 
 router = APIRouter(prefix="/courses", tags=["courses"])
 

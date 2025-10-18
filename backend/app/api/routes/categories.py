@@ -2,20 +2,17 @@ from typing import Any
 from uuid import UUID
 
 from fastapi import APIRouter
-from sqlmodel import func, select, col
+from sqlmodel import col, func, select
 
 from app.api.deps import AsyncSessionDep, CurrentUser
 from app.models import (
-    Category,
     CategoriesPublic,
-    Subcategory,
-    SubcategoriesPublic,
-    MetaCategory,
-    MetaCategoriesPublic,
-    MetaCategoryWithSubcategoriesPublic,
+    Category,
     MetaCategoriesWithChildrenPublic,
+    MetaCategory,
+    MetaCategoryWithSubcategoriesPublic,
+    Subcategory,
 )
-
 
 router = APIRouter(prefix="/categories", tags=["categories"])
 

@@ -3,9 +3,8 @@ from typing import Any
 from fastapi import APIRouter
 from sqlmodel import func, select
 
-from app.models import Language, LanguagesPublic
 from app.api.deps import AsyncSessionDep
-
+from app.models import Language, LanguagesPublic
 
 router = APIRouter(prefix="/languages", tags=["languages"])
 

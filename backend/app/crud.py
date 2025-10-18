@@ -3,8 +3,8 @@ from typing import Any
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.models import User, UserCreate, UserUpdate
 from app.core.security import get_password_hash, verify_password
+from app.models import User, UserCreate, UserUpdate
 
 # Async versions
 
