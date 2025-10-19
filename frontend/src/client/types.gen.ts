@@ -192,6 +192,7 @@ export type SubcategoryPublic = {
 
 export type Token = {
     access_token: string;
+    refresh_token?: (string | null);
     token_type?: string;
 };
 
@@ -410,6 +411,18 @@ export type LoginLoginAccessTokenData = {
 };
 
 export type LoginLoginAccessTokenResponse = (Token);
+
+export type LoginRefreshAccessTokenData = {
+    refreshToken: string;
+};
+
+export type LoginRefreshAccessTokenResponse = (Token);
+
+export type LoginRevokeRefreshTokenData = {
+    refreshToken: string;
+};
+
+export type LoginRevokeRefreshTokenResponse = (Message);
 
 export type LoginTestTokenResponse = (UserPublic);
 

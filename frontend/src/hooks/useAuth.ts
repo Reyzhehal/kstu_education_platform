@@ -46,6 +46,9 @@ const useAuth = () => {
       formData: data,
     })
     localStorage.setItem("access_token", response.access_token)
+    if (response.refresh_token) {
+      localStorage.setItem("refresh_token", response.refresh_token)
+    }
   }
 
   const loginMutation = useMutation({
@@ -58,8 +61,23 @@ const useAuth = () => {
     },
   })
 
-  const logout = () => {
+  const logout = async () => {
+    const refreshToken = localStorage.getItem("refresh_token")
+    
+    // Пытаемся отозвать refresh token
+    if (refreshToken) {
+      try {
+        await LoginService.revokeRefreshToken({
+          refreshToken,
+        })
+      } catch (error) {
+        // Игнорируем ошибки при revoke
+        console.error("Failed to revoke refresh token:", error)
+      }
+    }
+    
     localStorage.removeItem("access_token")
+    localStorage.removeItem("refresh_token")
     navigate({ to: "/login" })
   }
 

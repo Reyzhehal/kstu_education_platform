@@ -1077,6 +1077,17 @@ export const TokenSchema = {
             type: 'string',
             title: 'Access Token'
         },
+        refresh_token: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Refresh Token'
+        },
         token_type: {
             type: 'string',
             title: 'Token Type',

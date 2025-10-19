@@ -134,12 +134,29 @@ class Message(SQLModel):
 # JSON payload containing access token
 class Token(SQLModel):
     access_token: str
+    refresh_token: str | None = None
     token_type: str = "bearer"
 
 
 # Contents of JWT token
 class TokenPayload(SQLModel):
     sub: str | None = None
+    type: str | None = None  # "access" или "refresh"
+    jti: str | None = None  # JWT ID для refresh токенов
+
+
+# Refresh token in database
+class RefreshToken(SQLModel, table=True):
+    __tablename__ = "refresh_token"
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    user_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
+    token_id: str = Field(unique=True, index=True)  # jti из JWT
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    revoked: bool = Field(default=False)
+    
+    def __str__(self) -> str:
+        return f"RefreshToken({self.token_id[:8]}...)"
 
 
 class NewPassword(SQLModel):

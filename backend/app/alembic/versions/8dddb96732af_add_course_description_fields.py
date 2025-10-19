@@ -1,7 +1,7 @@
 """add_course_description_fields
 
 Revision ID: 8dddb96732af
-Revises: a9f8b3c45d21
+Revises: b5e9f3d47c12
 Create Date: 2025-10-20 05:35:27.480028
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '8dddb96732af'
-down_revision = 'a9f8b3c45d21'
+down_revision = '1da693b42efb'
 branch_labels = None
 depends_on = None
 
