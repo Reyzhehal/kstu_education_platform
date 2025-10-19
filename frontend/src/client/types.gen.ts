@@ -27,15 +27,26 @@ export type CategoryPublic = {
     id: string;
 };
 
+export type CourseCreate = {
+    title: string;
+};
+
 export type CoursePublic = {
     title: string;
     cover_image?: (string | null);
     description?: (string | null);
     description_video?: (string | null);
+    short_description?: (string | null);
+    what_you_will_learn?: (string | null);
+    target_audience?: (string | null);
+    requirements?: (string | null);
+    how_it_works?: (string | null);
+    what_you_get?: (string | null);
     hours_week?: (number | null);
     hours_total?: (number | null);
     has_certificate?: boolean;
     difficulty_level?: DifficultyLevel;
+    is_published?: boolean;
     id: string;
     datetime_create: string;
     datetime_update: string;
@@ -51,6 +62,26 @@ export type CoursePublic = {
 export type CoursesPublic = {
     data: Array<CoursePublic>;
     count: number;
+};
+
+export type CourseUpdate = {
+    title?: (string | null);
+    cover_image?: (string | null);
+    description?: (string | null);
+    description_video?: (string | null);
+    short_description?: (string | null);
+    what_you_will_learn?: (string | null);
+    target_audience?: (string | null);
+    requirements?: (string | null);
+    how_it_works?: (string | null);
+    what_you_get?: (string | null);
+    hours_week?: (number | null);
+    hours_total?: (number | null);
+    has_certificate?: (boolean | null);
+    difficulty_level?: (DifficultyLevel | null);
+    language_id?: (number | null);
+    category_id?: (string | null);
+    subcategory_id?: (string | null);
 };
 
 export type DifficultyLevel = 1 | 2 | 3;
@@ -70,6 +101,26 @@ export type LanguagesPublic = {
     count: number;
 };
 
+export type LessonCreate = {
+    title: string;
+    allow_comments?: boolean;
+    position?: number;
+};
+
+export type LessonPublic = {
+    title: string;
+    allow_comments?: boolean;
+    position?: number;
+    id: string;
+    module_id: string;
+};
+
+export type LessonUpdate = {
+    title?: (string | null);
+    allow_comments?: (boolean | null);
+    position?: (number | null);
+};
+
 export type Message = {
     message: string;
 };
@@ -84,6 +135,35 @@ export type MetaCategoryWithSubcategoriesPublic = {
     id: string;
     category_id: string;
     subcategories?: Array<SubcategoryPublic>;
+};
+
+export type ModuleCreate = {
+    title: string;
+    description?: (string | null);
+    position?: number;
+};
+
+export type ModulePublic = {
+    title: string;
+    description?: (string | null);
+    position?: number;
+    id: string;
+    course_id: string;
+};
+
+export type ModuleUpdate = {
+    title?: (string | null);
+    description?: (string | null);
+    position?: (number | null);
+};
+
+export type ModuleWithLessons = {
+    title: string;
+    description?: (string | null);
+    position?: number;
+    id: string;
+    course_id: string;
+    lessons?: Array<LessonPublic>;
 };
 
 export type NewPassword = {
@@ -211,6 +291,12 @@ export type CategoriesReadMetaCategoriesByCategoryData = {
 
 export type CategoriesReadMetaCategoriesByCategoryResponse = (MetaCategoriesWithChildrenPublic);
 
+export type CoursesCreateCourseData = {
+    requestBody: CourseCreate;
+};
+
+export type CoursesCreateCourseResponse = (CoursePublic);
+
 export type CoursesReadCoursesData = {
     categoryId?: (string | null);
     difficultyLevel?: (number | null);
@@ -238,11 +324,33 @@ export type CoursesReadMyCoursesData = {
 
 export type CoursesReadMyCoursesResponse = (CoursesPublic);
 
+export type CoursesReadAuthorCoursesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type CoursesReadAuthorCoursesResponse = (CoursesPublic);
+
+export type CoursesPublishCourseData = {
+    courseId: string;
+};
+
+export type CoursesPublishCourseResponse = ({
+    [key: string]: (string);
+});
+
 export type CoursesReadCourseByIdData = {
     courseId: string;
 };
 
 export type CoursesReadCourseByIdResponse = (CoursePublic);
+
+export type CoursesUpdateCourseData = {
+    courseId: string;
+    requestBody: CourseUpdate;
+};
+
+export type CoursesUpdateCourseResponse = (CoursePublic);
 
 export type CoursesAddToFavoritesData = {
     courseId: string;
@@ -322,6 +430,63 @@ export type LoginRecoverPasswordHtmlContentData = {
 };
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
+
+export type ModulesReadCourseModulesData = {
+    courseId: string;
+};
+
+export type ModulesReadCourseModulesResponse = (Array<ModuleWithLessons>);
+
+export type ModulesCreateModuleData = {
+    courseId: string;
+    requestBody: ModuleCreate;
+};
+
+export type ModulesCreateModuleResponse = (ModulePublic);
+
+export type ModulesUpdateModuleData = {
+    courseId: string;
+    moduleId: string;
+    requestBody: ModuleUpdate;
+};
+
+export type ModulesUpdateModuleResponse = (ModulePublic);
+
+export type ModulesDeleteModuleData = {
+    courseId: string;
+    moduleId: string;
+};
+
+export type ModulesDeleteModuleResponse = ({
+    [key: string]: (string);
+});
+
+export type ModulesCreateLessonData = {
+    courseId: string;
+    moduleId: string;
+    requestBody: LessonCreate;
+};
+
+export type ModulesCreateLessonResponse = (LessonPublic);
+
+export type ModulesUpdateLessonData = {
+    courseId: string;
+    lessonId: string;
+    moduleId: string;
+    requestBody: LessonUpdate;
+};
+
+export type ModulesUpdateLessonResponse = (LessonPublic);
+
+export type ModulesDeleteLessonData = {
+    courseId: string;
+    lessonId: string;
+    moduleId: string;
+};
+
+export type ModulesDeleteLessonResponse = ({
+    [key: string]: (string);
+});
 
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;

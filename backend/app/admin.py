@@ -1,4 +1,3 @@
-
 from fastapi import Request
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
@@ -35,6 +34,7 @@ class AdminAuth(AuthenticationBackend):
         async with AsyncSessionLocal() as session:
             # ищем по email
             from sqlmodel import select
+
             stmt = select(User).where(User.email == username)
             user = (await session.exec(stmt)).first()
 
@@ -65,7 +65,10 @@ class AdminAuth(AuthenticationBackend):
 
                 from app.core import security
                 from app.core.config import settings
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
+
+                payload = jwt.decode(
+                    token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+                )
                 user_id = payload.get("sub")
                 if not user_id:
                     return False
@@ -81,7 +84,16 @@ class AdminAuth(AuthenticationBackend):
 class UserAdmin(ModelView, model=User):
     name = "User"
     name_plural = "Users"
-    column_list = [User.id, User.email, User.first_name, User.last_name, User.language, User.is_superuser, User.is_staff, User.is_teacher]
+    column_list = [
+        User.id,
+        User.email,
+        User.first_name,
+        User.last_name,
+        User.language,
+        User.is_superuser,
+        User.is_staff,
+        User.is_teacher,
+    ]
     column_searchable_list = [User.email, User.first_name, User.last_name]
     form_overrides = {
         "description": TextAreaField,
@@ -108,7 +120,12 @@ class CategoryAdmin(ModelView, model=Category):
 class SubcategoryAdmin(ModelView, model=Subcategory):
     name = "Subcategory"
     name_plural = "Subcategories"
-    column_list = [Subcategory.id, Subcategory.name, Subcategory.category, Subcategory.meta_category]
+    column_list = [
+        Subcategory.id,
+        Subcategory.name,
+        Subcategory.category,
+        Subcategory.meta_category,
+    ]
 
 
 class MetaCategoryAdmin(ModelView, model=MetaCategory):
@@ -143,7 +160,11 @@ class CourseAdmin(ModelView, model=Course):
 class CourseDescriptionBlockAdmin(ModelView, model=CourseDescriptionBlock):
     name = "Course Block"
     name_plural = "Course Blocks"
-    column_list = [CourseDescriptionBlock.id, CourseDescriptionBlock.title, CourseDescriptionBlock.course]
+    column_list = [
+        CourseDescriptionBlock.id,
+        CourseDescriptionBlock.title,
+        CourseDescriptionBlock.course,
+    ]
     form_overrides = {
         "text": TextAreaField,
     }
@@ -155,7 +176,11 @@ class CourseDescriptionBlockAdmin(ModelView, model=CourseDescriptionBlock):
 class CourseDescriptionLineAdmin(ModelView, model=CourseDescriptionLine):
     name = "Course Line"
     name_plural = "Course Lines"
-    column_list = [CourseDescriptionLine.id, CourseDescriptionLine.course, CourseDescriptionLine.text]
+    column_list = [
+        CourseDescriptionLine.id,
+        CourseDescriptionLine.course,
+        CourseDescriptionLine.text,
+    ]
     form_overrides = {
         "text": TextAreaField,
     }
@@ -173,7 +198,12 @@ class CoursePageAdmin(ModelView, model=CoursePage):
 class CoursePageCommentAdmin(ModelView, model=CoursePageComment):
     name = "Comment"
     name_plural = "Comments"
-    column_list = [CoursePageComment.id, CoursePageComment.course_page, CoursePageComment.author, CoursePageComment.text]
+    column_list = [
+        CoursePageComment.id,
+        CoursePageComment.course_page,
+        CoursePageComment.author,
+        CoursePageComment.text,
+    ]
     form_overrides = {
         "text": TextAreaField,
     }
@@ -185,7 +215,12 @@ class CoursePageCommentAdmin(ModelView, model=CoursePageComment):
 class CoursePageCommentReviewAdmin(ModelView, model=CoursePageCommentReview):
     name = "Comment Review"
     name_plural = "Comment Reviews"
-    column_list = [CoursePageCommentReview.id, CoursePageCommentReview.comment, CoursePageCommentReview.author, CoursePageCommentReview.is_like]
+    column_list = [
+        CoursePageCommentReview.id,
+        CoursePageCommentReview.comment,
+        CoursePageCommentReview.author,
+        CoursePageCommentReview.is_like,
+    ]
 
 
 class ClassroomAdmin(ModelView, model=Classroom):
@@ -195,7 +230,11 @@ class ClassroomAdmin(ModelView, model=Classroom):
 
 
 def setup_admin(app) -> None:
-    admin = Admin(app, engine=async_engine, authentication_backend=AdminAuth(secret_key=str(settings.SECRET_KEY)))
+    admin = Admin(
+        app,
+        engine=async_engine,
+        authentication_backend=AdminAuth(secret_key=str(settings.SECRET_KEY)),
+    )
     admin.add_view(UserAdmin)
     admin.add_view(LanguageAdmin)
     admin.add_view(CategoryAdmin)
@@ -208,5 +247,3 @@ def setup_admin(app) -> None:
     admin.add_view(CoursePageCommentAdmin)
     admin.add_view(CoursePageCommentReviewAdmin)
     admin.add_view(ClassroomAdmin)
-
-

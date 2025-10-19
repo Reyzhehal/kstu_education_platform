@@ -119,11 +119,25 @@ export const CategoryPublicSchema = {
     title: 'CategoryPublic'
 } as const;
 
+export const CourseCreateSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 1,
+            title: 'Title'
+        }
+    },
+    type: 'object',
+    required: ['title'],
+    title: 'CourseCreate'
+} as const;
+
 export const CoursePublicSchema = {
     properties: {
         title: {
             type: 'string',
-            maxLength: 255,
+            maxLength: 64,
             minLength: 1,
             title: 'Title'
         },
@@ -163,6 +177,78 @@ export const CoursePublicSchema = {
             ],
             title: 'Description Video'
         },
+        short_description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Short Description'
+        },
+        what_you_will_learn: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'What You Will Learn'
+        },
+        target_audience: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Target Audience'
+        },
+        requirements: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Requirements'
+        },
+        how_it_works: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'How It Works'
+        },
+        what_you_get: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'What You Get'
+        },
         hours_week: {
             anyOf: [
                 {
@@ -193,6 +279,11 @@ export const CoursePublicSchema = {
         difficulty_level: {
             '$ref': '#/components/schemas/DifficultyLevel',
             default: 1
+        },
+        is_published: {
+            type: 'boolean',
+            title: 'Is Published',
+            default: false
         },
         id: {
             type: 'string',
@@ -261,6 +352,203 @@ export const CoursePublicSchema = {
     type: 'object',
     required: ['title', 'id', 'datetime_create', 'datetime_update', 'author_id', 'language_id'],
     title: 'CoursePublic'
+} as const;
+
+export const CourseUpdateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        cover_image: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        description_video: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description Video'
+        },
+        short_description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Short Description'
+        },
+        what_you_will_learn: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'What You Will Learn'
+        },
+        target_audience: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Target Audience'
+        },
+        requirements: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Requirements'
+        },
+        how_it_works: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'How It Works'
+        },
+        what_you_get: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'What You Get'
+        },
+        hours_week: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Hours Week'
+        },
+        hours_total: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Hours Total'
+        },
+        has_certificate: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Has Certificate'
+        },
+        difficulty_level: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/DifficultyLevel'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        language_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Language Id'
+        },
+        category_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Category Id'
+        },
+        subcategory_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Subcategory Id'
+        }
+    },
+    type: 'object',
+    title: 'CourseUpdate'
 } as const;
 
 export const CoursesPublicSchema = {
@@ -343,6 +631,106 @@ export const LanguagesPublicSchema = {
     title: 'LanguagesPublic'
 } as const;
 
+export const LessonCreateSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 1,
+            title: 'Title'
+        },
+        allow_comments: {
+            type: 'boolean',
+            title: 'Allow Comments',
+            default: true
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        }
+    },
+    type: 'object',
+    required: ['title'],
+    title: 'LessonCreate'
+} as const;
+
+export const LessonPublicSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 1,
+            title: 'Title'
+        },
+        allow_comments: {
+            type: 'boolean',
+            title: 'Allow Comments',
+            default: true
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        module_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Module Id'
+        }
+    },
+    type: 'object',
+    required: ['title', 'id', 'module_id'],
+    title: 'LessonPublic'
+} as const;
+
+export const LessonUpdateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        allow_comments: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Allow Comments'
+        },
+        position: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Position'
+        }
+    },
+    type: 'object',
+    title: 'LessonUpdate'
+} as const;
+
 export const MessageSchema = {
     properties: {
         message: {
@@ -404,6 +792,168 @@ export const MetaCategoryWithSubcategoriesPublicSchema = {
     type: 'object',
     required: ['name', 'id', 'category_id'],
     title: 'MetaCategoryWithSubcategoriesPublic'
+} as const;
+
+export const ModuleCreateSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 1,
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        }
+    },
+    type: 'object',
+    required: ['title'],
+    title: 'ModuleCreate'
+} as const;
+
+export const ModulePublicSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 1,
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 256
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        course_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Course Id'
+        }
+    },
+    type: 'object',
+    required: ['title', 'id', 'course_id'],
+    title: 'ModulePublic'
+} as const;
+
+export const ModuleUpdateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        position: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Position'
+        }
+    },
+    type: 'object',
+    title: 'ModuleUpdate'
+} as const;
+
+export const ModuleWithLessonsSchema = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 1,
+            title: 'Title'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 256
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        course_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Course Id'
+        },
+        lessons: {
+            items: {
+                '$ref': '#/components/schemas/LessonPublic'
+            },
+            type: 'array',
+            title: 'Lessons',
+            default: []
+        }
+    },
+    type: 'object',
+    required: ['title', 'id', 'course_id'],
+    title: 'ModuleWithLessons'
 } as const;
 
 export const NewPasswordSchema = {

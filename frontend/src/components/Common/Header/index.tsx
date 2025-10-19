@@ -44,17 +44,27 @@ export default function Header() {
             {t("nav.catalog")}
           </button>
           <Link
-            to="/main"
+            to="/learn"
             className={
-              location.pathname === "/main" ||
-              location.pathname.startsWith("/main")
+              location.pathname === "/learn" ||
+              location.pathname.startsWith("/learn")
                 ? styles.active
                 : ""
             }
           >
             {t("nav.myLearning")}
           </Link>
-          <a href="#">{t("nav.teaching")}</a>
+          <Link
+            to="/teach"
+            className={
+              location.pathname === "/teach" ||
+              location.pathname.startsWith("/teach")
+                ? styles.active
+                : ""
+            }
+          >
+            {t("nav.teaching")}
+          </Link>
         </nav>
         <form
           className={styles.search}

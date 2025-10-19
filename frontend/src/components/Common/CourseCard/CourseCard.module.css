@@ -15,6 +15,16 @@
     transform 0.12s ease;
 }
 
+.full {
+  grid-template-columns: 180px 1fr auto;
+  padding: 16px;
+  gap: 16px;
+}
+.full .img {
+  width: 180px;
+  height: 120px;
+}
+
 .img {
   width: 140px;
   height: 90px;
@@ -26,6 +36,7 @@
   grid-template-columns: 160px 1fr auto;
   padding: 14px;
   width: 400px;
+  align-items: start;
 }
 .compact .img {
   width: 160px;
@@ -33,12 +44,13 @@
 }
 .compact .title {
   font-size: 16px;
-  margin-bottom: 6px;
+  font-weight: 600;
 }
-.compact .desc {
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  margin-bottom: 6px;
+.compact .body {
+  gap: 8px;
+}
+.compact .badges {
+  margin-top: 0;
 }
 
 .title {
@@ -124,8 +136,47 @@
 }
 
 .body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
+
 .owner {
+  color: var(--muted);
+  font-size: 13px;
 }
+
 .ownerLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.ownerLink:hover {
+  text-decoration: underline;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.enrolledBadge {
+  background: rgba(52, 168, 83, 0.1);
+  border-color: rgba(52, 168, 83, 0.3);
+  color: #34a853;
 }

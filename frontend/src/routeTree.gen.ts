@@ -23,18 +23,20 @@ import { Route as CoursesArchiveRouteImport } from './routes/courses.archive'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutNotificationsRouteImport } from './routes/_layout/notifications'
 import { Route as LayoutNewsRouteImport } from './routes/_layout/news'
-import { Route as LayoutMainRouteImport } from './routes/_layout/main'
+import { Route as LayoutTeachIndexRouteImport } from './routes/_layout/teach/index'
 import { Route as LayoutSettingsIndexRouteImport } from './routes/_layout/settings/index'
-import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog.index'
+import { Route as LayoutLearnIndexRouteImport } from './routes/_layout/learn/index'
+import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog/index'
 import { Route as LayoutSettingsSocialRouteImport } from './routes/_layout/settings/social'
 import { Route as LayoutSettingsProfileRouteImport } from './routes/_layout/settings/profile'
 import { Route as LayoutSettingsPasswordRouteImport } from './routes/_layout/settings/password'
 import { Route as LayoutSettingsDangerRouteImport } from './routes/_layout/settings/danger'
 import { Route as LayoutSettingsAppearanceRouteImport } from './routes/_layout/settings/appearance'
-import { Route as LayoutProfileIdRouteImport } from './routes/_layout/profile.$id'
-import { Route as LayoutCourseIdRouteImport } from './routes/_layout/course.$id'
-import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog.$id'
-import { Route as LayoutCatalogMetaIdRouteImport } from './routes/_layout/catalog.meta.$id'
+import { Route as LayoutProfileIdRouteImport } from './routes/_layout/profile/$id'
+import { Route as LayoutCourseIdRouteImport } from './routes/_layout/course/$id'
+import { Route as LayoutCourseCourseIdRouteImport } from './routes/_layout/course.$courseId'
+import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog/$id'
+import { Route as LayoutCatalogMetaIdRouteImport } from './routes/_layout/catalog/meta.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -105,15 +107,20 @@ const LayoutNewsRoute = LayoutNewsRouteImport.update({
   path: '/news',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutMainRoute = LayoutMainRouteImport.update({
-  id: '/main',
-  path: '/main',
+const LayoutTeachIndexRoute = LayoutTeachIndexRouteImport.update({
+  id: '/teach/',
+  path: '/teach/',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutSettingsIndexRoute = LayoutSettingsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutSettingsRoute,
+} as any)
+const LayoutLearnIndexRoute = LayoutLearnIndexRouteImport.update({
+  id: '/learn/',
+  path: '/learn/',
+  getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutCatalogIndexRoute = LayoutCatalogIndexRouteImport.update({
   id: '/catalog/',
@@ -156,6 +163,11 @@ const LayoutCourseIdRoute = LayoutCourseIdRouteImport.update({
   path: '/course/$id',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutCourseCourseIdRoute = LayoutCourseCourseIdRouteImport.update({
+  id: '/course/$courseId',
+  path: '/course/$courseId',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutCatalogIdRoute = LayoutCatalogIdRouteImport.update({
   id: '/catalog/$id',
   path: '/catalog/$id',
@@ -173,7 +185,6 @@ export interface FileRoutesByFullPath {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
   '/settings': typeof LayoutSettingsRouteWithChildren
@@ -183,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
+  '/course/$courseId': typeof LayoutCourseCourseIdRoute
   '/course/$id': typeof LayoutCourseIdRoute
   '/profile/$id': typeof LayoutProfileIdRoute
   '/settings/appearance': typeof LayoutSettingsAppearanceRoute
@@ -191,7 +203,9 @@ export interface FileRoutesByFullPath {
   '/settings/profile': typeof LayoutSettingsProfileRoute
   '/settings/social': typeof LayoutSettingsSocialRoute
   '/catalog': typeof LayoutCatalogIndexRoute
+  '/learn': typeof LayoutLearnIndexRoute
   '/settings/': typeof LayoutSettingsIndexRoute
+  '/teach': typeof LayoutTeachIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRoutesByTo {
@@ -200,7 +214,6 @@ export interface FileRoutesByTo {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/main': typeof LayoutMainRoute
   '/news': typeof LayoutNewsRoute
   '/notifications': typeof LayoutNotificationsRoute
   '/courses/archive': typeof CoursesArchiveRoute
@@ -209,6 +222,7 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/catalog/$id': typeof LayoutCatalogIdRoute
+  '/course/$courseId': typeof LayoutCourseCourseIdRoute
   '/course/$id': typeof LayoutCourseIdRoute
   '/profile/$id': typeof LayoutProfileIdRoute
   '/settings/appearance': typeof LayoutSettingsAppearanceRoute
@@ -217,7 +231,9 @@ export interface FileRoutesByTo {
   '/settings/profile': typeof LayoutSettingsProfileRoute
   '/settings/social': typeof LayoutSettingsSocialRoute
   '/catalog': typeof LayoutCatalogIndexRoute
+  '/learn': typeof LayoutLearnIndexRoute
   '/settings': typeof LayoutSettingsIndexRoute
+  '/teach': typeof LayoutTeachIndexRoute
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRoutesById {
@@ -228,7 +244,6 @@ export interface FileRoutesById {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/_layout/main': typeof LayoutMainRoute
   '/_layout/news': typeof LayoutNewsRoute
   '/_layout/notifications': typeof LayoutNotificationsRoute
   '/_layout/settings': typeof LayoutSettingsRouteWithChildren
@@ -238,6 +253,7 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/_layout/catalog/$id': typeof LayoutCatalogIdRoute
+  '/_layout/course/$courseId': typeof LayoutCourseCourseIdRoute
   '/_layout/course/$id': typeof LayoutCourseIdRoute
   '/_layout/profile/$id': typeof LayoutProfileIdRoute
   '/_layout/settings/appearance': typeof LayoutSettingsAppearanceRoute
@@ -246,7 +262,9 @@ export interface FileRoutesById {
   '/_layout/settings/profile': typeof LayoutSettingsProfileRoute
   '/_layout/settings/social': typeof LayoutSettingsSocialRoute
   '/_layout/catalog/': typeof LayoutCatalogIndexRoute
+  '/_layout/learn/': typeof LayoutLearnIndexRoute
   '/_layout/settings/': typeof LayoutSettingsIndexRoute
+  '/_layout/teach/': typeof LayoutTeachIndexRoute
   '/_layout/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
 }
 export interface FileRouteTypes {
@@ -257,7 +275,6 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/main'
     | '/news'
     | '/notifications'
     | '/settings'
@@ -267,6 +284,7 @@ export interface FileRouteTypes {
     | '/'
     | '/courses'
     | '/catalog/$id'
+    | '/course/$courseId'
     | '/course/$id'
     | '/profile/$id'
     | '/settings/appearance'
@@ -275,7 +293,9 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/settings/social'
     | '/catalog'
+    | '/learn'
     | '/settings/'
+    | '/teach'
     | '/catalog/meta/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -284,7 +304,6 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/main'
     | '/news'
     | '/notifications'
     | '/courses/archive'
@@ -293,6 +312,7 @@ export interface FileRouteTypes {
     | '/'
     | '/courses'
     | '/catalog/$id'
+    | '/course/$courseId'
     | '/course/$id'
     | '/profile/$id'
     | '/settings/appearance'
@@ -301,7 +321,9 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/settings/social'
     | '/catalog'
+    | '/learn'
     | '/settings'
+    | '/teach'
     | '/catalog/meta/$id'
   id:
     | '__root__'
@@ -311,7 +333,6 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/_layout/main'
     | '/_layout/news'
     | '/_layout/notifications'
     | '/_layout/settings'
@@ -321,6 +342,7 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/courses/'
     | '/_layout/catalog/$id'
+    | '/_layout/course/$courseId'
     | '/_layout/course/$id'
     | '/_layout/profile/$id'
     | '/_layout/settings/appearance'
@@ -329,7 +351,9 @@ export interface FileRouteTypes {
     | '/_layout/settings/profile'
     | '/_layout/settings/social'
     | '/_layout/catalog/'
+    | '/_layout/learn/'
     | '/_layout/settings/'
+    | '/_layout/teach/'
     | '/_layout/catalog/meta/$id'
   fileRoutesById: FileRoutesById
 }
@@ -446,11 +470,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutNewsRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/main': {
-      id: '/_layout/main'
-      path: '/main'
-      fullPath: '/main'
-      preLoaderRoute: typeof LayoutMainRouteImport
+    '/_layout/teach/': {
+      id: '/_layout/teach/'
+      path: '/teach'
+      fullPath: '/teach'
+      preLoaderRoute: typeof LayoutTeachIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/settings/': {
@@ -459,6 +483,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/'
       preLoaderRoute: typeof LayoutSettingsIndexRouteImport
       parentRoute: typeof LayoutSettingsRoute
+    }
+    '/_layout/learn/': {
+      id: '/_layout/learn/'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LayoutLearnIndexRouteImport
+      parentRoute: typeof LayoutRoute
     }
     '/_layout/catalog/': {
       id: '/_layout/catalog/'
@@ -516,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutCourseIdRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/course/$courseId': {
+      id: '/_layout/course/$courseId'
+      path: '/course/$courseId'
+      fullPath: '/course/$courseId'
+      preLoaderRoute: typeof LayoutCourseCourseIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/catalog/$id': {
       id: '/_layout/catalog/$id'
       path: '/catalog/$id'
@@ -556,28 +594,32 @@ const LayoutSettingsRouteWithChildren = LayoutSettingsRoute._addFileChildren(
 )
 
 interface LayoutRouteChildren {
-  LayoutMainRoute: typeof LayoutMainRoute
   LayoutNewsRoute: typeof LayoutNewsRoute
   LayoutNotificationsRoute: typeof LayoutNotificationsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRouteWithChildren
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutCatalogIdRoute: typeof LayoutCatalogIdRoute
+  LayoutCourseCourseIdRoute: typeof LayoutCourseCourseIdRoute
   LayoutCourseIdRoute: typeof LayoutCourseIdRoute
   LayoutProfileIdRoute: typeof LayoutProfileIdRoute
   LayoutCatalogIndexRoute: typeof LayoutCatalogIndexRoute
+  LayoutLearnIndexRoute: typeof LayoutLearnIndexRoute
+  LayoutTeachIndexRoute: typeof LayoutTeachIndexRoute
   LayoutCatalogMetaIdRoute: typeof LayoutCatalogMetaIdRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutMainRoute: LayoutMainRoute,
   LayoutNewsRoute: LayoutNewsRoute,
   LayoutNotificationsRoute: LayoutNotificationsRoute,
   LayoutSettingsRoute: LayoutSettingsRouteWithChildren,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutCatalogIdRoute: LayoutCatalogIdRoute,
+  LayoutCourseCourseIdRoute: LayoutCourseCourseIdRoute,
   LayoutCourseIdRoute: LayoutCourseIdRoute,
   LayoutProfileIdRoute: LayoutProfileIdRoute,
   LayoutCatalogIndexRoute: LayoutCatalogIndexRoute,
+  LayoutLearnIndexRoute: LayoutLearnIndexRoute,
+  LayoutTeachIndexRoute: LayoutTeachIndexRoute,
   LayoutCatalogMetaIdRoute: LayoutCatalogMetaIdRoute,
 }
 

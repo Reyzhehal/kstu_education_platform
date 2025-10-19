@@ -1,3 +1,14 @@
+.newCourseBtn {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.newCourseBtn:hover {
+  opacity: 0.9;
+}
 .menuBtn {
   width: 100%;
   text-align: left;

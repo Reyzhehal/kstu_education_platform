@@ -1,0 +1,318 @@
+.root {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.root h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: var(--text);
+}
+
+.modulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.module {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.moduleHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.moduleHeaderTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggleButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.moduleNumber {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 1.1rem;
+  min-width: 30px;
+}
+
+.moduleTitleInput {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.moduleTitleInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.moduleDescriptionInput {
+  width: calc(100% - 40px);
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-left: 40px;
+  box-sizing: border-box;
+}
+
+.moduleDescriptionInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.deleteButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.8rem;
+  line-height: 1;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.deleteButton:hover {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+}
+
+/* Lessons */
+.lessonsContainer {
+  margin-top: 16px;
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lesson {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.dragHandle {
+  color: var(--text-muted);
+  cursor: grab;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.lessonIcon {
+  font-size: 1rem;
+}
+
+.lessonNumber {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-width: 40px;
+}
+
+.lessonTitleInput {
+  flex: 1;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.lessonTitleInput:focus {
+  outline: none;
+}
+
+.editLessonButton,
+.deleteLessonButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.editLessonButton:hover {
+  background: rgba(76, 127, 255, 0.1);
+  color: var(--accent);
+}
+
+.deleteLessonButton:hover {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+}
+
+/* Add Lesson */
+.addLesson {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.addLessonInput {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.addLessonInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.addLessonButton {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.addLessonButton:hover {
+  opacity: 0.9;
+}
+
+/* Add Module */
+.addModuleButton {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 32px;
+}
+
+.addModuleButton:hover {
+  border-color: var(--accent);
+  background: rgba(76, 127, 255, 0.05);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.saveButton {
+  padding: 12px 32px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.saveButton:hover {
+  opacity: 0.9;
+}
+
+.cancelButton {
+  padding: 12px 32px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .root {
+    padding: 16px;
+  }
+
+  .moduleDescriptionInput,
+  .lessonsContainer,
+  .expandedSettings {
+    margin-left: 0;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+  }
+}

@@ -1,4 +1,18 @@
-.root { cursor: pointer; font: inherit; }
-.pill { padding: 6px 10px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--border); color: var(--text); }
-.ghost { padding: 6px 10px; border-radius: 6px; background: transparent; border: 1px solid transparent; color: var(--text); }
-
+.root {
+  cursor: pointer;
+  font: inherit;
+}
+.pill {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.ghost {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+}

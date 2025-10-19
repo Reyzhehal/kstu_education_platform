@@ -15,7 +15,15 @@
     "favorites": "Избранные",
     "archive": "Архив",
     "classes": "Классы",
-    "notifications": "Уведомления"
+    "myClasses": "Мои классы",
+    "myStudents": "Мои учащиеся",
+    "notifications": "Уведомления",
+    "lessons": "Уроки",
+    "newsletters": "Рассылки",
+    "course": "Курс",
+    "description": "Описание",
+    "syllabus": "Содержание",
+    "checklist": "Чек-лист"
   },
   "content": {
     "coursesListSoon": "Список курсов появится здесь.",
@@ -26,16 +34,31 @@
     "classes": "Ваши классы.",
     "notifications": "Ваши уведомления.",
     "welcome": "Добро пожаловать! Здесь будет лента обучения.",
-    "titleSuffix": "– Политех"
+    "titleSuffix": "– Политех",
+    "noCoursesYet": "У вас пока нет созданных курсов. Нажмите «Новый курс» чтобы начать.",
+    "lessonsManagement": "Управление уроками.",
+    "classesManagement": "Управление классами.",
+    "myClassesManagement": "Управление моими классами.",
+    "myStudentsManagement": "Управление учащимися.",
+    "notificationsManagement": "Управление уведомлениями.",
+    "newslettersManagement": "Управление рассылками.",
+    "selectTab": "Выберите раздел из меню."
   },
   "sidebar": {
-    "menu": "Меню"
+    "menu": "Меню",
+    "newCourse": "Новый курс"
   },
   "lang": {
     "choose": "Выберите язык"
   },
   "common": {
-    "inDev": "Страница в разработке."
+    "inDev": "Страница в разработке.",
+    "error": "Произошла ошибка",
+    "loading": "Загрузка...",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "edit": "Редактировать",
+    "delete": "Удалить"
   },
   "menu": {
     "profile": "Профиль",
@@ -69,7 +92,87 @@
   "course": {
     "card": {
       "author": "Автор:"
-    }
+    },
+    "difficulty": {
+      "beginner": "Начальный",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    },
+    "certificate": "Сертификат",
+    "enrolled": "Записан",
+    "students": "студентов",
+    "createTitle": "Создание нового курса",
+    "courseName": "Название курса",
+    "courseNamePlaceholder": "Введите название курса",
+    "maxLength": "Максимум {{max}} символов",
+    "createButton": "Создать курс",
+    "createSuccess": "Курс успешно создан",
+    "draftInfo": "Начните работу над черновиком курса, перед публикацией можно будет сделать курс платным или оставить бесплатным.",
+    "licenseInfo": "Открытые бесплатные курсы и уроки распространяются по лицензии",
+    "publish": "Опубликовать",
+    "publishSuccess": "Курс успешно опубликован",
+    "publishConfirm": "Вы уверены, что хотите опубликовать курс? После публикации курс станет доступен всем пользователям.",
+    "noDescription": "Описание отсутствует",
+    "syllabusContent": "Здесь будет содержание курса",
+    "checklistContent": "Здесь будет чек-лист курса",
+    "descriptionPlaceholder": "Напишите описание курса...",
+    "descriptionSaved": "Описание успешно сохранено",
+    "editDescription": "Редактирование описания курса",
+    "aboutCourse": "О курсе",
+    "logo": "Логотип",
+    "logoHint": "Рекомендуемый размер 240x240px",
+    "uploadImage": "Загрузить изображение",
+    "imageUrl": "URL изображения",
+    "shortDescription": "Краткое описание",
+    "shortDescriptionHint": "Для публикации нужно больше 100 символов",
+    "shortDescriptionPlaceholder": "Видно в поиске и на предпросмотре сразу после названия курса. Вводят в предпросмотр опубликованием в соцсетях ссылки на курс.",
+    "language": "Язык",
+    "difficultyLevel": "Уровень",
+    "timeToComplete": "Время прохождения",
+    "timeToCompleteHint": "В среднем учащиеся осваивают ваш курс за указанный срок, как долго в среднем учащиеся осваивают ваш курс.",
+    "hoursPerWeek": "Часов в неделю",
+    "hoursWeekLabel": "ч/нед",
+    "whatYouWillLearn": "Чему вы научитесь",
+    "whatYouWillLearnHint": "Перечислите ожидаемые результаты обучения — что будут знать и уметь учащиеся после успешного освоения курса.",
+    "whatYouWillLearnPlaceholder": "Вам могут помочь глаголы учебных целей таксономии Блума: применять, разрабатывать, строить, сравнивать и т.д.",
+    "fullDescription": "Полное описание",
+    "fullDescriptionHint": "Каждый пункт начинайте с новой строки",
+    "aboutCourseTitle": "О курсе",
+    "syllabusTitle": "Программа курса",
+    "checklistTitle": "Чек-лист",
+    "addDescriptionHint": "Добавьте информативное описание, чтобы учащимся было проще выбрать курс.",
+    "syllabus": {
+      "title": "Программа курса",
+      "editContent": "Редактировать содержание",
+      "noModules": "Пока нет модулей. Добавьте первый модуль, чтобы начать.",
+      "addFirstModule": "Добавить первый модуль",
+      "editTitle": "Редактирование содержания курса",
+      "newModule": "Новый модуль",
+      "moduleTitlePlaceholder": "Название модуля",
+      "moduleDescriptionPlaceholder": "Дополнительное описание",
+      "advancedSettings": "Расширенные настройки дат",
+      "addLessonPlaceholder": "Введите название нового урока и нажмите Enter",
+      "addLesson": "Создать урок",
+      "addModule": "Новый модуль",
+      "launchSettings": "Настройки запуска курса",
+      "launchHint": "Начало курса",
+      "saveSuccess": "Содержание курса сохранено",
+      "confirmDeleteModule": "Вы уверены, что хотите удалить этот модуль и все его уроки?",
+      "confirmDeleteLesson": "Вы уверены, что хотите удалить этот урок?",
+      "lessonTitleRequired": "Введите название урока"
+    },
+    "targetAudience": "Для кого этот курс",
+    "targetAudienceHint": "Опишите целевую аудиторию курса",
+    "targetAudiencePlaceholder": "Например: Начинающие программисты, желающие освоить Python",
+    "requirements": "Начальные требования",
+    "requirementsHint": "Что нужно знать или уметь перед началом",
+    "requirementsPlaceholder": "Например: Базовые знания математики, опыт работы с компьютером",
+    "howItWorks": "Как проходит обучение",
+    "howItWorksHint": "Опишите формат и процесс обучения",
+    "howItWorksPlaceholder": "Например: Видеолекции, практические задания, проекты",
+    "whatYouGet": "Что вы получаете",
+    "whatYouGetHint": "Что студент получит после завершения курса",
+    "whatYouGetPlaceholder": "Например: Сертификат, портфолио проектов, навыки для работы"
   },
   "coursePage": {
     "title": "Курс: {{title}}",
@@ -81,6 +184,16 @@
     "youWillLearn": "Чему вы научитесь",
     "enroll": "Записаться",
     "unenroll": "Отписаться"
+  },
+  "teacherCourse": {
+    "draft": "Черновик",
+    "published": "Опубликован",
+    "edit": "Редактировать",
+    "duplicate": "Создать копию",
+    "delete": "Удалить",
+    "description": "Описание",
+    "content": "Содержание",
+    "access": "Права доступа"
   },
   "pages": {
     "login": "Вход",
@@ -94,7 +207,8 @@
     "classes": "Классы",
     "settings": "Настройки",
     "profile": "Профиль",
-    "main": "Главная"
+    "main": "Главная",
+    "teach": "Преподавание"
   },
   "forms": {
     "required": "Обязательно",

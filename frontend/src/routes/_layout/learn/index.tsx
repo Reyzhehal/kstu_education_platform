@@ -2,18 +2,17 @@ import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import usePageTitle from "@/hooks/usePageTitle"
-import "../main.css"
 import { CoursesService } from "@/client"
 import { CourseCard, Sidebar } from "@/components/Common"
-import styles from "./main.module.css"
+import usePageTitle from "@/hooks/usePageTitle"
+import styles from "./index.module.css"
 
 type SearchParams = {
   tab?: string
 }
 
-export const Route = createFileRoute("/_layout/main" as any)({
-  component: MainPage,
+export const Route = createFileRoute("/_layout/learn" as any)({
+  component: LearnPage,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
       tab: search.tab as string | undefined,
@@ -21,7 +20,7 @@ export const Route = createFileRoute("/_layout/main" as any)({
   },
 })
 
-function MainPage() {
+function LearnPage() {
   const { t } = useTranslation()
   usePageTitle("pages.main")
   const navigate = useNavigate()
@@ -44,22 +43,10 @@ function MainPage() {
 
   const setTab = (newTab: string) => {
     navigate({
-      to: "/main",
+      to: "/learn",
       search: { tab: newTab },
     } as any)
   }
-
-  // Загружаем избранные курсы
-  const { data: favoritesData } = useQuery({
-    queryKey: ["favorites"],
-    queryFn: () => CoursesService.readFavoriteCourses({ limit: 100 }),
-    enabled: tab === "favorites",
-  })
-
-  const favoriteCourses = useMemo(
-    () => favoritesData?.data ?? [],
-    [favoritesData],
-  )
 
   const currentLabel = tabs.find((t) => t.key === tab)?.label ?? tabs[0].label
   const renderContent = () => {
@@ -69,17 +56,7 @@ function MainPage() {
       case "progress":
         return <ProgressCourses />
       case "favorites":
-        return (
-          <div className="courses-grid">
-            {favoriteCourses.length === 0 ? (
-              <p>{t("content.noFavorites")}</p>
-            ) : (
-              favoriteCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))
-            )}
-          </div>
-        )
+        return <FavoriteCourses />
       case "archive":
         return <p>{t("content.archive")}</p>
       case "classes":
@@ -93,7 +70,7 @@ function MainPage() {
   return (
     <div>
       <div className={styles.container} role="main">
-        <Sidebar tab={tab} setTab={setTab} />
+        <Sidebar tab={tab} setTab={setTab} mode="learn" />
 
         <main className={styles.content}>
           <h1>
@@ -106,20 +83,44 @@ function MainPage() {
   )
 }
 
+function FavoriteCourses() {
+  const { t } = useTranslation()
+  const { data: favoritesData } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: () => CoursesService.readFavoriteCourses({ limit: 100 }),
+  })
+
+  const favoriteCourses = useMemo(
+    () => favoritesData?.data ?? [],
+    [favoritesData],
+  )
+  return (
+    <div className={styles.grid}>
+      {favoriteCourses.length === 0 ? (
+        <p>{t("content.noFavorites")}</p>
+      ) : (
+        favoriteCourses.map((course) => (
+          <CourseCard key={course.id} course={course} variant="default" />
+        ))
+      )}
+    </div>
+  )
+}
+
 function ProgressCourses() {
   const { t } = useTranslation()
   const { data } = useQuery({
     queryKey: ["progress"],
     queryFn: () => CoursesService.readMyCourses({ limit: 100 }),
   })
-  const courses = (data?.data ?? []) as any[]
+  const courses = data?.data ?? []
   return (
     <div className={styles.grid}>
       {courses.length === 0 ? (
         <p>{t("content.yourProgress")}</p>
       ) : (
         courses.map((course) => (
-          <CourseCard key={course.id} course={course as any} />
+          <CourseCard key={course.id} course={course} variant="default" />
         ))
       )}
     </div>

@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesCreateCourseData, CoursesCreateCourseResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadAuthorCoursesData, CoursesReadAuthorCoursesResponse, CoursesPublishCourseData, CoursesPublishCourseResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesUpdateCourseData, CoursesUpdateCourseResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, ModulesReadCourseModulesData, ModulesReadCourseModulesResponse, ModulesCreateModuleData, ModulesCreateModuleResponse, ModulesUpdateModuleData, ModulesUpdateModuleResponse, ModulesDeleteModuleData, ModulesDeleteModuleResponse, ModulesCreateLessonData, ModulesCreateLessonResponse, ModulesUpdateLessonData, ModulesUpdateLessonResponse, ModulesDeleteLessonData, ModulesDeleteLessonResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class CategoriesService {
     /**
@@ -57,9 +57,30 @@ export class CategoriesService {
 
 export class CoursesService {
     /**
+     * Create Course
+     * Создать новый курс. Курс создается как черновик с минимальными данными.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns CoursePublic Successful Response
+     * @throws ApiError
+     */
+    public static createCourse(data: CoursesCreateCourseData): CancelablePromise<CoursesCreateCourseResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/courses/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
      * Read Courses
      * Получить список курсов с фильтрами по категории, подкатегории и текстовому поиску
      * по полям title и description. Поддерживает пагинацию.
+     * Только опубликованные курсы.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
@@ -139,6 +160,50 @@ export class CoursesService {
     }
     
     /**
+     * Read Author Courses
+     * Курсы, созданные текущим пользователем (где он автор)
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns CoursesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readAuthorCourses(data: CoursesReadAuthorCoursesData = {}): CancelablePromise<CoursesReadAuthorCoursesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/courses/author',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Publish Course
+     * Опубликовать курс. Только автор может публиковать.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static publishCourse(data: CoursesPublishCourseData): CancelablePromise<CoursesPublishCourseResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/courses/{course_id}/publish',
+            path: {
+                course_id: data.courseId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
      * Read Course By Id
      * @param data The data for the request.
      * @param data.courseId
@@ -152,6 +217,30 @@ export class CoursesService {
             path: {
                 course_id: data.courseId
             },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Course
+     * Обновить курс. Только автор может обновлять.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.requestBody
+     * @returns CoursePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateCourse(data: CoursesUpdateCourseData): CancelablePromise<CoursesUpdateCourseResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/courses/{course_id}',
+            path: {
+                course_id: data.courseId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: 'Validation Error'
             }
@@ -398,6 +487,181 @@ export class LoginService {
             url: '/api/v1/password-recovery-html-content/{email}',
             path: {
                 email: data.email
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class ModulesService {
+    /**
+     * Read Course Modules
+     * Получить все модули курса с уроками, отсортированные по position
+     * @param data The data for the request.
+     * @param data.courseId
+     * @returns ModuleWithLessons Successful Response
+     * @throws ApiError
+     */
+    public static readCourseModules(data: ModulesReadCourseModulesData): CancelablePromise<ModulesReadCourseModulesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/courses/{course_id}/modules/',
+            path: {
+                course_id: data.courseId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Module
+     * Создать новый модуль в курсе. Только автор курса может создавать модули.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.requestBody
+     * @returns ModulePublic Successful Response
+     * @throws ApiError
+     */
+    public static createModule(data: ModulesCreateModuleData): CancelablePromise<ModulesCreateModuleResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/courses/{course_id}/modules/',
+            path: {
+                course_id: data.courseId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Module
+     * Обновить модуль. Только автор курса может обновлять.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.moduleId
+     * @param data.requestBody
+     * @returns ModulePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateModule(data: ModulesUpdateModuleData): CancelablePromise<ModulesUpdateModuleResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/courses/{course_id}/modules/{module_id}',
+            path: {
+                course_id: data.courseId,
+                module_id: data.moduleId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Module
+     * Удалить модуль. Только автор курса может удалять.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.moduleId
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static deleteModule(data: ModulesDeleteModuleData): CancelablePromise<ModulesDeleteModuleResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/courses/{course_id}/modules/{module_id}',
+            path: {
+                course_id: data.courseId,
+                module_id: data.moduleId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Lesson
+     * Создать новый урок в модуле. Только автор курса может создавать уроки.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.moduleId
+     * @param data.requestBody
+     * @returns LessonPublic Successful Response
+     * @throws ApiError
+     */
+    public static createLesson(data: ModulesCreateLessonData): CancelablePromise<ModulesCreateLessonResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/courses/{course_id}/modules/{module_id}/lessons',
+            path: {
+                course_id: data.courseId,
+                module_id: data.moduleId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Lesson
+     * Обновить урок. Только автор курса может обновлять.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.moduleId
+     * @param data.lessonId
+     * @param data.requestBody
+     * @returns LessonPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateLesson(data: ModulesUpdateLessonData): CancelablePromise<ModulesUpdateLessonResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/courses/{course_id}/modules/{module_id}/lessons/{lesson_id}',
+            path: {
+                course_id: data.courseId,
+                module_id: data.moduleId,
+                lesson_id: data.lessonId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Lesson
+     * Удалить урок. Только автор курса может удалять.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.moduleId
+     * @param data.lessonId
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static deleteLesson(data: ModulesDeleteLessonData): CancelablePromise<ModulesDeleteLessonResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/courses/{course_id}/modules/{module_id}/lessons/{lesson_id}',
+            path: {
+                course_id: data.courseId,
+                module_id: data.moduleId,
+                lesson_id: data.lessonId
             },
             errors: {
                 422: 'Validation Error'

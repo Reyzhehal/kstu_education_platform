@@ -1,4 +1,3 @@
-
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
 from sqlmodel import Session, create_engine, select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -8,8 +7,12 @@ from app.core.config import settings
 from app.models import User, UserCreate
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
-async_engine: AsyncEngine = create_async_engine(str(settings.ASYNC_SQLALCHEMY_DATABASE_URI))
-AsyncSessionLocal = async_sessionmaker(bind=async_engine, expire_on_commit=False, class_=AsyncSession)
+async_engine: AsyncEngine = create_async_engine(
+    str(settings.ASYNC_SQLALCHEMY_DATABASE_URI)
+)
+AsyncSessionLocal = async_sessionmaker(
+    bind=async_engine, expire_on_commit=False, class_=AsyncSession
+)
 
 
 # make sure all SQLModel models are imported (app.models) before initializing DB
@@ -41,7 +44,9 @@ def init_db(session: Session) -> None:
 async def init_db_async() -> None:
     async with AsyncSessionLocal() as session:
         # Ensure models are imported for metadata; tables managed via Alembic
-        result = await session.exec(select(User).where(User.email == settings.FIRST_SUPERUSER))  # type: ignore[arg-type]
+        result = await session.exec(
+            select(User).where(User.email == settings.FIRST_SUPERUSER)
+        )  # type: ignore[arg-type]
         user = result.first()
         if not user:
             user_in = UserCreate(

@@ -10,7 +10,7 @@ import {
 } from "@/components/Common"
 import usePageTitle from "@/hooks/usePageTitle"
 import { withApiBase } from "@/utils"
-import styles from "./course.module.css"
+import styles from "./index.module.css"
 
 export const Route = createFileRoute("/_layout/course/$id")({
   component: CoursePage,

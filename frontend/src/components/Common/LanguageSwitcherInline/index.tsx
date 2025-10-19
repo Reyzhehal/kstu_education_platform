@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { LanguagesService, UsersService } from "@/client"
 import { isLoggedIn } from "@/hooks/useAuth"
 import i18n from "@/i18n"
+import styles from "./LanguageSwitcherInline.module.css"
 
 type Props = {
   className?: string
@@ -39,6 +40,7 @@ export default function LanguageSwitcherInline({ className }: Props) {
   return (
     <div className={className}>
       <select
+        className={styles.select}
         aria-label={t("lang.choose") || "Choose language"}
         value={selectedCode}
         onChange={async (e) => {
@@ -50,13 +52,6 @@ export default function LanguageSwitcherInline({ className }: Props) {
             const lang = languages?.find((l) => l.code === code)
             if (lang) setLanguage.mutate({ language_id: lang.id, code })
           }
-        }}
-        style={{
-          padding: "6px 10px",
-          borderRadius: 6,
-          background: "var(--bg-2)",
-          border: "1px solid var(--border)",
-          color: "var(--text)",
         }}
       >
         {languages?.map((lang) => (

@@ -14,7 +14,7 @@ import { withApiBase } from "@/utils"
 import { renderMarkdown } from "@/utils/markdown"
 import { extractLastSegment, getHost } from "@/utils/social"
 import { getFullName } from "@/utils/user"
-import styles from "./profile.module.css"
+import styles from "./index.module.css"
 
 export const Route = createFileRoute("/_layout/profile/$id")({
   component: ProfileByIdPage,

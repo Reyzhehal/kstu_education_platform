@@ -35,7 +35,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 _RE_WEBSITE = re.compile(r"^https?://[^\s]+$")
 _RE_TELEGRAM = re.compile(r"^https?://t\.me/[^\s]+$")
 _RE_GITHUB = re.compile(r"^https?://(?:www\.)?github\.com/[^\s]+$")
-_RE_YOUTUBE = re.compile(r"^https?://(?:www\.)?(?:youtube\.com/[^\s]+|youtu\.be/[^\s]+)$")
+_RE_YOUTUBE = re.compile(
+    r"^https?://(?:www\.)?(?:youtube\.com/[^\s]+|youtu\.be/[^\s]+)$"
+)
 
 
 def _validate_social_links(payload: dict) -> None:
@@ -50,19 +52,29 @@ def _validate_social_links(payload: dict) -> None:
     if _has_value(website):
         website = website.strip()
         if not _RE_WEBSITE.fullmatch(website):
-            raise HTTPException(status_code=422, detail="website_url must start with http:// or https://")
+            raise HTTPException(
+                status_code=422,
+                detail="website_url must start with http:// or https://",
+            )
     if _has_value(telegram):
         telegram = telegram.strip()
         if not _RE_TELEGRAM.fullmatch(telegram):
-            raise HTTPException(status_code=422, detail="telegram_url must start with https://t.me/")
+            raise HTTPException(
+                status_code=422, detail="telegram_url must start with https://t.me/"
+            )
     if _has_value(github):
         github = github.strip()
         if not _RE_GITHUB.fullmatch(github):
-            raise HTTPException(status_code=422, detail="github_url must start with https://github.com/")
+            raise HTTPException(
+                status_code=422, detail="github_url must start with https://github.com/"
+            )
     if _has_value(youtube):
         youtube = youtube.strip()
         if not _RE_YOUTUBE.fullmatch(youtube):
-            raise HTTPException(status_code=422, detail="youtube_url must start with https://youtube.com/ or https://youtu.be/")
+            raise HTTPException(
+                status_code=422,
+                detail="youtube_url must start with https://youtube.com/ or https://youtu.be/",
+            )
 
 
 MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -70,7 +82,7 @@ MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
 
 def _detect_image_ext_by_magic(data: bytes) -> str | None:
     # JPEG: FF D8 FF
-    if len(data) >= 3 and data[0:3] == b"\xFF\xD8\xFF":
+    if len(data) >= 3 and data[0:3] == b"\xff\xd8\xff":
         return "jpg"
     # PNG: 89 50 4E 47 0D 0A 1A 0A
     if len(data) >= 8 and data[0:8] == b"\x89PNG\r\n\x1a\n":
@@ -259,9 +271,7 @@ async def read_user_by_id(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     count_statement = (
-        select(func.count())
-        .select_from(Course)
-        .where(col(Course.author_id) == user_id)
+        select(func.count()).select_from(Course).where(col(Course.author_id) == user_id)
     )
     courses_count = (await session.exec(count_statement)).one()
     data = user.model_dump()

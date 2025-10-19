@@ -2,16 +2,19 @@ import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useMemo, useState } from "react"
 import { CoursesService, type LanguagePublic, LanguagesService } from "@/client"
-import { CatalogFilters, CourseCard, Pagination } from "@/components/Common"
+import CatalogFilters from "@/components/Common/CatalogFilters"
+import CourseCard from "@/components/Common/CourseCard"
+import Pagination from "@/components/Common/Pagination"
 import useAuth from "@/hooks/useAuth"
-import styles from "./catalog.module.css"
+import usePageTitle from "@/hooks/usePageTitle"
+import styles from "./index.module.css"
 
 type SearchParams = {
   q?: string
 }
 
-export const Route = createFileRoute("/_layout/catalog/$id")({
-  component: CatalogBySubcategory,
+export const Route = createFileRoute("/_layout/catalog/")({
+  component: CatalogPage,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
       q: search.q as string | undefined,
@@ -19,9 +22,9 @@ export const Route = createFileRoute("/_layout/catalog/$id")({
   },
 })
 
-function CatalogBySubcategory() {
+function CatalogPage() {
+  usePageTitle("pages.catalog")
   const { user } = useAuth()
-  const { id } = Route.useParams()
   const { q } = Route.useSearch()
   const [page, setPage] = useState(1)
   const [langs, setLangs] = useState<number[]>([])
@@ -40,17 +43,15 @@ function CatalogBySubcategory() {
   }, [user?.language_id, langs.length])
 
   const { data } = useQuery({
-    queryKey: ["courses", id, page, langs, levels, q],
-    queryFn: () => {
-      return CoursesService.readCourses({
-        subcategoryId: id,
+    queryKey: ["courses", "all", page, langs, levels, q],
+    queryFn: () =>
+      CoursesService.readCourses({
         skip: (page - 1) * 12,
         limit: 12,
         languageId: langs.length === 1 ? langs[0] : undefined,
         difficultyLevel: levels.length === 1 ? levels[0] : undefined,
         q: q || undefined,
-      })
-    },
+      }),
   })
 
   const courses = useMemo(() => data?.data ?? [], [data])

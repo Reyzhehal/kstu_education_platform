@@ -1,3 +1,5 @@
+import styles from "./CheckboxList.module.css"
+
 type Option = { label: string; value: string | number }
 
 type Props = {
@@ -14,27 +16,15 @@ export default function CheckboxList({
   onToggle,
 }: Props) {
   return (
-    <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-      {title ? (
-        <legend style={{ fontWeight: 700, margin: "0 0 8px" }}>{title}</legend>
-      ) : null}
-      <ul
-        style={{
-          listStyle: "none",
-          margin: 0,
-          padding: 0,
-          display: "grid",
-          gap: 6,
-        }}
-      >
+    <fieldset className={styles.fieldset}>
+      {title ? <legend className={styles.legend}>{title}</legend> : null}
+      <ul className={styles.list}>
         {options.map((opt) => {
           const id = String(opt.value)
           const checked = values.includes(opt.value)
           return (
             <li key={id}>
-              <label
-                style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
-              >
+              <label className={styles.label}>
                 <input
                   type="checkbox"
                   checked={checked}

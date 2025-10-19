@@ -159,9 +159,20 @@ export default function CourseCard({
     }
   }
 
+  const difficultyLabels = {
+    0: t("course.difficulty.beginner", { defaultValue: "Начальный" }),
+    1: t("course.difficulty.intermediate", { defaultValue: "Средний" }),
+    2: t("course.difficulty.advanced", { defaultValue: "Продвинутый" }),
+  }
+
+  const difficultyLevel =
+    difficultyLabels[
+      course.difficulty_level as keyof typeof difficultyLabels
+    ] || difficultyLabels[0]
+
   return (
     <div
-      className={`${styles.root} ${variant === "compact" ? styles.compact : ""}`}
+      className={`${styles.root} ${variant === "compact" ? styles.compact : ""} ${variant === "default" ? styles.full : ""}`}
       role="link"
       tabIndex={0}
       onClick={() => navigate({ to: `/course/${course.id}` })}
@@ -175,21 +186,41 @@ export default function CourseCard({
       <img className={styles.img} src={coverImage} alt="" />
       <div className={styles.body}>
         <div className={styles.title}>{course.title}</div>
-        <div className={styles.desc}>{course.description ?? ""}</div>
-        <div className={styles.owner}>
-          {t("course.card.author", { defaultValue: "Автор:" })}{" "}
-          <a
-            href={`/profile/${owner?.id ?? course.author_id}`}
-            className={styles.ownerLink}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {ownerName}
-          </a>
+        {variant !== "compact" && (
+          <>
+            <div className={styles.desc}>{course.description ?? ""}</div>
+            <div className={styles.owner}>
+              {t("course.card.author", { defaultValue: "Автор:" })}{" "}
+              <a
+                href={`/profile/${owner?.id ?? course.author_id}`}
+                className={styles.ownerLink}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {ownerName}
+              </a>
+            </div>
+          </>
+        )}
+        <div className={styles.badges}>
+          <span className={styles.badge}>{difficultyLevel}</span>
+          {course.has_certificate && (
+            <span className={styles.badge}>
+              🎓 {t("course.certificate", { defaultValue: "Сертификат" })}
+            </span>
+          )}
+          {course.is_enrolled && (
+            <span className={`${styles.badge} ${styles.enrolledBadge}`}>
+              ✓ {t("course.enrolled", { defaultValue: "Записан" })}
+            </span>
+          )}
         </div>
         <div className={styles.meta}>
-          {course.hours_total ?? 0} {t("catalog.course.hoursTotal")}
+          {course.hours_total
+            ? `${course.hours_total} ${t("catalog.course.hoursTotal")}`
+            : ""}
+          {course.hours_week ? ` · ${course.hours_week} ч/нед` : ""}
           {(course.students_count ?? 0) > 0
-            ? ` · ${course.students_count}`
+            ? ` · ${course.students_count} ${t("course.students", { defaultValue: "студентов" })}`
             : ""}
         </div>
       </div>

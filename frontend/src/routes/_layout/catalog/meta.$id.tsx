@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { CoursesService, type LanguagePublic, LanguagesService } from "@/client"
 import { CatalogFilters, CourseCard, Pagination } from "@/components/Common"
 import useAuth from "@/hooks/useAuth"
-import styles from "./catalog.module.css"
+import styles from "./index.module.css"
 
 type SearchParams = {
   q?: string

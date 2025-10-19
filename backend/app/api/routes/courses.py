@@ -7,6 +7,8 @@ from sqlmodel import col, func, select
 from app.api.deps import AsyncSessionDep, CurrentUser
 from app.models import (
     Course,
+    CourseCreate,
+    CourseUpdate,
     CourseDescriptionBlock,
     CourseDescriptionLine,
     CourseFavoriteLink,
@@ -14,9 +16,35 @@ from app.models import (
     CoursesPublic,
     CourseStudentLink,
     User,
+    Subcategory,
 )
 
 router = APIRouter(prefix="/courses", tags=["courses"])
+
+
+@router.post("/", response_model=CoursePublic)
+async def create_course(
+    course_in: CourseCreate,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Создать новый курс. Курс создается как черновик с минимальными данными.
+    """
+    course = Course(
+        title=course_in.title,
+        author_id=current_user.id,
+    )
+    session.add(course)
+    await session.commit()
+    await session.refresh(course)
+
+    course_dict = course.model_dump()
+    course_dict["is_favorite"] = False
+    course_dict["students_count"] = 0
+    course_dict["is_enrolled"] = False
+
+    return CoursePublic(**course_dict)
 
 
 @router.get("/", response_model=CoursesPublic)
@@ -35,9 +63,10 @@ async def read_courses(
     """
     Получить список курсов с фильтрами по категории, подкатегории и текстовому поиску
     по полям title и description. Поддерживает пагинацию.
+    Только опубликованные курсы.
     """
 
-    statement = select(Course)
+    statement = select(Course).where(col(Course.is_published) == True)
 
     # Фильтр по категории
     if category_id is not None:
@@ -49,8 +78,6 @@ async def read_courses(
 
     # Фильтр по метакатегории через join subcategory
     if meta_category_id is not None:
-        from app.models import Subcategory
-
         statement = statement.join(
             Subcategory, col(Subcategory.id) == col(Course.subcategory_id)
         ).where(col(Subcategory.meta_category_id) == meta_category_id)
@@ -101,9 +128,13 @@ async def read_courses(
         )
         course_dict["students_count"] = (await session.exec(students_statement)).one()
         # признак записанности
-        enrolled_stmt = select(func.count()).select_from(CourseStudentLink).where(
-            CourseStudentLink.course_id == course.id,
-            CourseStudentLink.user_id == current_user.id,
+        enrolled_stmt = (
+            select(func.count())
+            .select_from(CourseStudentLink)
+            .where(
+                CourseStudentLink.course_id == course.id,
+                CourseStudentLink.user_id == current_user.id,
+            )
         )
         course_dict["is_enrolled"] = (await session.exec(enrolled_stmt)).one() > 0
         courses_public.append(CoursePublic(**course_dict))
@@ -198,6 +229,63 @@ async def read_my_courses(
     return CoursesPublic(data=courses_public, count=count)
 
 
+@router.get("/author", response_model=CoursesPublic)
+async def read_author_courses(
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """Курсы, созданные текущим пользователем (где он автор)"""
+    statement = select(Course).where(col(Course.author_id) == current_user.id)
+
+    count_statement = statement.with_only_columns(func.count()).order_by(None)
+    count = (await session.exec(count_statement)).one()
+
+    statement = statement.offset(skip).limit(limit)
+    courses = (await session.exec(statement)).all()
+
+    courses_public: list[CoursePublic] = []
+    for course in courses:
+        favorite_statement = select(CourseFavoriteLink.course_id).where(
+            CourseFavoriteLink.user_id == current_user.id
+        )
+        favorite_course_ids = set((await session.exec(favorite_statement)).all())
+        students_statement = (
+            select(func.count())
+            .select_from(CourseStudentLink)
+            .where(CourseStudentLink.course_id == course.id)
+        )
+        course_dict = course.model_dump()
+        course_dict["is_favorite"] = course.id in favorite_course_ids
+        course_dict["students_count"] = (await session.exec(students_statement)).one()
+        course_dict["is_enrolled"] = False  # Автор не может быть записан на свой курс
+        courses_public.append(CoursePublic(**course_dict))
+
+    return CoursesPublic(data=courses_public, count=count)
+
+
+@router.post("/{course_id}/publish")
+async def publish_course(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> dict[str, str]:
+    """Опубликовать курс. Только автор может публиковать."""
+    course = await session.get(Course, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Only course author can publish")
+
+    course.is_published = True
+    session.add(course)
+    await session.commit()
+
+    return {"message": "Course published successfully"}
+
+
 @router.get("/{course_id}", response_model=CoursePublic)
 async def read_course_by_id(
     course_id: UUID,
@@ -206,6 +294,10 @@ async def read_course_by_id(
 ) -> Any:
     course = await session.get(Course, course_id)
     if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    # Если курс не опубликован, только автор может его видеть
+    if not course.is_published and course.author_id != current_user.id:
         raise HTTPException(status_code=404, detail="Course not found")
 
     # проверяем избранное
@@ -222,9 +314,13 @@ async def read_course_by_id(
         .where(CourseStudentLink.course_id == course.id)
     )
     course_dict["students_count"] = (await session.exec(students_statement)).one()
-    enrolled_stmt = select(func.count()).select_from(CourseStudentLink).where(
-        CourseStudentLink.course_id == course.id,
-        CourseStudentLink.user_id == current_user.id,
+    enrolled_stmt = (
+        select(func.count())
+        .select_from(CourseStudentLink)
+        .where(
+            CourseStudentLink.course_id == course.id,
+            CourseStudentLink.user_id == current_user.id,
+        )
     )
     course_dict["is_enrolled"] = (await session.exec(enrolled_stmt)).one() > 0
     return CoursePublic(**course_dict)
@@ -363,3 +459,60 @@ async def read_course_description_blocks(
     )
     rows = (await session.exec(statement)).all()
     return [{"title": title, "text": text} for title, text in rows]
+
+
+@router.patch("/{course_id}", response_model=CoursePublic)
+async def update_course(
+    course_id: UUID,
+    course_in: CourseUpdate,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Обновить курс. Только автор может обновлять.
+    """
+    course = await session.get(Course, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Only course author can update")
+
+    # Обновляем только переданные поля
+    update_data = course_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(course, field, value)
+
+    # Обновляем дату изменения
+    from datetime import datetime
+
+    course.datetime_update = datetime.utcnow()
+
+    session.add(course)
+    await session.commit()
+    await session.refresh(course)
+
+    # Проверяем избранное и подписку
+    is_favorite_stmt = select(CourseFavoriteLink).where(
+        CourseFavoriteLink.course_id == course_id,
+        CourseFavoriteLink.user_id == current_user.id,
+    )
+    is_favorite = (await session.exec(is_favorite_stmt)).first() is not None
+
+    students_count_stmt = select(func.count(CourseStudentLink.user_id)).where(
+        CourseStudentLink.course_id == course_id
+    )
+    students_count = (await session.exec(students_count_stmt)).one()
+
+    is_enrolled_stmt = select(CourseStudentLink).where(
+        CourseStudentLink.course_id == course_id,
+        CourseStudentLink.user_id == current_user.id,
+    )
+    is_enrolled = (await session.exec(is_enrolled_stmt)).first() is not None
+
+    course_dict = course.model_dump()
+    course_dict["is_favorite"] = is_favorite
+    course_dict["students_count"] = students_count
+    course_dict["is_enrolled"] = is_enrolled
+
+    return CoursePublic(**course_dict)

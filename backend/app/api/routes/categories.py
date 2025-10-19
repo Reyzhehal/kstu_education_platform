@@ -31,8 +31,9 @@ async def read_categories(
     return CategoriesPublic(data=categories, count=count)
 
 
-
-@router.get("/{category_id}/meta-categories", response_model=MetaCategoriesWithChildrenPublic)
+@router.get(
+    "/{category_id}/meta-categories", response_model=MetaCategoriesWithChildrenPublic
+)
 async def read_meta_categories_by_category(
     category_id: UUID,
     session: AsyncSessionDep,
@@ -41,12 +42,17 @@ async def read_meta_categories_by_category(
     limit: int = 100,
 ) -> Any:
     meta_stmt_count = (
-        select(func.count()).select_from(MetaCategory).where(col(MetaCategory.category_id) == category_id)
+        select(func.count())
+        .select_from(MetaCategory)
+        .where(col(MetaCategory.category_id) == category_id)
     )
     meta_count = (await session.exec(meta_stmt_count)).one()
 
     meta_stmt = (
-        select(MetaCategory).where(col(MetaCategory.category_id) == category_id).offset(skip).limit(limit)
+        select(MetaCategory)
+        .where(col(MetaCategory.category_id) == category_id)
+        .offset(skip)
+        .limit(limit)
     )
     meta_categories = (await session.exec(meta_stmt)).all()
 
@@ -61,10 +67,11 @@ async def read_meta_categories_by_category(
         children = (await session.exec(sub_stmt)).all()
         result.append(
             MetaCategoryWithSubcategoriesPublic(
-                id=mc.id, name=mc.name, category_id=mc.category_id, subcategories=children
+                id=mc.id,
+                name=mc.name,
+                category_id=mc.category_id,
+                subcategories=children,
             )
         )
 
     return MetaCategoriesWithChildrenPublic(data=result, count=meta_count)
-
-

@@ -6,14 +6,21 @@
   height: calc(100vh - var(--header-h) - 48px);
   position: sticky;
   top: 24px;
+  display: flex;
+  flex-direction: column;
 }
 .hero {
-  height: 120px;
-  background:
-    url("/assets/images/header-img-night.png") center / cover no-repeat;
+  height: 80px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
 }
 .menu {
   margin: 0;
   padding: 10px 0;
   list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

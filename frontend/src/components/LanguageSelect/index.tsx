@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguagesService, UsersService as Users, UsersService } from "@/client"
 import i18n from "@/i18n"
+import styles from "./LanguageSelect.module.css"
 
 type Props = {
   className?: string
@@ -41,19 +42,13 @@ export default function LanguageSelect({ className }: Props) {
     <div className={className}>
       <select
         id="lang-select"
+        className={styles.select}
         value={currentId ?? ""}
         onChange={(e) => {
           const id = Number(e.target.value)
           if (!Number.isNaN(id)) setLanguage.mutate({ language_id: id })
           const found = languages?.find((l) => l.id === id)
           if (found?.code) void i18n.changeLanguage(found.code)
-        }}
-        style={{
-          padding: "6px 10px",
-          borderRadius: 6,
-          background: "var(--bg-2)",
-          border: "1px solid var(--border)",
-          color: "var(--text)",
         }}
       >
         <option value="" disabled>

@@ -4,6 +4,7 @@ import type { UserPublic } from "@/client"
 import { UsersService as Users } from "@/client"
 import { withApiBase } from "@/utils"
 import { getInitial } from "@/utils/user"
+import styles from "./UserAvatar.module.css"
 
 type Props = {
   size?: number
@@ -27,20 +28,18 @@ export default function UserAvatar({ size = 32, onClick }: Props) {
   )
   const initial = useMemo(() => getInitial(user), [user])
   const url = user?.avatar_image ? withApiBase(user.avatar_image) : undefined
+
+  const className = `${styles.avatar} ${onClick ? styles.clickable : styles.default}`
+
   const style: React.CSSProperties = {
     width: size,
     height: size,
-    borderRadius: 6,
     background: url ? `url(${url}) center/cover no-repeat` : bg,
-    color: "#fff",
-    display: "grid",
-    placeItems: "center",
-    fontWeight: 700,
-    cursor: onClick ? "pointer" : "default",
-    userSelect: "none",
   }
+
   return (
     <div
+      className={className}
       style={style}
       onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}

@@ -10,7 +10,9 @@ router = APIRouter(prefix="/languages", tags=["languages"])
 
 
 @router.get("/", response_model=LanguagesPublic)
-async def read_languages(session: AsyncSessionDep, skip: int = 0, limit: int = 100) -> Any:
+async def read_languages(
+    session: AsyncSessionDep, skip: int = 0, limit: int = 100
+) -> Any:
     count_statement = select(func.count()).select_from(Language)
     count = (await session.exec(count_statement)).one()
     statement = select(Language).offset(skip).limit(limit)

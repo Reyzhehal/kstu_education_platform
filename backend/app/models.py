@@ -1,9 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import IntEnum
+from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import EmailStr
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import Column, JSON, UniqueConstraint
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -60,6 +61,7 @@ class LanguageBase(SQLModel):
     name: str = Field(unique=True, max_length=20)
     code: str = Field(unique=True, max_length=2)
 
+
 class Language(LanguageBase, table=True):
     id: int = Field(primary_key=True)
     users: list["User"] = Relationship(back_populates="language")
@@ -85,7 +87,7 @@ class User(UserBase, table=True):
     avatar_image: str | None = Field(default=None, max_length=255)
     cover_image: str | None = Field(default=None, max_length=255)
     city: str = Field(default="Bishkek", max_length=30)
-    date_joined: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    date_joined: datetime = Field(default_factory=datetime.utcnow)
     # social links
     website_url: str | None = Field(default=None, max_length=120)
     telegram_url: str | None = Field(default=None, max_length=120)
@@ -156,9 +158,6 @@ class LanguagesPublic(SQLModel):
 
 class SetLanguage(SQLModel):
     language_id: int | None = None
-
-
-# Course domain
 
 
 class CategoryBase(SQLModel):
@@ -264,20 +263,27 @@ class CourseFavoriteLink(SQLModel, table=True):
 
 
 class CourseBase(SQLModel):
-    title: str = Field(min_length=1, max_length=255)
+    title: str = Field(min_length=1, max_length=64)
     cover_image: str | None = Field(default=None, max_length=255)
     description: str | None = Field(default=None, max_length=4000)
     description_video: str | None = Field(default=None, max_length=255)
+    short_description: str | None = Field(default=None, max_length=500)
+    what_you_will_learn: str | None = Field(default=None, max_length=2000)
+    target_audience: str | None = Field(default=None, max_length=2000)
+    requirements: str | None = Field(default=None, max_length=2000)
+    how_it_works: str | None = Field(default=None, max_length=2000)
+    what_you_get: str | None = Field(default=None, max_length=2000)
     hours_week: int | None = None
     hours_total: int | None = None
     has_certificate: bool = False
     difficulty_level: DifficultyLevel = DifficultyLevel.BEGINNER
+    is_published: bool = Field(default=False)
 
 
 class Course(CourseBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    datetime_create: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    datetime_update: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    datetime_create: datetime = Field(default_factory=datetime.utcnow)
+    datetime_update: datetime = Field(default_factory=datetime.utcnow)
     author_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")
     author: User | None = Relationship()
     language_id: int = Field(foreign_key="language.id", ondelete="RESTRICT", default=1)
@@ -327,10 +333,93 @@ class CourseDescriptionLine(CourseDescriptionLineBase, table=True):
         return self.text[:50] + ("…" if len(self.text) > 50 else "")
 
 
+class ModuleBase(SQLModel):
+    title: str = Field(min_length=1, max_length=64)
+    description: str | None = Field(default=None, max_length=256)
+    position: int = Field(default=0)
+
+
+class Module(ModuleBase, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    course_id: UUID = Field(foreign_key="course.id", ondelete="CASCADE")
+    course: Course | None = Relationship()
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class LessonBase(SQLModel):
+    title: str = Field(min_length=1, max_length=64)
+    allow_comments: bool = True
+    position: int = Field(default=0)
+
+
+class Lesson(LessonBase, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    module_id: UUID = Field(foreign_key="module.id", ondelete="CASCADE")
+    module: Module | None = Relationship()
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class StepType(IntEnum):
+    TEXT = 0  # Текст
+    VIDEO = 1  # Видео
+    CODE = 2  # Программирование
+    QUIZ = 3  # Тест (задача)
+    MATCHING = 4  # Задача на сопоставление
+    SORTING = 5  # Задача на сортировку
+    TABLE = 6  # Табличная задача
+    FILL_BLANKS = 7  # Пропуски
+    STRING = 8  # Текстовая задача
+    NUMBER = 9  # Численная задача
+    MATH = 10  # Математическая задача
+    FREE_ANSWER = 11  # Свободный ответ
+    SQL = 12  # SQL Challenge
+    HTML_CSS = 13  # HTML и CSS задача
+    DATASET = 14  # Задача на данные
+
+
+class StepBase(SQLModel):
+    title: str | None = Field(default=None, max_length=255)
+    step_type: StepType = Field(default=StepType.TEXT)
+    position: int = Field(default=0)  # порядок шага в уроке
+
+
+class Step(StepBase, table=True):
+    # Примеры структур content для разных типов:
+    #
+    # TEXT: {"text": str, "images": [str]}
+    # VIDEO: {"url": str, "duration": int}
+    # CODE: {"task": str, "starter_code": str, "test_cases": [...], "language": str}
+    # QUIZ: {"question": str, "options": [...], "correct_answers": [...], "multiple": bool}
+    # MATCHING: {"pairs": [{"left": str, "right": str}], "options": [...]}
+    # SORTING: {"items": [str], "correct_order": [int]}
+    # TABLE: {"headers": [str], "correct_answers": [[str]]}
+    # FILL_BLANKS: {"text": str, "blanks": [{"position": int, "answer": str}]}
+    # STRING: {"question": str, "answer": str, "case_sensitive": bool}
+    # NUMBER: {"question": str, "answer": float, "tolerance": float}
+    # MATH: {"question": str, "answer": str, "variables": {...}}
+    # FREE_ANSWER: {"question": str, "max_length": int}
+    # SQL: {"task": str, "database_schema": str, "test_queries": [...]}
+    # HTML_CSS: {"task": str, "initial_html": str, "initial_css": str}
+    # DATASET: {"task": str, "dataset_url": str, "test_cases": [...]}
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    lesson_id: UUID = Field(foreign_key="lesson.id", ondelete="CASCADE")
+    lesson: Lesson | None = Relationship()
+
+    # JSON поле для специфичного контента каждого типа
+    content: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
+
+    def __str__(self) -> str:
+        return self.title or f"Step {self.position}"
+
+
 class CoursePageBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     video: str | None = Field(default=None, max_length=255)
-    is_demo: bool = False
 
 
 class CoursePage(CoursePageBase, table=True):
@@ -344,7 +433,7 @@ class CoursePage(CoursePageBase, table=True):
 
 class CoursePageCommentBase(SQLModel):
     text: str = Field(min_length=1, max_length=4000)
-    datetime_create: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    datetime_create: datetime = Field(default_factory=datetime.utcnow)
 
 
 class CoursePageComment(CoursePageCommentBase, table=True):
@@ -400,6 +489,30 @@ class Classroom(ClassroomBase, table=True):
 
 
 # Public schemas for Courses
+class CourseCreate(SQLModel):
+    title: str = Field(min_length=1, max_length=64)
+
+
+class CourseUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=64)
+    cover_image: str | None = None
+    description: str | None = None
+    description_video: str | None = None
+    short_description: str | None = None
+    what_you_will_learn: str | None = None
+    target_audience: str | None = None
+    requirements: str | None = None
+    how_it_works: str | None = None
+    what_you_get: str | None = None
+    hours_week: int | None = None
+    hours_total: int | None = None
+    has_certificate: bool | None = None
+    difficulty_level: DifficultyLevel | None = None
+    language_id: int | None = None
+    category_id: UUID | None = None
+    subcategory_id: UUID | None = None
+
+
 class CoursePublic(CourseBase):
     id: UUID
     datetime_create: datetime
@@ -416,3 +529,44 @@ class CoursePublic(CourseBase):
 class CoursesPublic(SQLModel):
     data: list[CoursePublic]
     count: int
+
+
+# Public schemas for Modules
+class ModuleCreate(SQLModel):
+    title: str = Field(min_length=1, max_length=64)
+    description: str | None = None
+    position: int = 0
+
+
+class ModuleUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=64)
+    description: str | None = None
+    position: int | None = None
+
+
+class ModulePublic(ModuleBase):
+    id: UUID
+    course_id: UUID
+
+
+# Public schemas for Lessons
+class LessonCreate(SQLModel):
+    title: str = Field(min_length=1, max_length=64)
+    allow_comments: bool = True
+    position: int = 0
+
+
+class LessonUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=64)
+    allow_comments: bool | None = None
+    position: int | None = None
+
+
+class LessonPublic(LessonBase):
+    id: UUID
+    module_id: UUID
+
+
+# Вложенная структура для просмотра содержания курса
+class ModuleWithLessons(ModulePublic):
+    lessons: list[LessonPublic] = []
