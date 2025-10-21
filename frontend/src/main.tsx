@@ -16,52 +16,43 @@ import { Suspense } from "react"
 import "./styles/markdown.css"
 
 OpenAPI.BASE = import.meta.env.VITE_API_URL
-OpenAPI.TOKEN = async () => {
-  return localStorage.getItem("access_token") || ""
-}
 
 // Флаг для предотвращения бесконечного цикла refresh
 let isRefreshing = false
 let failedQueue: Array<{
-  resolve: (token: string) => void
+  resolve: (value: any) => void
   reject: (error: any) => void
 }> = []
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: any = null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error)
-    } else if (token) {
+    } else {
       prom.resolve(token)
     }
   })
   failedQueue = []
 }
 
-// Response interceptor для автоматического обновления токена
+// Response interceptor для автоматического обновления токена при 401
 OpenAPI.interceptors.response.use(async (response: AxiosResponse) => {
-  const originalRequest = response.config as any
-
-  // Если получили 401 и это не запрос на refresh
+  // Если получили 401 и это не запрос на refresh или login
   if (
     response.status === 401 &&
-    !originalRequest._retry &&
-    !originalRequest.url?.includes("/login/refresh-token")
+    !response.config.url?.includes("/login/access-token") &&
+    !response.config.url?.includes("/login/refresh-token")
   ) {
-    originalRequest._retry = true
+    const originalConfig = response.config
 
+    // Если уже идёт refresh, добавляем запрос в очередь
     if (isRefreshing) {
-      // Если уже идёт refresh, добавляем запрос в очередь
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject })
+      }).then(() => {
+        // Повторяем запрос после получения нового токена
+        return axios(originalConfig)
       })
-        .then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`
-          return axios(originalRequest)
-        })
-        .catch((err) => {
-          return Promise.reject(err)
-        })
     }
 
     isRefreshing = true
@@ -70,39 +61,49 @@ OpenAPI.interceptors.response.use(async (response: AxiosResponse) => {
 
     if (!refreshToken) {
       // Нет refresh токена - редирект на login
+      isRefreshing = false
       localStorage.removeItem("access_token")
+      localStorage.removeItem("refresh_token")
       window.location.href = "/login"
       return response
     }
 
     try {
       // Пытаемся обновить токен
-      const newToken = await LoginService.refreshAccessToken({ refreshToken })
+      const newToken = await LoginService.refreshAccessToken({
+        refreshToken: refreshToken,
+      })
 
       localStorage.setItem("access_token", newToken.access_token)
+
+      // Обновляем TOKEN для будущих запросов
+      OpenAPI.TOKEN = async () => newToken.access_token
 
       // Обрабатываем очередь запросов
       processQueue(null, newToken.access_token)
 
-      // Повторяем оригинальный запрос с новым токеном
-      originalRequest.headers.Authorization = `Bearer ${newToken.access_token}`
-
       isRefreshing = false
 
-      return axios(originalRequest)
+      // Повторяем оригинальный запрос с новым токеном
+      return axios(originalConfig)
     } catch (err) {
       // Не удалось обновить токен - редирект на login
       processQueue(err, null)
+      isRefreshing = false
       localStorage.removeItem("access_token")
       localStorage.removeItem("refresh_token")
       window.location.href = "/login"
-      isRefreshing = false
-      return Promise.reject(err)
+      return response
     }
   }
 
   return response
 })
+
+// Устанавливаем TOKEN после настройки interceptor'а
+OpenAPI.TOKEN = async () => {
+  return localStorage.getItem("access_token") || ""
+}
 
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [403].includes(error.status)) {
