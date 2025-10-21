@@ -183,7 +183,12 @@
     "noCertificate": "Без сертификата",
     "youWillLearn": "Чему вы научитесь",
     "enroll": "Записаться",
-    "unenroll": "Отписаться"
+    "unenroll": "Отписаться",
+    "whatYouWillLearn": "Чему вы научитесь",
+    "targetAudience": "Для кого этот курс",
+    "requirements": "Начальные требования",
+    "howItWorks": "Как проходит обучение",
+    "whatYouGet": "Что вы получаете"
   },
   "teacherCourse": {
     "draft": "Черновик",

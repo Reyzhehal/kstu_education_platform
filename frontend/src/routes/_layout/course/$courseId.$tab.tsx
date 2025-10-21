@@ -11,29 +11,17 @@ import {
 import useAuth from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import usePageTitle from "@/hooks/usePageTitle"
-import styles from "./main.module.css"
+import styles from "./index.module.css"
 
-type SearchParams = {
-  tab?: string
-}
-
-export const Route = createFileRoute("/_layout/course/$courseId" as any)({
+export const Route = createFileRoute("/_layout/course/$courseId/$tab")({
   component: CoursePage,
-  validateSearch: (search: Record<string, unknown>): SearchParams => {
-    return {
-      tab: search.tab as string | undefined,
-    }
-  },
 })
 
 function CoursePage() {
-  const { courseId } = Route.useParams() as { courseId: string }
+  const { courseId, tab } = Route.useParams()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { tab: urlTab } = Route.useSearch()
-  const _queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
 
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [isEditingSyllabus, setIsEditingSyllabus] = useState(false)
@@ -46,12 +34,10 @@ function CoursePage() {
   usePageTitle(course?.title ?? "Курс")
 
   const isAuthor = course?.author_id === user?.id
-  const tab = urlTab || "description"
 
   const setTab = (newTab: string) => {
     navigate({
-      to: `/course/${courseId}`,
-      search: { tab: newTab },
+      to: `/course/${courseId}/${newTab}`,
     } as any)
   }
 

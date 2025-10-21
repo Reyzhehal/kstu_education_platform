@@ -56,7 +56,7 @@ OpenAPI.interceptors.response.use(async (response: AxiosResponse) => {
         failedQueue.push({ resolve, reject })
       })
         .then((token) => {
-          originalRequest.headers["Authorization"] = `Bearer ${token}`
+          originalRequest.headers.Authorization = `Bearer ${token}`
           return axios(originalRequest)
         })
         .catch((err) => {
@@ -85,7 +85,7 @@ OpenAPI.interceptors.response.use(async (response: AxiosResponse) => {
       processQueue(null, newToken.access_token)
 
       // Повторяем оригинальный запрос с новым токеном
-      originalRequest.headers["Authorization"] = `Bearer ${newToken.access_token}`
+      originalRequest.headers.Authorization = `Bearer ${newToken.access_token}`
 
       isRefreshing = false
 

@@ -55,6 +55,19 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const Body_modules_upload_lesson_coverSchema = {
+    properties: {
+        file: {
+            type: 'string',
+            format: 'binary',
+            title: 'File'
+        }
+    },
+    type: 'object',
+    required: ['file'],
+    title: 'Body_modules-upload_lesson_cover'
+} as const;
+
 export const Body_users_upload_avatar_meSchema = {
     properties: {
         file: {
@@ -639,6 +652,28 @@ export const LessonCreateSchema = {
             minLength: 1,
             title: 'Title'
         },
+        cover_image: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image'
+        },
+        language_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Language Id'
+        },
         allow_comments: {
             type: 'boolean',
             title: 'Allow Comments',
@@ -662,6 +697,29 @@ export const LessonPublicSchema = {
             maxLength: 64,
             minLength: 1,
             title: 'Title'
+        },
+        cover_image: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image'
+        },
+        language_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Language Id'
         },
         allow_comments: {
             type: 'boolean',
@@ -703,6 +761,28 @@ export const LessonUpdateSchema = {
                 }
             ],
             title: 'Title'
+        },
+        cover_image: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image'
+        },
+        language_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Language Id'
         },
         allow_comments: {
             anyOf: [
@@ -1033,6 +1113,139 @@ export const SetLanguageSchema = {
     },
     type: 'object',
     title: 'SetLanguage'
+} as const;
+
+export const StepCreateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        step_type: {
+            '$ref': '#/components/schemas/StepType',
+            default: 0
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        },
+        content: {
+            additionalProperties: true,
+            type: 'object',
+            title: 'Content'
+        }
+    },
+    type: 'object',
+    title: 'StepCreate'
+} as const;
+
+export const StepPublicSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        step_type: {
+            '$ref': '#/components/schemas/StepType',
+            default: 0
+        },
+        position: {
+            type: 'integer',
+            title: 'Position',
+            default: 0
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        lesson_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Lesson Id'
+        },
+        content: {
+            additionalProperties: true,
+            type: 'object',
+            title: 'Content'
+        }
+    },
+    type: 'object',
+    required: ['id', 'lesson_id'],
+    title: 'StepPublic'
+} as const;
+
+export const StepTypeSchema = {
+    type: 'integer',
+    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    title: 'StepType'
+} as const;
+
+export const StepUpdateSchema = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        step_type: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/StepType'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        position: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Position'
+        },
+        content: {
+            anyOf: [
+                {
+                    additionalProperties: true,
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Content'
+        }
+    },
+    type: 'object',
+    title: 'StepUpdate'
 } as const;
 
 export const SubcategoryPublicSchema = {

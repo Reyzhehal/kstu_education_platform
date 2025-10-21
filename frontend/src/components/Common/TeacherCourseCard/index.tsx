@@ -27,7 +27,7 @@ export default function TeacherCourseCard({
     : "/assets/images/header-img-night.png"
 
   const handleCardClick = () => {
-    navigate({ to: `/course/${course.id}` })
+    navigate({ to: `/course/${course.id}/description` })
   }
 
   const handleMenuToggle = (e: React.MouseEvent) => {
@@ -47,9 +47,11 @@ export default function TeacherCourseCard({
 
       <div className={styles.body}>
         <div className={styles.header}>
-          <span className={styles.status}>
-            ⚪ {t("teacherCourse.draft", { defaultValue: "Черновик" })}
-          </span>
+          {!course.is_published && (
+            <span className={styles.status}>
+              ⚪ {t("teacherCourse.draft", { defaultValue: "Черновик" })}
+            </span>
+          )}
           <button
             className={styles.menuButton}
             onClick={handleMenuToggle}
@@ -95,7 +97,7 @@ export default function TeacherCourseCard({
             className={styles.tab}
             onClick={(e) => {
               e.stopPropagation()
-              navigate({ to: `/course/${course.id}` })
+              navigate({ to: `/course/${course.id}/description` })
             }}
           >
             {t("teacherCourse.description", { defaultValue: "Описание" })}
@@ -104,19 +106,10 @@ export default function TeacherCourseCard({
             className={styles.tab}
             onClick={(e) => {
               e.stopPropagation()
-              navigate({ to: `/course/${course.id}` })
+              navigate({ to: `/course/${course.id}/syllabus` })
             }}
           >
             {t("teacherCourse.content", { defaultValue: "Содержание" })}
-          </button>
-          <button
-            className={styles.tab}
-            onClick={(e) => {
-              e.stopPropagation()
-              navigate({ to: `/course/${course.id}` })
-            }}
-          >
-            {t("teacherCourse.access", { defaultValue: "Права доступа" })}
           </button>
         </div>
       </div>

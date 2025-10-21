@@ -1,0 +1,609 @@
+.page {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  background: var(--bg);
+}
+
+/* Sidebar Navigation */
+.sidebar {
+  width: 300px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebarHeader {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebarTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modulesList {
+  padding: 12px 0;
+}
+
+.module {
+  margin-bottom: 12px;
+}
+
+.moduleTitle {
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg-2);
+  border-left: 3px solid var(--accent);
+}
+
+.lessonsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lessonItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--text);
+}
+
+.lessonItem:hover {
+  background: var(--bg-2);
+}
+
+.lessonItem.active {
+  background: var(--accent);
+  color: white;
+}
+
+.lessonNumber {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.7;
+  min-width: 40px;
+}
+
+.lessonTitle {
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.stepsEditor {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.editorTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.settingsButton {
+  padding: 10px 20px;
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.settingsButton:hover {
+  background: var(--border);
+}
+
+/* Горизонтальная панель шагов */
+.stepsBar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-height: 20px;
+}
+
+.stepSquare {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  background: var(--bg-2);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+.stepSquare:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stepSquareVideo {
+  background: var(--bg);
+}
+
+.stepSquareIcon {
+  color: var(--text-muted);
+}
+
+.stepSquareActive {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
+.stepSquareActive .stepSquareIcon {
+  color: white;
+}
+
+.stepSquareAdd {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.stepSquareAdd:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.stepSquarePlus {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+/* Редактор активного шага */
+.activeStepEditor {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.activeStepHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.activeStepTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.deleteStepButton {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.deleteStepButton:hover {
+  background: #dc2626;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* Step Editors */
+.textEditor,
+.videoEditor {
+  /* Редакторы отображаются внутри activeStepEditor */
+}
+
+.formField {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.videoPreview {
+  margin-top: 16px;
+}
+
+.videoEmbed {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+/* Lesson Settings */
+.lessonSettings {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.settingsTitle {
+  margin: 0 0 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-weight: normal;
+  font-size: 0.85rem;
+}
+
+.charCount {
+  display: block;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.fileUploadWrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInputLabel {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-size: 0.95rem;
+}
+
+.fileInputLabel:hover {
+  opacity: 0.9;
+}
+
+.fileInputLabel:active {
+  transform: scale(0.98);
+}
+
+.deleteCoverButton {
+  padding: 8px 12px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.1rem;
+}
+
+.deleteCoverButton:hover {
+  background: #dc2626;
+}
+
+.deleteCoverButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.imagePreview {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 300px;
+}
+
+.previewImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--panel);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.modalClose:hover {
+  background: var(--bg-2);
+}
+
+.modalContent {
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.stepTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stepTypeCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.stepTypeCard:hover {
+  border-color: var(--accent);
+  background: var(--bg-2);
+}
+
+.stepTypeIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.stepTypeInfo {
+  flex: 1;
+}
+
+.stepTypeTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.stepTypeDescription {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.moreTypes {
+  text-align: center;
+  padding: 16px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.moreTypes:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 250px;
+  }
+
+  .stepTypeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .stepSquare {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+  }
+
+  .stepSquareIcon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .editorHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .settingsButton {
+    width: 100%;
+  }
+
+  .stepsBar {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .stepSquare {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+  }
+
+  .stepSquareIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .stepLabel {
+    font-size: 0.75rem;
+  }
+}

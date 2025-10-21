@@ -95,7 +95,7 @@ function FavoriteCourses() {
     [favoritesData],
   )
   return (
-    <div className={styles.grid}>
+    <div className={styles.results}>
       {favoriteCourses.length === 0 ? (
         <p>{t("content.noFavorites")}</p>
       ) : (
@@ -115,7 +115,7 @@ function ProgressCourses() {
   })
   const courses = data?.data ?? []
   return (
-    <div className={styles.grid}>
+    <div className={styles.results}>
       {courses.length === 0 ? (
         <p>{t("content.yourProgress")}</p>
       ) : (

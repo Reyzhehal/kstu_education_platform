@@ -3,12 +3,14 @@
   grid-template-columns: 280px 1fr;
   gap: 24px;
   padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 .results {
   margin-top: 0;
 }
 .grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }

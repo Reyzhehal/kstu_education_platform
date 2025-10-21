@@ -1,7 +1,8 @@
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
+from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile
 from sqlmodel import col, select
 
 from app.api.deps import AsyncSessionDep, CurrentUser
@@ -19,6 +20,21 @@ from app.models import (
 )
 
 router = APIRouter(prefix="/courses/{course_id}/modules", tags=["modules"])
+
+MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
+def _detect_image_ext_by_magic(data: bytes) -> str | None:
+    # JPEG: FF D8 FF
+    if len(data) >= 3 and data[0:3] == b"\xff\xd8\xff":
+        return "jpg"
+    # PNG: 89 50 4E 47 0D 0A 1A 0A
+    if len(data) >= 8 and data[0:8] == b"\x89PNG\r\n\x1a\n":
+        return "png"
+    # WEBP: RIFF....WEBP
+    if len(data) >= 12 and data[0:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "webp"
+    return None
 
 
 @router.get("/", response_model=list[ModuleWithLessons])
@@ -181,8 +197,13 @@ async def create_lesson(
     if not module or module.course_id != course_id:
         raise HTTPException(status_code=404, detail="Module not found")
 
+    lesson_data = lesson_in.model_dump()
+    # Устанавливаем язык курса по умолчанию, если не указан
+    if lesson_data.get("language_id") is None:
+        lesson_data["language_id"] = course.language_id
+
     lesson = Lesson(
-        **lesson_in.model_dump(),
+        **lesson_data,
         module_id=module_id,
     )
     session.add(lesson)
@@ -256,3 +277,171 @@ async def delete_lesson(
     await session.commit()
 
     return {"message": "Lesson deleted successfully"}
+
+
+# Отдельный endpoint для получения урока по ID (без привязки к курсу)
+@router.get("/lessons/{lesson_id}", response_model=LessonPublic, tags=["lessons"])
+async def read_lesson_by_id(
+    lesson_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Получить урок по ID. Доступно авторизованным пользователям.
+    """
+    lesson = await session.get(Lesson, lesson_id)
+    if not lesson:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    return LessonPublic(**lesson.model_dump())
+
+
+@router.patch("/lessons/{lesson_id}", response_model=LessonPublic, tags=["lessons"])
+async def update_lesson_by_id(
+    lesson_id: UUID,
+    lesson_in: LessonUpdate,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Обновить урок по ID. Только автор курса может обновлять.
+    """
+    lesson = await session.get(Lesson, lesson_id)
+    if not lesson:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    # Проверяем права доступа через модуль и курс
+    module = await session.get(Module, lesson.module_id)
+    if not module:
+        raise HTTPException(status_code=404, detail="Module not found")
+
+    course = await session.get(Course, module.course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail="Only course author can update lessons"
+        )
+
+    update_data = lesson_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(lesson, field, value)
+
+    session.add(lesson)
+    await session.commit()
+    await session.refresh(lesson)
+
+    return LessonPublic(**lesson.model_dump())
+
+
+@router.post(
+    "/lessons/{lesson_id}/cover", response_model=LessonPublic, tags=["lessons"]
+)
+async def upload_lesson_cover(
+    lesson_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+    file: UploadFile = File(...),
+) -> Any:
+    """
+    Загрузить обложку урока. Принимает image/jpeg, image/png, image/webp.
+    Только автор курса может загружать обложку.
+    """
+    lesson = await session.get(Lesson, lesson_id)
+    if not lesson:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    # Проверяем права доступа через модуль и курс
+    module = await session.get(Module, lesson.module_id)
+    if not module:
+        raise HTTPException(status_code=404, detail="Module not found")
+
+    course = await session.get(Course, module.course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail="Only course author can upload lesson cover"
+        )
+
+    content_type = file.content_type or ""
+    allowed = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+    if content_type not in allowed:
+        raise HTTPException(status_code=400, detail="Unsupported content type")
+
+    covers_dir = Path("app/static/covers")
+    covers_dir.mkdir(parents=True, exist_ok=True)
+    ext = allowed[content_type]
+    filename = f"{lesson_id}_{uuid4().hex}.{ext}"
+    filepath = covers_dir / filename
+
+    data = await file.read()
+    if len(data) > MAX_IMAGE_SIZE_BYTES:
+        raise HTTPException(status_code=413, detail="File too large")
+    magic_ext = _detect_image_ext_by_magic(data)
+    if magic_ext is None or magic_ext != allowed[content_type]:
+        raise HTTPException(status_code=400, detail="Invalid image data")
+    filepath.write_bytes(data)
+
+    # Удаляем старую обложку, если она есть
+    if lesson.cover_image and lesson.cover_image.startswith("/static/covers/"):
+        try:
+            old_path = Path("app") / lesson.cover_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    lesson.cover_image = f"/static/covers/{filename}"
+    session.add(lesson)
+    await session.commit()
+    await session.refresh(lesson)
+
+    return LessonPublic(**lesson.model_dump())
+
+
+@router.delete(
+    "/lessons/{lesson_id}/cover", response_model=LessonPublic, tags=["lessons"]
+)
+async def delete_lesson_cover(
+    lesson_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Удалить обложку урока. Только автор курса может удалять.
+    """
+    lesson = await session.get(Lesson, lesson_id)
+    if not lesson:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    # Проверяем права доступа через модуль и курс
+    module = await session.get(Module, lesson.module_id)
+    if not module:
+        raise HTTPException(status_code=404, detail="Module not found")
+
+    course = await session.get(Course, module.course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail="Only course author can delete lesson cover"
+        )
+
+    if lesson.cover_image and lesson.cover_image.startswith("/static/covers/"):
+        try:
+            old_path = Path("app") / lesson.cover_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    lesson.cover_image = None
+    session.add(lesson)
+    await session.commit()
+    await session.refresh(lesson)
+
+    return LessonPublic(**lesson.model_dump())

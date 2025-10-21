@@ -9,6 +9,10 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type Body_modules_upload_lesson_cover = {
+    file: (Blob | File);
+};
+
 export type Body_users_upload_avatar_me = {
     file: (Blob | File);
 };
@@ -103,12 +107,16 @@ export type LanguagesPublic = {
 
 export type LessonCreate = {
     title: string;
+    cover_image?: (string | null);
+    language_id?: (number | null);
     allow_comments?: boolean;
     position?: number;
 };
 
 export type LessonPublic = {
     title: string;
+    cover_image?: (string | null);
+    language_id?: (number | null);
     allow_comments?: boolean;
     position?: number;
     id: string;
@@ -117,6 +125,8 @@ export type LessonPublic = {
 
 export type LessonUpdate = {
     title?: (string | null);
+    cover_image?: (string | null);
+    language_id?: (number | null);
     allow_comments?: (boolean | null);
     position?: (number | null);
 };
@@ -181,6 +191,37 @@ export type PrivateUserCreate = {
 
 export type SetLanguage = {
     language_id?: (number | null);
+};
+
+export type StepCreate = {
+    title?: (string | null);
+    step_type?: StepType;
+    position?: number;
+    content?: {
+        [key: string]: unknown;
+    };
+};
+
+export type StepPublic = {
+    title?: (string | null);
+    step_type?: StepType;
+    position?: number;
+    id: string;
+    lesson_id: string;
+    content?: {
+        [key: string]: unknown;
+    };
+};
+
+export type StepType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
+
+export type StepUpdate = {
+    title?: (string | null);
+    step_type?: (StepType | null);
+    position?: (number | null);
+    content?: ({
+    [key: string]: unknown;
+} | null);
 };
 
 export type SubcategoryPublic = {
@@ -406,6 +447,32 @@ export type LanguagesReadLanguagesData = {
 
 export type LanguagesReadLanguagesResponse = (LanguagesPublic);
 
+export type ModulesReadLessonByIdData = {
+    lessonId: string;
+};
+
+export type ModulesReadLessonByIdResponse = (LessonPublic);
+
+export type ModulesUpdateLessonByIdData = {
+    lessonId: string;
+    requestBody: LessonUpdate;
+};
+
+export type ModulesUpdateLessonByIdResponse = (LessonPublic);
+
+export type ModulesUploadLessonCoverData = {
+    formData: Body_modules_upload_lesson_cover;
+    lessonId: string;
+};
+
+export type ModulesUploadLessonCoverResponse = (LessonPublic);
+
+export type ModulesDeleteLessonCoverData = {
+    lessonId: string;
+};
+
+export type ModulesDeleteLessonCoverResponse = (LessonPublic);
+
 export type LoginLoginAccessTokenData = {
     formData: Body_login_login_access_token;
 };
@@ -506,6 +573,41 @@ export type PrivateCreateUserData = {
 };
 
 export type PrivateCreateUserResponse = (UserPublic);
+
+export type StepsReadLessonStepsData = {
+    lessonId: string;
+};
+
+export type StepsReadLessonStepsResponse = (Array<StepPublic>);
+
+export type StepsCreateStepData = {
+    lessonId: string;
+    requestBody: StepCreate;
+};
+
+export type StepsCreateStepResponse = (StepPublic);
+
+export type StepsReadStepData = {
+    lessonId: string;
+    stepId: string;
+};
+
+export type StepsReadStepResponse = (StepPublic);
+
+export type StepsUpdateStepData = {
+    lessonId: string;
+    requestBody: StepUpdate;
+    stepId: string;
+};
+
+export type StepsUpdateStepResponse = (StepPublic);
+
+export type StepsDeleteStepData = {
+    lessonId: string;
+    stepId: string;
+};
+
+export type StepsDeleteStepResponse = (unknown);
 
 export type UsersReadUsersData = {
     limit?: number;

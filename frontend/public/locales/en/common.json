@@ -191,7 +191,12 @@
     "noCertificate": "No certificate",
     "youWillLearn": "What you'll learn",
     "enroll": "Enroll",
-    "unenroll": "Unenroll"
+    "unenroll": "Unenroll",
+    "whatYouWillLearn": "What you will learn",
+    "targetAudience": "Who is this course for",
+    "requirements": "Prerequisites",
+    "howItWorks": "How learning works",
+    "whatYouGet": "What you get"
   },
   "teacherCourse": {
     "draft": "Draft",

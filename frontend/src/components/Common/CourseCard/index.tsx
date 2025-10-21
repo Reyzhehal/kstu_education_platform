@@ -175,11 +175,11 @@ export default function CourseCard({
       className={`${styles.root} ${variant === "compact" ? styles.compact : ""} ${variant === "default" ? styles.full : ""}`}
       role="link"
       tabIndex={0}
-      onClick={() => navigate({ to: `/course/${course.id}` })}
+      onClick={() => navigate({ to: `/promo/${course.id}` })}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault()
-          navigate({ to: `/course/${course.id}` })
+          navigate({ to: `/promo/${course.id}` })
         }
       }}
     >

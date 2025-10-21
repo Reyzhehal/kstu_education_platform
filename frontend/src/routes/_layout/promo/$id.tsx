@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { CoursesService } from "@/client"
 import {
   CourseDescriptionBlocks,
@@ -12,7 +14,7 @@ import usePageTitle from "@/hooks/usePageTitle"
 import { withApiBase } from "@/utils"
 import styles from "./index.module.css"
 
-export const Route = createFileRoute("/_layout/course/$id")({
+export const Route = createFileRoute("/_layout/promo/$id")({
   component: CoursePage,
 })
 
@@ -179,7 +181,89 @@ function CoursePage() {
       <section className={styles.body}>
         <div className={styles.bodyInner}>
           <div>
+            {/* Краткое описание */}
+            {course.short_description && (
+              <div className={styles.section}>
+                <div className={styles.sectionContent}>
+                  {course.short_description}
+                </div>
+              </div>
+            )}
+
+            {/* Что вы получите */}
+            {course.what_you_get && (
+              <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {t("coursePage.whatYouGet")}
+                </h2>
+                <div className={`${styles.sectionContent} markdown-body`}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {course.what_you_get}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Что вы изучите - из отдельного API (списком) */}
             <CourseLearnList items={learnData ?? []} />
+
+            {/* Что вы изучите - из поля модели */}
+            {course.what_you_will_learn && (
+              <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {t("coursePage.whatYouWillLearn")}
+                </h2>
+                <div className={`${styles.sectionContent} markdown-body`}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {course.what_you_will_learn}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Требования */}
+            {course.requirements && (
+              <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {t("coursePage.requirements")}
+                </h2>
+                <div className={`${styles.sectionContent} markdown-body`}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {course.requirements}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Целевая аудитория */}
+            {course.target_audience && (
+              <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {t("coursePage.targetAudience")}
+                </h2>
+                <div className={`${styles.sectionContent} markdown-body`}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {course.target_audience}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Как проходит обучение */}
+            {course.how_it_works && (
+              <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {t("coursePage.howItWorks")}
+                </h2>
+                <div className={`${styles.sectionContent} markdown-body`}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {course.how_it_works}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Блоки описания из отдельного API */}
             <CourseDescriptionBlocks blocks={normalizedBlocks} />
           </div>
           <div className={styles.sidebarAbs}>

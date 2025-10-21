@@ -63,7 +63,7 @@ const useAuth = () => {
 
   const logout = async () => {
     const refreshToken = localStorage.getItem("refresh_token")
-    
+
     // Пытаемся отозвать refresh token
     if (refreshToken) {
       try {
@@ -75,7 +75,7 @@ const useAuth = () => {
         console.error("Failed to revoke refresh token:", error)
       }
     }
-    
+
     localStorage.removeItem("access_token")
     localStorage.removeItem("refresh_token")
     navigate({ to: "/login" })

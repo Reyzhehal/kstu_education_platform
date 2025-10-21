@@ -154,7 +154,7 @@ class RefreshToken(SQLModel, table=True):
     expires_at: datetime
     created_at: datetime = Field(default_factory=datetime.utcnow)
     revoked: bool = Field(default=False)
-    
+
     def __str__(self) -> str:
         return f"RefreshToken({self.token_id[:8]}...)"
 
@@ -367,6 +367,8 @@ class Module(ModuleBase, table=True):
 
 class LessonBase(SQLModel):
     title: str = Field(min_length=1, max_length=64)
+    cover_image: str | None = Field(default=None, max_length=255)
+    language_id: int | None = None
     allow_comments: bool = True
     position: int = Field(default=0)
 
@@ -375,6 +377,8 @@ class Lesson(LessonBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     module_id: UUID = Field(foreign_key="module.id", ondelete="CASCADE")
     module: Module | None = Relationship()
+    language_id: int = Field(foreign_key="language.id", ondelete="RESTRICT", default=1)
+    language: Language | None = Relationship()
 
     def __str__(self) -> str:
         return self.title
@@ -569,12 +573,16 @@ class ModulePublic(ModuleBase):
 # Public schemas for Lessons
 class LessonCreate(SQLModel):
     title: str = Field(min_length=1, max_length=64)
+    cover_image: str | None = None
+    language_id: int | None = None
     allow_comments: bool = True
     position: int = 0
 
 
 class LessonUpdate(SQLModel):
     title: str | None = Field(default=None, min_length=1, max_length=64)
+    cover_image: str | None = None
+    language_id: int | None = None
     allow_comments: bool | None = None
     position: int | None = None
 
@@ -587,3 +595,29 @@ class LessonPublic(LessonBase):
 # Вложенная структура для просмотра содержания курса
 class ModuleWithLessons(ModulePublic):
     lessons: list[LessonPublic] = []
+
+
+# Public schemas for Steps
+class StepCreate(SQLModel):
+    title: str | None = None
+    step_type: StepType = StepType.TEXT
+    position: int = 0
+    content: dict[str, Any] = Field(default_factory=dict)
+
+
+class StepUpdate(SQLModel):
+    title: str | None = None
+    step_type: StepType | None = None
+    position: int | None = None
+    content: dict[str, Any] | None = None
+
+
+class StepPublic(StepBase):
+    id: UUID
+    lesson_id: UUID
+    content: dict[str, Any] = Field(default_factory=dict)
+
+
+class StepsPublic(SQLModel):
+    data: list[StepPublic]
+    count: int
