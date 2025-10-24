@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { StepPublic, StepType } from "@/client"
 import {
-  CoursesService,
   LanguagesService,
   LessonsService,
   ModulesService,
@@ -12,7 +12,9 @@ import {
 import { RichTextEditor } from "@/components/Common"
 import useCustomToast from "@/hooks/useCustomToast"
 import usePageTitle from "@/hooks/usePageTitle"
-import styles from "./edit.module.css"
+import { LANGUAGES_QUERY_KEY } from "@/routes/_layout"
+import { withApiBase } from "@/utils"
+import styles from "./index.module.css"
 
 // StepType enum значения
 const STEP_TYPE_TEXT: StepType = 0
@@ -33,13 +35,14 @@ export const Route = createFileRoute("/_layout/lesson/$lessonId/edit")({
 
 function LessonEditPage() {
   const { lessonId } = Route.useParams()
+  const { t } = useTranslation()
 
   // Загружаем курс для проверки прав доступа
   // Будем грузить модули, чтобы найти нужный урок и курс
   const [courseId, setCourseId] = useState<string | null>(null)
   const [currentLessonId, setCurrentLessonId] = useState<string>(lessonId)
 
-  usePageTitle("Редактирование урока")
+  usePageTitle(t("lesson.edit.title"))
 
   return (
     <div className={styles.page}>
@@ -69,13 +72,28 @@ function LessonNavigationSidebar({
   onLessonSelect,
   onCourseIdFound,
 }: LessonNavigationSidebarProps) {
-  // Получаем список всех курсов пользователя, чтобы найти нужный
-  const { data: coursesData } = useQuery({
-    queryKey: ["authorCourses"],
-    queryFn: () => CoursesService.readAuthorCourses({ skip: 0, limit: 100 }),
+  const { t } = useTranslation()
+
+  const { data: currentLesson } = useQuery({
+    queryKey: ["lesson", currentLessonId],
+    queryFn: () => LessonsService.readLesson({ lessonId: currentLessonId }),
   })
 
-  // Находим курс по lessonId через модули
+  const { data: currentModule } = useQuery({
+    queryKey: ["module", currentLesson?.module_id],
+    queryFn: () =>
+      currentLesson?.module_id
+        ? ModulesService.readModule({ moduleId: currentLesson.module_id })
+        : null,
+    enabled: !!currentLesson?.module_id,
+  })
+
+  useEffect(() => {
+    if (currentModule?.course_id && !courseId) {
+      onCourseIdFound(currentModule.course_id)
+    }
+  }, [currentModule?.course_id, courseId, onCourseIdFound])
+
   const { data: modules } = useQuery({
     queryKey: ["courseModules", courseId],
     queryFn: () =>
@@ -83,57 +101,45 @@ function LessonNavigationSidebar({
     enabled: !!courseId,
   })
 
-  // Находим courseId если еще не нашли
-  useQuery({
-    queryKey: ["findCourseByLesson", currentLessonId],
-    queryFn: async () => {
-      if (!coursesData?.data) return null
-      for (const course of coursesData.data) {
-        const mods = await ModulesService.readCourseModules({
-          courseId: course.id,
-        })
-        for (const mod of mods) {
-          const lesson = mod.lessons?.find((l: any) => l.id === currentLessonId)
-          if (lesson) {
-            onCourseIdFound(course.id)
-            return course.id
-          }
-        }
-      }
-      return null
-    },
-    enabled: !courseId && !!coursesData,
-  })
+  const isLoading = !courseId || !modules
 
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <h2 className={styles.sidebarTitle}>Содержание курса</h2>
+        <h2 className={styles.sidebarTitle}>
+          {t("lesson.edit.courseContent")}
+        </h2>
       </div>
       <div className={styles.modulesList}>
-        {modules?.map((module: any, moduleIndex: number) => (
-          <div key={module.id} className={styles.module}>
-            <div className={styles.moduleTitle}>
-              {moduleIndex + 1}. {module.title}
+        {isLoading ? (
+          <div className={styles.loading}>{t("common.loading")}</div>
+        ) : modules?.length === 0 ? (
+          <div className={styles.empty}>{t("lesson.edit.noContent")}</div>
+        ) : (
+          modules?.map((module: any, moduleIndex: number) => (
+            <div key={module.id} className={styles.module}>
+              <div className={styles.moduleTitle}>
+                {moduleIndex + 1}. {module.title}
+              </div>
+              <ul className={styles.lessonsList}>
+                {module.lessons?.map((lesson: any, lessonIndex: number) => (
+                  <li
+                    key={lesson.id}
+                    className={`${styles.lessonItem} ${
+                      lesson.id === currentLessonId ? styles.active : ""
+                    }`}
+                    onClick={() => onLessonSelect(lesson.id)}
+                  >
+                    <span className={styles.lessonNumber}>
+                      {moduleIndex + 1}.{lessonIndex + 1}
+                    </span>
+                    <span className={styles.lessonTitle}>{lesson.title}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className={styles.lessonsList}>
-              {module.lessons?.map((lesson: any, lessonIndex: number) => (
-                <li
-                  key={lesson.id}
-                  className={`${styles.lessonItem} ${
-                    lesson.id === currentLessonId ? styles.active : ""
-                  }`}
-                  onClick={() => onLessonSelect(lesson.id)}
-                >
-                  <span className={styles.lessonNumber}>
-                    {moduleIndex + 1}.{lessonIndex + 1}
-                  </span>
-                  <span className={styles.lessonTitle}>{lesson.title}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </aside>
   )
@@ -145,6 +151,7 @@ type LessonStepsEditorProps = {
 }
 
 function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
+  const { t } = useTranslation()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const queryClient = useQueryClient()
   const [showStepTypeModal, setShowStepTypeModal] = useState(false)
@@ -154,13 +161,14 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   // Загружаем данные урока
   const { data: lessonData } = useQuery({
     queryKey: ["lesson", lessonId],
-    queryFn: () => LessonsService.modulesReadLessonById({ lessonId }),
+    queryFn: () => LessonsService.readLesson({ lessonId }),
   })
 
-  // Загружаем список языков
+  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: languagesData } = useQuery({
-    queryKey: ["languages"],
+    queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages(),
+    staleTime: Infinity, // Языки загружаются один раз в Layout
   })
 
   // Загружаем шаги урока
@@ -186,10 +194,10 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessonSteps", lessonId] })
-      showSuccessToast("Шаг добавлен")
+      showSuccessToast(t("lesson.edit.stepAdded"))
     },
     onError: () => {
-      showErrorToast("Ошибка при добавлении шага")
+      showErrorToast(t("lesson.edit.errorAddingStep"))
     },
   })
 
@@ -208,10 +216,10 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessonSteps", lessonId] })
-      showSuccessToast("Шаг обновлен")
+      showSuccessToast(t("lesson.edit.stepUpdated"))
     },
     onError: () => {
-      showErrorToast("Ошибка при обновлении шага")
+      showErrorToast(t("lesson.edit.errorUpdatingStep"))
     },
   })
 
@@ -220,10 +228,10 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
       StepsService.deleteStep({ lessonId, stepId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessonSteps", lessonId] })
-      showSuccessToast("Шаг удален")
+      showSuccessToast(t("lesson.edit.stepDeleted"))
     },
     onError: () => {
-      showErrorToast("Ошибка при удалении шага")
+      showErrorToast(t("lesson.edit.errorDeletingStep"))
     },
   })
 
@@ -234,18 +242,18 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
       language_id?: number
       allow_comments?: boolean
     }) =>
-      LessonsService.modulesUpdateLessonById({
+      LessonsService.updateLesson({
         lessonId,
         requestBody: data,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lesson", lessonId] })
       queryClient.invalidateQueries({ queryKey: ["courseModules"] })
-      showSuccessToast("Настройки урока обновлены")
+      showSuccessToast(t("lesson.edit.settingsUpdated"))
       setShowLessonSettings(false)
     },
     onError: () => {
-      showErrorToast("Ошибка при обновлении урока")
+      showErrorToast(t("lesson.edit.errorUpdatingLesson"))
     },
   })
 
@@ -255,33 +263,18 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
         throw new Error("Course ID not found")
       }
 
-      const formData = new FormData()
-      formData.append("file", file)
-
-      const response = await fetch(
-        `http://localhost:8000/api/courses/${courseId}/modules/lessons/${lessonId}/cover`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-          body: formData,
-        },
-      )
-
-      if (!response.ok) {
-        throw new Error("Failed to upload cover")
-      }
-
-      return response.json()
+      return LessonsService.uploadLessonCover({
+        lessonId,
+        formData: { file },
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lesson", lessonId] })
       queryClient.invalidateQueries({ queryKey: ["courseModules"] })
-      showSuccessToast("Обложка загружена")
+      showSuccessToast(t("lesson.edit.coverUploaded"))
     },
     onError: () => {
-      showErrorToast("Ошибка при загрузке обложки")
+      showErrorToast(t("lesson.edit.errorUploadingCover"))
     },
   })
 
@@ -291,29 +284,17 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
         throw new Error("Course ID not found")
       }
 
-      const response = await fetch(
-        `http://localhost:8000/api/courses/${courseId}/modules/lessons/${lessonId}/cover`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        },
-      )
-
-      if (!response.ok) {
-        throw new Error("Failed to delete cover")
-      }
-
-      return response.json()
+      return LessonsService.deleteLessonCover({
+        lessonId,
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lesson", lessonId] })
       queryClient.invalidateQueries({ queryKey: ["courseModules"] })
-      showSuccessToast("Обложка удалена")
+      showSuccessToast(t("lesson.edit.coverDeleted"))
     },
     onError: () => {
-      showErrorToast("Ошибка при удалении обложки")
+      showErrorToast(t("lesson.edit.errorDeletingCover"))
     },
   })
 
@@ -325,7 +306,7 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
     const defaultContent =
       stepType === "text"
         ? {
-            text: "Вы можете добавить в этот шаг текст, а также изображения, математические формулы, примеры кода и многое другое.",
+            text: t("lesson.edit.defaultTextContent"),
           }
         : { url: "" }
 
@@ -343,7 +324,7 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   }
 
   const handleDeleteStep = (stepId: string) => {
-    if (confirm("Вы уверены, что хотите удалить этот шаг?")) {
+    if (confirm(t("lesson.edit.confirmDeleteStep"))) {
       deleteStepMutation.mutate(stepId)
     }
   }
@@ -361,12 +342,12 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   return (
     <div className={styles.stepsEditor}>
       <div className={styles.editorHeader}>
-        <h1 className={styles.editorTitle}>Редактирование урока</h1>
+        <h1 className={styles.editorTitle}>{t("lesson.edit.title")}</h1>
         <button
           className={styles.settingsButton}
           onClick={() => setShowLessonSettings(!showLessonSettings)}
         >
-          ⚙️ Настройки урока
+          {t("lesson.edit.settingsButton")}
         </button>
       </div>
 
@@ -396,7 +377,11 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
                 index === activeStepIndex ? styles.stepSquareActive : ""
               } ${step.step_type === STEP_TYPE_VIDEO ? styles.stepSquareVideo : ""}`}
               onClick={() => setActiveStepIndex(index)}
-              title={`Шаг ${index + 1}: ${step.step_type === STEP_TYPE_TEXT ? "Текст" : "Видео"}`}
+              title={
+                step.step_type === STEP_TYPE_TEXT
+                  ? t("lesson.edit.stepNumberText", { number: index + 1 })
+                  : t("lesson.edit.stepNumberVideo", { number: index + 1 })
+              }
             >
               {step.step_type === STEP_TYPE_VIDEO ? (
                 <svg
@@ -430,7 +415,7 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
           <button
             className={`${styles.stepSquare} ${styles.stepSquareAdd}`}
             onClick={handleAddStep}
-            title="Добавить новый шаг"
+            title={t("lesson.edit.addNewStep")}
           >
             <span className={styles.stepSquarePlus}>+</span>
           </button>
@@ -442,8 +427,13 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
         <div className={styles.activeStepEditor}>
           <div className={styles.activeStepHeader}>
             <h2 className={styles.activeStepTitle}>
-              Шаг {activeStepIndex + 1}:{" "}
-              {activeStep.step_type === STEP_TYPE_TEXT ? "Текст" : "Видео"}
+              {activeStep.step_type === STEP_TYPE_TEXT
+                ? t("lesson.edit.stepNumberText", {
+                    number: activeStepIndex + 1,
+                  })
+                : t("lesson.edit.stepNumberVideo", {
+                    number: activeStepIndex + 1,
+                  })}
             </h2>
             <button
               className={styles.deleteStepButton}
@@ -453,9 +443,9 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
                   setActiveStepIndex(activeStepIndex - 1)
                 }
               }}
-              title="Удалить шаг"
+              title={t("lesson.edit.deleteStep")}
             >
-              × Удалить
+              × {t("lesson.edit.deleteStep")}
             </button>
           </div>
           {activeStep.step_type === STEP_TYPE_TEXT ? (
@@ -476,7 +466,7 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <p>Шагов пока нет. Добавьте первый шаг.</p>
+          <p>{t("lesson.edit.noSteps")}</p>
         </div>
       )}
 
@@ -496,17 +486,19 @@ type StepTypeModalProps = {
 }
 
 function StepTypeModal({ onClose, onSelect }: StepTypeModalProps) {
+  const { t } = useTranslation()
+
   const stepTypes = [
     {
       key: "text",
-      title: "Текст",
-      description: "Текст с форматированием, изображениями, формулами",
+      title: t("lesson.edit.stepTypeText"),
+      description: t("lesson.edit.stepTypeTextDescription"),
       icon: "☰",
     },
     {
       key: "video",
-      title: "Видео",
-      description: "Загружайте видео",
+      title: t("lesson.edit.stepTypeVideo"),
+      description: t("lesson.edit.stepTypeVideoDescription"),
       icon: "🎬",
     },
   ]
@@ -515,7 +507,9 @@ function StepTypeModal({ onClose, onSelect }: StepTypeModalProps) {
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Выберите тип шага</h2>
+          <h2 className={styles.modalTitle}>
+            {t("lesson.edit.selectStepType")}
+          </h2>
           <button className={styles.modalClose} onClick={onClose}>
             ×
           </button>
@@ -538,7 +532,8 @@ function StepTypeModal({ onClose, onSelect }: StepTypeModalProps) {
               </button>
             ))}
           </div>
-          <div className={styles.moreTypes}>+ ещё 18 типов шага</div>
+          {/* TODO: Temporary disabled more types */}
+          {/* <div className={styles.moreTypes}>+ ещё 18 типов шага</div> */}
         </div>
       </div>
     </div>
@@ -551,6 +546,7 @@ type TextStepEditorProps = {
 }
 
 function TextStepEditor({ step, onUpdate }: TextStepEditorProps) {
+  const { t } = useTranslation()
   const content = (step.content || {}) as TextStepContent
   const [text, setText] = useState(content.text || "")
 
@@ -574,7 +570,7 @@ function TextStepEditor({ step, onUpdate }: TextStepEditorProps) {
       <RichTextEditor
         content={text}
         onChange={setText}
-        placeholder="Введите текст шага..."
+        placeholder={t("lesson.edit.textPlaceholder")}
       />
     </div>
   )
@@ -586,6 +582,7 @@ type VideoStepEditorProps = {
 }
 
 function VideoStepEditor({ step, onUpdate }: VideoStepEditorProps) {
+  const { t } = useTranslation()
   const content = (step.content || {}) as VideoStepContent
   const [url, setUrl] = useState(content.url || "")
 
@@ -607,13 +604,13 @@ function VideoStepEditor({ step, onUpdate }: VideoStepEditorProps) {
   return (
     <div className={styles.videoEditor}>
       <div className={styles.formField}>
-        <label className={styles.label}>URL видео (YouTube)</label>
+        <label className={styles.label}>{t("lesson.edit.videoUrl")}</label>
         <input
           type="url"
           className={styles.input}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://youtube.com/watch?v=..."
+          placeholder={t("lesson.edit.videoUrlPlaceholder")}
         />
       </div>
       {url?.includes("youtube.com") && (
@@ -654,6 +651,7 @@ function LessonSettingsCard({
   onUploadCover,
   onDeleteCover,
 }: LessonSettingsCardProps) {
+  const { t } = useTranslation()
   const [title, setTitle] = useState(lesson.title || "")
   const [coverImage, setCoverImage] = useState(lesson.cover_image || "")
   const [languageId, setLanguageId] = useState(lesson.language_id || 1)
@@ -677,13 +675,13 @@ function LessonSettingsCard({
 
     // Проверяем тип файла
     if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
-      alert("Пожалуйста, выберите изображение в формате JPEG, PNG или WEBP")
+      alert(t("lesson.edit.imageFormatError"))
       return
     }
 
     // Проверяем размер файла (5 МБ)
     if (file.size > 5 * 1024 * 1024) {
-      alert("Размер файла не должен превышать 5 МБ")
+      alert(t("lesson.edit.imageSizeError"))
       return
     }
 
@@ -693,7 +691,7 @@ function LessonSettingsCard({
       // URL обновится через рефреш данных
     } catch (error) {
       console.error("Error uploading cover:", error)
-      alert("Ошибка при загрузке обложки")
+      alert(t("lesson.edit.errorUploadingCover"))
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) {
@@ -703,7 +701,7 @@ function LessonSettingsCard({
   }
 
   const handleDeleteCover = async () => {
-    if (!confirm("Удалить обложку урока?")) return
+    if (!confirm(t("lesson.edit.confirmDeleteCover"))) return
 
     setIsUploading(true)
     try {
@@ -711,7 +709,7 @@ function LessonSettingsCard({
       setCoverImage("")
     } catch (error) {
       console.error("Error deleting cover:", error)
-      alert("Ошибка при удалении обложки")
+      alert(t("lesson.edit.errorDeletingCover"))
     } finally {
       setIsUploading(false)
     }
@@ -724,16 +722,16 @@ function LessonSettingsCard({
 
   return (
     <div className={styles.lessonSettings}>
-      <h2 className={styles.settingsTitle}>Основные настройки</h2>
+      <h2 className={styles.settingsTitle}>{t("lesson.edit.basicSettings")}</h2>
 
       <div className={styles.formField}>
-        <label className={styles.label}>Название урока</label>
+        <label className={styles.label}>{t("lesson.edit.lessonTitle")}</label>
         <input
           type="text"
           className={styles.input}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Введите название урока"
+          placeholder={t("lesson.edit.lessonTitlePlaceholder")}
           maxLength={64}
         />
         <span className={styles.charCount}>{title.length}/64</span>
@@ -741,8 +739,8 @@ function LessonSettingsCard({
 
       <div className={styles.formField}>
         <label className={styles.label}>
-          Обложка урока
-          <span className={styles.hint}> (необязательно)</span>
+          {t("lesson.edit.lessonCover")}
+          <span className={styles.hint}> {t("lesson.edit.optional")}</span>
         </label>
         <div className={styles.fileUploadWrapper}>
           <input
@@ -755,7 +753,9 @@ function LessonSettingsCard({
             id="cover-upload"
           />
           <label htmlFor="cover-upload" className={styles.fileInputLabel}>
-            {isUploading ? "Загрузка..." : "Выбрать файл"}
+            {isUploading
+              ? t("lesson.edit.uploading")
+              : t("lesson.edit.selectFile")}
           </label>
           {coverImage && (
             <button
@@ -763,7 +763,7 @@ function LessonSettingsCard({
               onClick={handleDeleteCover}
               disabled={isUploading}
               className={styles.deleteCoverButton}
-              title="Удалить обложку"
+              title={t("lesson.edit.deleteCover")}
             >
               ✕
             </button>
@@ -772,11 +772,7 @@ function LessonSettingsCard({
         {coverImage && (
           <div className={styles.imagePreview}>
             <img
-              src={
-                coverImage.startsWith("/")
-                  ? `http://localhost:8000${coverImage}`
-                  : coverImage
-              }
+              src={withApiBase(coverImage)}
               alt="Preview"
               className={styles.previewImage}
             />
@@ -785,7 +781,7 @@ function LessonSettingsCard({
       </div>
 
       <div className={styles.formField}>
-        <label className={styles.label}>Язык</label>
+        <label className={styles.label}>{t("lesson.edit.language")}</label>
         <select
           className={styles.select}
           value={languageId}
@@ -807,7 +803,7 @@ function LessonSettingsCard({
             onChange={(e) => setAllowComments(e.target.checked)}
             className={styles.checkbox}
           />
-          Комментарии включены
+          {t("lesson.edit.commentsEnabled")}
         </label>
       </div>
 
@@ -817,10 +813,10 @@ function LessonSettingsCard({
           onClick={handleSave}
           disabled={isLoading || !title.trim()}
         >
-          {isLoading ? "Сохранение..." : "Сохранить"}
+          {isLoading ? t("lesson.edit.saving") : t("common.save")}
         </button>
         <button className={styles.cancelButton} onClick={onCancel}>
-          Отмена
+          {t("common.cancel")}
         </button>
       </div>
     </div>

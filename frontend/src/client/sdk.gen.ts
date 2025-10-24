@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesCreateCourseData, CoursesCreateCourseResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadAuthorCoursesData, CoursesReadAuthorCoursesResponse, CoursesPublishCourseData, CoursesPublishCourseResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesUpdateCourseData, CoursesUpdateCourseResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, ModulesReadLessonByIdData, ModulesReadLessonByIdResponse, ModulesUpdateLessonByIdData, ModulesUpdateLessonByIdResponse, ModulesUploadLessonCoverData, ModulesUploadLessonCoverResponse, ModulesDeleteLessonCoverData, ModulesDeleteLessonCoverResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginRefreshAccessTokenData, LoginRefreshAccessTokenResponse, LoginRevokeRefreshTokenData, LoginRevokeRefreshTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, ModulesReadCourseModulesData, ModulesReadCourseModulesResponse, ModulesCreateModuleData, ModulesCreateModuleResponse, ModulesUpdateModuleData, ModulesUpdateModuleResponse, ModulesDeleteModuleData, ModulesDeleteModuleResponse, ModulesCreateLessonData, ModulesCreateLessonResponse, ModulesUpdateLessonData, ModulesUpdateLessonResponse, ModulesDeleteLessonData, ModulesDeleteLessonResponse, PrivateCreateUserData, PrivateCreateUserResponse, StepsReadLessonStepsData, StepsReadLessonStepsResponse, StepsCreateStepData, StepsCreateStepResponse, StepsReadStepData, StepsReadStepResponse, StepsUpdateStepData, StepsUpdateStepResponse, StepsDeleteStepData, StepsDeleteStepResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, CoursesCreateCourseData, CoursesCreateCourseResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadAuthorCoursesData, CoursesReadAuthorCoursesResponse, CoursesPublishCourseData, CoursesPublishCourseResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesUpdateCourseData, CoursesUpdateCourseResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, CoursesUploadCourseCoverData, CoursesUploadCourseCoverResponse, CoursesDeleteCourseCoverData, CoursesDeleteCourseCoverResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LessonsReadLessonData, LessonsReadLessonResponse, LessonsUpdateLessonData, LessonsUpdateLessonResponse, LessonsDeleteLessonData, LessonsDeleteLessonResponse, LessonsUploadLessonCoverData, LessonsUploadLessonCoverResponse, LessonsDeleteLessonCoverData, LessonsDeleteLessonCoverResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginRefreshAccessTokenData, LoginRefreshAccessTokenResponse, LoginRevokeRefreshTokenData, LoginRevokeRefreshTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, ModulesReadCourseModulesData, ModulesReadCourseModulesResponse, ModulesCreateModuleData, ModulesCreateModuleResponse, ModulesReadModuleData, ModulesReadModuleResponse, ModulesUpdateModuleData, ModulesUpdateModuleResponse, ModulesDeleteModuleData, ModulesDeleteModuleResponse, ModulesCreateLessonInModuleData, ModulesCreateLessonInModuleResponse, PrivateCreateUserData, PrivateCreateUserResponse, StepsReadLessonStepsData, StepsReadLessonStepsResponse, StepsCreateStepData, StepsCreateStepResponse, StepsReadStepData, StepsReadStepResponse, StepsUpdateStepData, StepsUpdateStepResponse, StepsDeleteStepData, StepsDeleteStepResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class CategoriesService {
     /**
@@ -372,6 +372,52 @@ export class CoursesService {
             }
         });
     }
+    
+    /**
+     * Upload Course Cover
+     * Загрузить обложку курса. Принимает image/jpeg, image/png, image/webp.
+     * Только автор курса может загружать обложку.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @param data.formData
+     * @returns CoursePublic Successful Response
+     * @throws ApiError
+     */
+    public static uploadCourseCover(data: CoursesUploadCourseCoverData): CancelablePromise<CoursesUploadCourseCoverResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/courses/{course_id}/cover',
+            path: {
+                course_id: data.courseId
+            },
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Course Cover
+     * Удалить обложку курса. Только автор курса может удалять.
+     * @param data The data for the request.
+     * @param data.courseId
+     * @returns CoursePublic Successful Response
+     * @throws ApiError
+     */
+    public static deleteCourseCover(data: CoursesDeleteCourseCoverData): CancelablePromise<CoursesDeleteCourseCoverResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/courses/{course_id}/cover',
+            path: {
+                course_id: data.courseId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
 }
 
 export class LanguagesService {
@@ -400,17 +446,17 @@ export class LanguagesService {
 
 export class LessonsService {
     /**
-     * Read Lesson By Id
-     * Получить урок по ID. Доступно авторизованным пользователям.
+     * Read Lesson
+     * Получить урок по ID.
      * @param data The data for the request.
      * @param data.lessonId
      * @returns LessonPublic Successful Response
      * @throws ApiError
      */
-    public static modulesReadLessonById(data: ModulesReadLessonByIdData): CancelablePromise<ModulesReadLessonByIdResponse> {
+    public static readLesson(data: LessonsReadLessonData): CancelablePromise<LessonsReadLessonResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}',
+            url: '/api/v1/lessons/{lesson_id}',
             path: {
                 lesson_id: data.lessonId
             },
@@ -421,7 +467,7 @@ export class LessonsService {
     }
     
     /**
-     * Update Lesson By Id
+     * Update Lesson
      * Обновить урок по ID. Только автор курса может обновлять.
      * @param data The data for the request.
      * @param data.lessonId
@@ -429,15 +475,36 @@ export class LessonsService {
      * @returns LessonPublic Successful Response
      * @throws ApiError
      */
-    public static modulesUpdateLessonById(data: ModulesUpdateLessonByIdData): CancelablePromise<ModulesUpdateLessonByIdResponse> {
+    public static updateLesson(data: LessonsUpdateLessonData): CancelablePromise<LessonsUpdateLessonResponse> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}',
+            url: '/api/v1/lessons/{lesson_id}',
             path: {
                 lesson_id: data.lessonId
             },
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Lesson
+     * Удалить урок по ID. Только автор курса может удалять.
+     * @param data The data for the request.
+     * @param data.lessonId
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static deleteLesson(data: LessonsDeleteLessonData): CancelablePromise<LessonsDeleteLessonResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/lessons/{lesson_id}',
+            path: {
+                lesson_id: data.lessonId
+            },
             errors: {
                 422: 'Validation Error'
             }
@@ -454,10 +521,10 @@ export class LessonsService {
      * @returns LessonPublic Successful Response
      * @throws ApiError
      */
-    public static modulesUploadLessonCover(data: ModulesUploadLessonCoverData): CancelablePromise<ModulesUploadLessonCoverResponse> {
+    public static uploadLessonCover(data: LessonsUploadLessonCoverData): CancelablePromise<LessonsUploadLessonCoverResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}/cover',
+            url: '/api/v1/lessons/{lesson_id}/cover',
             path: {
                 lesson_id: data.lessonId
             },
@@ -477,10 +544,10 @@ export class LessonsService {
      * @returns LessonPublic Successful Response
      * @throws ApiError
      */
-    public static modulesDeleteLessonCover(data: ModulesDeleteLessonCoverData): CancelablePromise<ModulesDeleteLessonCoverResponse> {
+    public static deleteLessonCover(data: LessonsDeleteLessonCoverData): CancelablePromise<LessonsDeleteLessonCoverResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}/cover',
+            url: '/api/v1/lessons/{lesson_id}/cover',
             path: {
                 lesson_id: data.lessonId
             },
@@ -677,10 +744,30 @@ export class ModulesService {
     }
     
     /**
-     * Update Module
-     * Обновить модуль. Только автор курса может обновлять.
+     * Read Module
+     * Получить модуль по ID.
      * @param data The data for the request.
-     * @param data.courseId
+     * @param data.moduleId
+     * @returns ModulePublic Successful Response
+     * @throws ApiError
+     */
+    public static readModule(data: ModulesReadModuleData): CancelablePromise<ModulesReadModuleResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/modules/{module_id}',
+            path: {
+                module_id: data.moduleId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Module
+     * Обновить модуль по ID. Только автор курса может обновлять.
+     * @param data The data for the request.
      * @param data.moduleId
      * @param data.requestBody
      * @returns ModulePublic Successful Response
@@ -689,9 +776,8 @@ export class ModulesService {
     public static updateModule(data: ModulesUpdateModuleData): CancelablePromise<ModulesUpdateModuleResponse> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/v1/courses/{course_id}/modules/{module_id}',
+            url: '/api/v1/modules/{module_id}',
             path: {
-                course_id: data.courseId,
                 module_id: data.moduleId
             },
             body: data.requestBody,
@@ -704,9 +790,8 @@ export class ModulesService {
     
     /**
      * Delete Module
-     * Удалить модуль. Только автор курса может удалять.
+     * Удалить модуль по ID. Только автор курса может удалять.
      * @param data The data for the request.
-     * @param data.courseId
      * @param data.moduleId
      * @returns string Successful Response
      * @throws ApiError
@@ -714,9 +799,8 @@ export class ModulesService {
     public static deleteModule(data: ModulesDeleteModuleData): CancelablePromise<ModulesDeleteModuleResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/courses/{course_id}/modules/{module_id}',
+            url: '/api/v1/modules/{module_id}',
             path: {
-                course_id: data.courseId,
                 module_id: data.moduleId
             },
             errors: {
@@ -726,169 +810,23 @@ export class ModulesService {
     }
     
     /**
-     * Create Lesson
+     * Create Lesson In Module
      * Создать новый урок в модуле. Только автор курса может создавать уроки.
      * @param data The data for the request.
-     * @param data.courseId
      * @param data.moduleId
      * @param data.requestBody
      * @returns LessonPublic Successful Response
      * @throws ApiError
      */
-    public static createLesson(data: ModulesCreateLessonData): CancelablePromise<ModulesCreateLessonResponse> {
+    public static createLessonInModule(data: ModulesCreateLessonInModuleData): CancelablePromise<ModulesCreateLessonInModuleResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/courses/{course_id}/modules/{module_id}/lessons',
+            url: '/api/v1/modules/{module_id}/lessons',
             path: {
-                course_id: data.courseId,
                 module_id: data.moduleId
             },
             body: data.requestBody,
             mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Update Lesson
-     * Обновить урок. Только автор курса может обновлять.
-     * @param data The data for the request.
-     * @param data.courseId
-     * @param data.moduleId
-     * @param data.lessonId
-     * @param data.requestBody
-     * @returns LessonPublic Successful Response
-     * @throws ApiError
-     */
-    public static updateLesson(data: ModulesUpdateLessonData): CancelablePromise<ModulesUpdateLessonResponse> {
-        return __request(OpenAPI, {
-            method: 'PATCH',
-            url: '/api/v1/courses/{course_id}/modules/{module_id}/lessons/{lesson_id}',
-            path: {
-                course_id: data.courseId,
-                module_id: data.moduleId,
-                lesson_id: data.lessonId
-            },
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Delete Lesson
-     * Удалить урок. Только автор курса может удалять.
-     * @param data The data for the request.
-     * @param data.courseId
-     * @param data.moduleId
-     * @param data.lessonId
-     * @returns string Successful Response
-     * @throws ApiError
-     */
-    public static deleteLesson(data: ModulesDeleteLessonData): CancelablePromise<ModulesDeleteLessonResponse> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/api/v1/courses/{course_id}/modules/{module_id}/lessons/{lesson_id}',
-            path: {
-                course_id: data.courseId,
-                module_id: data.moduleId,
-                lesson_id: data.lessonId
-            },
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Read Lesson By Id
-     * Получить урок по ID. Доступно авторизованным пользователям.
-     * @param data The data for the request.
-     * @param data.lessonId
-     * @returns LessonPublic Successful Response
-     * @throws ApiError
-     */
-    public static readLessonById(data: ModulesReadLessonByIdData): CancelablePromise<ModulesReadLessonByIdResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}',
-            path: {
-                lesson_id: data.lessonId
-            },
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Update Lesson By Id
-     * Обновить урок по ID. Только автор курса может обновлять.
-     * @param data The data for the request.
-     * @param data.lessonId
-     * @param data.requestBody
-     * @returns LessonPublic Successful Response
-     * @throws ApiError
-     */
-    public static updateLessonById(data: ModulesUpdateLessonByIdData): CancelablePromise<ModulesUpdateLessonByIdResponse> {
-        return __request(OpenAPI, {
-            method: 'PATCH',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}',
-            path: {
-                lesson_id: data.lessonId
-            },
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Upload Lesson Cover
-     * Загрузить обложку урока. Принимает image/jpeg, image/png, image/webp.
-     * Только автор курса может загружать обложку.
-     * @param data The data for the request.
-     * @param data.lessonId
-     * @param data.formData
-     * @returns LessonPublic Successful Response
-     * @throws ApiError
-     */
-    public static uploadLessonCover(data: ModulesUploadLessonCoverData): CancelablePromise<ModulesUploadLessonCoverResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}/cover',
-            path: {
-                lesson_id: data.lessonId
-            },
-            formData: data.formData,
-            mediaType: 'multipart/form-data',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Delete Lesson Cover
-     * Удалить обложку урока. Только автор курса может удалять.
-     * @param data The data for the request.
-     * @param data.lessonId
-     * @returns LessonPublic Successful Response
-     * @throws ApiError
-     */
-    public static deleteLessonCover(data: ModulesDeleteLessonCoverData): CancelablePromise<ModulesDeleteLessonCoverResponse> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/api/v1/courses/{course_id}/modules/lessons/{lesson_id}/cover',
-            path: {
-                lesson_id: data.lessonId
-            },
             errors: {
                 422: 'Validation Error'
             }

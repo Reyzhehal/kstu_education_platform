@@ -188,7 +188,9 @@ export default function CourseCard({
         <div className={styles.title}>{course.title}</div>
         {variant !== "compact" && (
           <>
-            <div className={styles.desc}>{course.description ?? ""}</div>
+            <div className={styles.desc}>
+              {(course as any).short_description ?? ""}
+            </div>
             <div className={styles.owner}>
               {t("course.card.author", { defaultValue: "Автор:" })}{" "}
               <a

@@ -150,7 +150,9 @@ function CoursePage() {
         <div className={styles.heroInner}>
           <div>
             <h1 className={styles.heroTitle}>{course.title}</h1>
-            <p className={styles.heroDesc}>{course.description ?? ""}</p>
+            <p className={styles.heroDesc}>
+              {(course as any).short_description ?? ""}
+            </p>
             <div className={styles.heroMeta}>
               <span className={styles.badge}>
                 {t("coursePage.level")}:{" "}

@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { type CoursePublic, CoursesService, LanguagesService } from "@/client"
 import { RichTextEditor } from "@/components/Common"
 import useCustomToast from "@/hooks/useCustomToast"
+import { LANGUAGES_QUERY_KEY } from "@/routes/_layout"
+import { withApiBase } from "@/utils"
 import styles from "./CourseDescriptionEditor.module.css"
 
 type CourseDescriptionEditorProps = {
@@ -18,9 +20,11 @@ export default function CourseDescriptionEditor({
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [title, setTitle] = useState(course.title || "")
   const [coverImage, setCoverImage] = useState(course.cover_image || "")
+  const [isUploading, setIsUploading] = useState(false)
   const [shortDescription, setShortDescription] = useState(
     (course as any).short_description || "",
   )
@@ -48,10 +52,53 @@ export default function CourseDescriptionEditor({
     course.hours_week?.toString() || "",
   )
 
-  // Загружаем языки
+  // Обновляем локальное состояние при изменении course.cover_image
+  useEffect(() => {
+    setCoverImage(course.cover_image || "")
+  }, [course.cover_image])
+
+  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: languagesData } = useQuery({
-    queryKey: ["languages"],
+    queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages(),
+    staleTime: Infinity,
+  })
+
+  const uploadCoverMutation = useMutation({
+    mutationFn: async (file: File) => {
+      return CoursesService.uploadCourseCover({
+        courseId: course.id,
+        formData: { file },
+      })
+    },
+    onSuccess: (data) => {
+      setCoverImage(data.cover_image || "")
+      showSuccessToast(t("course.coverUploaded"))
+      queryClient.invalidateQueries({ queryKey: ["course", course.id] })
+      queryClient.invalidateQueries({ queryKey: ["authorCourses"] })
+    },
+    onError: (err: any) => {
+      const errDetail = err.message || t("common.error")
+      showErrorToast(errDetail)
+    },
+  })
+
+  const deleteCoverMutation = useMutation({
+    mutationFn: async () => {
+      return CoursesService.deleteCourseCover({
+        courseId: course.id,
+      })
+    },
+    onSuccess: () => {
+      setCoverImage("")
+      showSuccessToast(t("course.coverDeleted"))
+      queryClient.invalidateQueries({ queryKey: ["course", course.id] })
+      queryClient.invalidateQueries({ queryKey: ["authorCourses"] })
+    },
+    onError: (err: any) => {
+      const errDetail = err.message || t("common.error")
+      showErrorToast(errDetail)
+    },
   })
 
   const updateCourseMutation = useMutation({
@@ -72,7 +119,57 @@ export default function CourseDescriptionEditor({
     },
   })
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Check file type
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+      showErrorToast(t("course.coverImageFormatError"))
+      return
+    }
+
+    // Check file size (5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showErrorToast(t("course.coverImageSizeError"))
+      return
+    }
+
+    setIsUploading(true)
+    try {
+      await uploadCoverMutation.mutateAsync(file)
+    } catch (error) {
+      console.error("Error uploading cover:", error)
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+    }
+  }
+
+  const handleDeleteCover = async () => {
+    if (!confirm(t("course.coverDeleteConfirm"))) return
+
+    setIsUploading(true)
+    try {
+      await deleteCoverMutation.mutateAsync()
+    } catch (error) {
+      console.error("Error deleting cover:", error)
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
   const handleSave = () => {
+    // Check minimum short description length
+    if (shortDescription && shortDescription.length < 100) {
+      showErrorToast(
+        t("course.publishErrorShortDesc", { current: shortDescription.length }),
+      )
+      return
+    }
+
     const data: any = {
       title,
       description,
@@ -86,7 +183,6 @@ export default function CourseDescriptionEditor({
       difficulty_level: difficultyLevel,
     }
 
-    if (coverImage) data.cover_image = coverImage
     if (hoursWeek) data.hours_week = parseInt(hoursWeek, 10)
 
     updateCourseMutation.mutate(data)
@@ -99,7 +195,7 @@ export default function CourseDescriptionEditor({
       <div className={styles.section}>
         <h2>{t("course.aboutCourse")}</h2>
 
-        {/* Логотип курса */}
+        {/* Course logo */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.logo")}
@@ -108,7 +204,7 @@ export default function CourseDescriptionEditor({
           <div className={styles.imageUpload}>
             {coverImage ? (
               <img
-                src={coverImage}
+                src={withApiBase(coverImage)}
                 alt="Course cover"
                 className={styles.coverPreview}
               />
@@ -118,17 +214,35 @@ export default function CourseDescriptionEditor({
                 <span>{t("course.uploadImage")}</span>
               </div>
             )}
-            <input
-              type="text"
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder={t("course.imageUrl")}
-              className={styles.input}
-            />
+            <div className={styles.fileUploadWrapper}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+                disabled={isUploading}
+                className={styles.fileInput}
+                id="cover-upload"
+              />
+              <label htmlFor="cover-upload" className={styles.fileInputLabel}>
+                {isUploading ? t("course.uploading") : t("course.selectFile")}
+              </label>
+              {coverImage && (
+                <button
+                  type="button"
+                  onClick={handleDeleteCover}
+                  disabled={isUploading}
+                  className={styles.deleteCoverButton}
+                  title={t("course.deleteCover")}
+                >
+                  {t("course.deleteCover")}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Название */}
+        {/* Course title */}
         <div className={styles.field}>
           <label className={styles.label}>{t("course.courseName")}</label>
           <input
@@ -141,7 +255,7 @@ export default function CourseDescriptionEditor({
           <span className={styles.charCount}>{title.length}/64</span>
         </div>
 
-        {/* Краткое описание */}
+        {/* Short description */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.shortDescription")}
@@ -158,11 +272,18 @@ export default function CourseDescriptionEditor({
             placeholder={t("course.shortDescriptionPlaceholder")}
           />
           <span className={styles.charCount}>
-            {shortDescription.length}/512
+            <span
+              style={{
+                color: shortDescription.length < 100 ? "red" : "inherit",
+              }}
+            >
+              {shortDescription.length}
+            </span>
+            /512
           </span>
         </div>
 
-        {/* Язык */}
+        {/* Language */}
         <div className={styles.row}>
           <div className={styles.field}>
             <label className={styles.label}>{t("course.language")}</label>
@@ -179,7 +300,7 @@ export default function CourseDescriptionEditor({
             </select>
           </div>
 
-          {/* Уровень сложности */}
+          {/* Difficulty level */}
           <div className={styles.field}>
             <label className={styles.label}>
               {t("course.difficultyLevel")}
@@ -196,7 +317,7 @@ export default function CourseDescriptionEditor({
           </div>
         </div>
 
-        {/* Время прохождения */}
+        {/* Time to complete */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.timeToComplete")}
@@ -220,7 +341,7 @@ export default function CourseDescriptionEditor({
           </div>
         </div>
 
-        {/* Чему вы научитесь */}
+        {/* What you will learn */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.whatYouWillLearn")}
@@ -228,20 +349,14 @@ export default function CourseDescriptionEditor({
               {t("course.whatYouWillLearnHint")}
             </span>
           </label>
-          <textarea
-            value={whatYouWillLearn}
-            onChange={(e) => setWhatYouWillLearn(e.target.value)}
-            rows={5}
-            maxLength={2000}
-            className={styles.textarea}
+          <RichTextEditor
+            content={whatYouWillLearn}
+            onChange={setWhatYouWillLearn}
             placeholder={t("course.whatYouWillLearnPlaceholder")}
           />
-          <span className={styles.charCount}>
-            {whatYouWillLearn.length}/2000
-          </span>
         </div>
 
-        {/* Для кого этот курс */}
+        {/* Target audience */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.targetAudience")}
@@ -249,69 +364,53 @@ export default function CourseDescriptionEditor({
               {t("course.targetAudienceHint")}
             </span>
           </label>
-          <textarea
-            value={targetAudience}
-            onChange={(e) => setTargetAudience(e.target.value)}
-            rows={4}
-            maxLength={2000}
-            className={styles.textarea}
+          <RichTextEditor
+            content={targetAudience}
+            onChange={setTargetAudience}
             placeholder={t("course.targetAudiencePlaceholder")}
           />
-          <span className={styles.charCount}>{targetAudience.length}/2000</span>
         </div>
 
-        {/* Начальные требования */}
+        {/* Prerequisites */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.requirements")}
             <span className={styles.hint}>{t("course.requirementsHint")}</span>
           </label>
-          <textarea
-            value={requirements}
-            onChange={(e) => setRequirements(e.target.value)}
-            rows={4}
-            maxLength={2000}
-            className={styles.textarea}
+          <RichTextEditor
+            content={requirements}
+            onChange={setRequirements}
             placeholder={t("course.requirementsPlaceholder")}
           />
-          <span className={styles.charCount}>{requirements.length}/2000</span>
         </div>
 
-        {/* Как проходит обучение */}
+        {/* How learning works */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.howItWorks")}
             <span className={styles.hint}>{t("course.howItWorksHint")}</span>
           </label>
-          <textarea
-            value={howItWorks}
-            onChange={(e) => setHowItWorks(e.target.value)}
-            rows={4}
-            maxLength={2000}
-            className={styles.textarea}
+          <RichTextEditor
+            content={howItWorks}
+            onChange={setHowItWorks}
             placeholder={t("course.howItWorksPlaceholder")}
           />
-          <span className={styles.charCount}>{howItWorks.length}/2000</span>
         </div>
 
-        {/* Что вы получаете */}
+        {/* What you get */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.whatYouGet")}
             <span className={styles.hint}>{t("course.whatYouGetHint")}</span>
           </label>
-          <textarea
-            value={whatYouGet}
-            onChange={(e) => setWhatYouGet(e.target.value)}
-            rows={4}
-            maxLength={2000}
-            className={styles.textarea}
+          <RichTextEditor
+            content={whatYouGet}
+            onChange={setWhatYouGet}
             placeholder={t("course.whatYouGetPlaceholder")}
           />
-          <span className={styles.charCount}>{whatYouGet.length}/2000</span>
         </div>
 
-        {/* Полное описание */}
+        {/* Full description - About Course */}
         <div className={styles.field}>
           <label className={styles.label}>
             {t("course.fullDescription")}
@@ -322,12 +421,12 @@ export default function CourseDescriptionEditor({
           <RichTextEditor
             content={description}
             onChange={setDescription}
-            placeholder={t("course.descriptionPlaceholder")}
+            placeholder={t("course.aboutCoursePlaceholder")}
           />
         </div>
       </div>
 
-      {/* Кнопки действий */}
+      {/* Action buttons */}
       <div className={styles.actions}>
         <button
           onClick={handleSave}

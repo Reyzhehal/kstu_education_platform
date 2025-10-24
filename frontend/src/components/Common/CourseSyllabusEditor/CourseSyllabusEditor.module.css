@@ -173,8 +173,12 @@
 
 .editLessonButton,
 .deleteLessonButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 28px;
   height: 28px;
+  padding: 6px;
   border: none;
   background: transparent;
   color: var(--text-muted);
@@ -182,11 +186,17 @@
   border-radius: 4px;
   transition: all 0.2s;
   font-size: 1rem;
+  flex-shrink: 0;
 }
 
-.editLessonButton:hover {
-  background: rgba(76, 127, 255, 0.1);
-  color: var(--accent);
+.editLessonButton:hover:not(:disabled) {
+  background: var(--border);
+  color: var(--text);
+}
+
+.editLessonButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .deleteLessonButton:hover {

@@ -251,10 +251,7 @@
 }
 
 /* Step Editors */
-.textEditor,
-.videoEditor {
-  /* Редакторы отображаются внутри activeStepEditor */
-}
+/* Редакторы отображаются внутри activeStepEditor */
 
 .formField {
   margin-bottom: 16px;
@@ -350,6 +347,56 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
+}
+
+.editorActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.saveButton {
+  flex: 1;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 127, 255, 0.3);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cancelButton {
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: var(--bg-2);
+  border-color: var(--text-muted);
 }
 
 .fileUploadWrapper {

@@ -1,7 +1,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ModulesService } from "@/client"
+import { LessonsService, ModulesService } from "@/client"
+import EditIcon from "@/components/Common/EditIcon"
 import useCustomToast from "@/hooks/useCustomToast"
 import styles from "./CourseSyllabusEditor.module.css"
 
@@ -33,6 +35,7 @@ export default function CourseSyllabusEditor({
   onCancel,
 }: CourseSyllabusEditorProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
@@ -110,7 +113,6 @@ export default function CourseSyllabusEditor({
     if (module.id && !module.id.startsWith("temp-")) {
       try {
         await ModulesService.deleteModule({
-          courseId,
           moduleId: module.id,
         })
       } catch (error) {
@@ -173,9 +175,7 @@ export default function CourseSyllabusEditor({
       !module.id.startsWith("temp-")
     ) {
       try {
-        await ModulesService.deleteLesson({
-          courseId,
-          moduleId: module.id,
+        await LessonsService.deleteLesson({
           lessonId: lesson.id,
         })
       } catch (error) {
@@ -215,7 +215,6 @@ export default function CourseSyllabusEditor({
         } else {
           // Обновляем существующий модуль
           await ModulesService.updateModule({
-            courseId,
             moduleId,
             requestBody: {
               title: module.title,
@@ -231,9 +230,8 @@ export default function CourseSyllabusEditor({
 
           if (!lesson.id || lesson.id.startsWith("temp-")) {
             // Создаем новый урок
-            await ModulesService.createLesson({
-              courseId,
-              moduleId,
+            await ModulesService.createLessonInModule({
+              moduleId: module.id as string,
               requestBody: {
                 title: lesson.title,
                 position: j,
@@ -242,9 +240,7 @@ export default function CourseSyllabusEditor({
             })
           } else {
             // Обновляем существующий урок
-            await ModulesService.updateLesson({
-              courseId,
-              moduleId,
+            await LessonsService.updateLesson({
               lessonId: lesson.id,
               requestBody: {
                 title: lesson.title,
@@ -323,8 +319,6 @@ export default function CourseSyllabusEditor({
               <div className={styles.lessonsContainer}>
                 {module.lessons.map((lesson, lessonIndex) => (
                   <div key={lessonIndex} className={styles.lesson}>
-                    <span className={styles.dragHandle}>⋮⋮</span>
-                    <span className={styles.lessonIcon}>📄</span>
                     <span className={styles.lessonNumber}>
                       {moduleIndex + 1}.{lessonIndex + 1}
                     </span>
@@ -343,9 +337,23 @@ export default function CourseSyllabusEditor({
                     />
                     <button
                       className={styles.editLessonButton}
-                      title={t("common.edit")}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        // Если урок уже существует (не временный), переходим к редактированию
+                        if (lesson.id && !lesson.id.startsWith("temp-")) {
+                          navigate({ to: `/lesson/${lesson.id}/edit` } as any)
+                        }
+                      }}
+                      disabled={!lesson.id || lesson.id.startsWith("temp-")}
+                      title={
+                        lesson.id && !lesson.id.startsWith("temp-")
+                          ? t("common.edit")
+                          : t("course.syllabus.saveFirstToEdit", {
+                              defaultValue: "Сохраните урок для редактирования",
+                            })
+                      }
                     >
-                      ✏️
+                      <EditIcon size={16} />
                     </button>
                     <button
                       className={styles.deleteLessonButton}
@@ -360,7 +368,6 @@ export default function CourseSyllabusEditor({
                 ))}
 
                 <div className={styles.addLesson}>
-                  <span className={styles.lessonIcon}>📄</span>
                   <input
                     type="text"
                     value={newLessonTitle[moduleIndex] || ""}

@@ -1,6 +1,6 @@
 .root {
   display: grid;
-  grid-template-columns: 140px 1fr auto;
+  grid-template-columns: 100px 1fr auto;
   gap: 12px;
   align-items: center;
   background: var(--panel);
@@ -16,30 +16,31 @@
 }
 
 .full {
-  grid-template-columns: 180px 1fr auto;
+  grid-template-columns: 120px 1fr auto;
   padding: 16px;
   gap: 16px;
 }
 .full .img {
-  width: 180px;
+  width: 120px;
   height: 120px;
 }
 
 .img {
-  width: 140px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
+  aspect-ratio: 1 / 1;
 }
 
 .compact {
-  grid-template-columns: 160px 1fr auto;
+  grid-template-columns: 110px 1fr auto;
   padding: 14px;
   width: 400px;
   align-items: start;
 }
 .compact .img {
-  width: 160px;
+  width: 110px;
   height: 110px;
 }
 .compact .title {

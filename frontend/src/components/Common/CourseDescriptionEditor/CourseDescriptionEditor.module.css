@@ -121,6 +121,7 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--border);
+  aspect-ratio: 1 / 1;
 }
 
 .imagePlaceholder {
@@ -135,10 +136,60 @@
   gap: 8px;
   color: var(--text-muted);
   font-size: 0.9rem;
+  aspect-ratio: 1 / 1;
 }
 
 .imagePlaceholder span:first-child {
   font-size: 3rem;
+}
+
+.fileUploadWrapper {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInputLabel {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-size: 0.95rem;
+}
+
+.fileInputLabel:hover {
+  opacity: 0.9;
+}
+
+.deleteCoverButton {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.95rem;
+}
+
+.deleteCoverButton:hover {
+  background: rgba(255, 100, 100, 0.1);
+  border-color: rgba(255, 100, 100, 0.5);
+  color: rgba(255, 100, 100, 1);
+}
+
+.deleteCoverButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Actions */

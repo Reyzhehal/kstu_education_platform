@@ -7,6 +7,7 @@ import CourseCard from "@/components/Common/CourseCard"
 import Pagination from "@/components/Common/Pagination"
 import useAuth from "@/hooks/useAuth"
 import usePageTitle from "@/hooks/usePageTitle"
+import { LANGUAGES_QUERY_KEY } from "@/routes/_layout"
 import styles from "./index.module.css"
 
 type SearchParams = {
@@ -30,9 +31,11 @@ function CatalogPage() {
   const [langs, setLangs] = useState<number[]>([])
   const [levels, setLevels] = useState<number[]>([1, 2, 3])
 
+  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: langsResp } = useQuery({
-    queryKey: ["langs"],
+    queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages({ limit: 100 }),
+    staleTime: Infinity,
   })
   const languages: LanguagePublic[] = langsResp?.data ?? []
 

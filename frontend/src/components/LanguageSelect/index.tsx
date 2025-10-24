@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguagesService, UsersService as Users, UsersService } from "@/client"
 import i18n from "@/i18n"
+import { LANGUAGES_QUERY_KEY } from "@/routes/_layout"
 import styles from "./LanguageSelect.module.css"
 
 type Props = {
@@ -12,9 +13,11 @@ type Props = {
 export default function LanguageSelect({ className }: Props) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data } = useQuery({
-    queryKey: ["languages"],
+    queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages({ skip: 0, limit: 100 }),
+    staleTime: Infinity,
   })
 
   const me = useQuery({ queryKey: ["currentUser"], queryFn: Users.readUserMe })

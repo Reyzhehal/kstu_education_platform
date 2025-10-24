@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { CoursesService, type LanguagePublic, LanguagesService } from "@/client"
 import { CatalogFilters, CourseCard, Pagination } from "@/components/Common"
 import useAuth from "@/hooks/useAuth"
+import { LANGUAGES_QUERY_KEY } from "@/routes/_layout"
 import styles from "./index.module.css"
 
 type SearchParams = {
@@ -27,9 +28,11 @@ function CatalogByMeta() {
   const [langs, setLangs] = useState<number[]>([])
   const [levels, setLevels] = useState<number[]>([1, 2, 3])
 
+  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: langsResp } = useQuery({
-    queryKey: ["langs"],
+    queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages({ limit: 100 }),
+    staleTime: Infinity,
   })
   const languages: LanguagePublic[] = langsResp?.data ?? []
 

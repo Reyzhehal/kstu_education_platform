@@ -79,6 +79,8 @@ function CoursePage() {
                 </button>
               )}
             </div>
+
+            {/* О курсе */}
             {course.description ? (
               <div
                 className={styles.richTextContent}
@@ -91,6 +93,71 @@ function CoursePage() {
                     ? t("course.addDescriptionHint")
                     : t("course.noDescription")}
                 </p>
+              </div>
+            )}
+
+            {/* Чему вы научитесь */}
+            {(course as any).what_you_will_learn && (
+              <div className={styles.descriptionSection}>
+                <h2>{t("coursePage.whatYouWillLearn")}</h2>
+                <div
+                  className={styles.richTextContent}
+                  dangerouslySetInnerHTML={{
+                    __html: (course as any).what_you_will_learn,
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Для кого этот курс */}
+            {(course as any).target_audience && (
+              <div className={styles.descriptionSection}>
+                <h2>{t("coursePage.targetAudience")}</h2>
+                <div
+                  className={styles.richTextContent}
+                  dangerouslySetInnerHTML={{
+                    __html: (course as any).target_audience,
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Начальные требования */}
+            {(course as any).requirements && (
+              <div className={styles.descriptionSection}>
+                <h2>{t("coursePage.requirements")}</h2>
+                <div
+                  className={styles.richTextContent}
+                  dangerouslySetInnerHTML={{
+                    __html: (course as any).requirements,
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Как проходит обучение */}
+            {(course as any).how_it_works && (
+              <div className={styles.descriptionSection}>
+                <h2>{t("coursePage.howItWorks")}</h2>
+                <div
+                  className={styles.richTextContent}
+                  dangerouslySetInnerHTML={{
+                    __html: (course as any).how_it_works,
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Что вы получаете */}
+            {(course as any).what_you_get && (
+              <div className={styles.descriptionSection}>
+                <h2>{t("coursePage.whatYouGet")}</h2>
+                <div
+                  className={styles.richTextContent}
+                  dangerouslySetInnerHTML={{
+                    __html: (course as any).what_you_get,
+                  }}
+                />
               </div>
             )}
           </div>
