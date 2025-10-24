@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     FRONTEND_HOST: str = "http://localhost:80"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    MAX_IMAGE_SIZE_BYTES: int = 5 * 1024 * 1024  # 5 MB
 
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)

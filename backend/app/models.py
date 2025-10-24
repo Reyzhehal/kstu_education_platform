@@ -284,7 +284,7 @@ class CourseBase(SQLModel):
     cover_image: str | None = Field(default=None, max_length=255)
     description: str | None = Field(default=None, max_length=4000)
     description_video: str | None = Field(default=None, max_length=255)
-    short_description: str | None = Field(default=None, max_length=500)
+    short_description: str | None = Field(default=None, max_length=512)
     what_you_will_learn: str | None = Field(default=None, max_length=2000)
     target_audience: str | None = Field(default=None, max_length=2000)
     requirements: str | None = Field(default=None, max_length=2000)
@@ -519,7 +519,7 @@ class CourseUpdate(SQLModel):
     cover_image: str | None = None
     description: str | None = None
     description_video: str | None = None
-    short_description: str | None = None
+    short_description: str | None = Field(default=None, min_length=100, max_length=500)
     what_you_will_learn: str | None = None
     target_audience: str | None = None
     requirements: str | None = None

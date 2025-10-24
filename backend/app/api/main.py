@@ -4,6 +4,7 @@ from app.api.routes import (
     categories,
     courses,
     languages,
+    lessons,
     login,
     modules,
     private,
@@ -18,6 +19,8 @@ api_router.include_router(login.router)
 api_router.include_router(users.router)
 api_router.include_router(utils.router)
 api_router.include_router(modules.router)
+api_router.include_router(modules.modules_router)
+api_router.include_router(lessons.router)
 api_router.include_router(steps.router)
 api_router.include_router(courses.router)
 api_router.include_router(languages.router)

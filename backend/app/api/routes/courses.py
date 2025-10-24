@@ -1,8 +1,13 @@
+from datetime import datetime
+from pathlib import Path
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile
 from sqlmodel import col, func, select
+
+from app.api.utils import detect_image_ext_by_magic
+from app.core.config import settings
 
 from app.api.deps import AsyncSessionDep, CurrentUser
 from app.models import (
@@ -22,6 +27,42 @@ from app.models import (
 router = APIRouter(prefix="/courses", tags=["courses"])
 
 
+async def enrich_course_public(
+    course: Course, session: AsyncSessionDep, user_id: UUID
+) -> CoursePublic:
+    """
+    Обогатить объект Course дополнительными полями для CoursePublic
+    """
+    # Проверяем избранное
+    is_favorite_stmt = select(CourseFavoriteLink).where(
+        CourseFavoriteLink.course_id == course.id,
+        CourseFavoriteLink.user_id == user_id,
+    )
+    is_favorite = (await session.exec(is_favorite_stmt)).first() is not None
+
+    # Считаем студентов
+    students_count_stmt = (
+        select(func.count())
+        .select_from(CourseStudentLink)
+        .where(CourseStudentLink.course_id == course.id)
+    )
+    students_count = (await session.exec(students_count_stmt)).one()
+
+    # Проверяем запись на курс
+    is_enrolled_stmt = select(CourseStudentLink).where(
+        CourseStudentLink.course_id == course.id,
+        CourseStudentLink.user_id == user_id,
+    )
+    is_enrolled = (await session.exec(is_enrolled_stmt)).first() is not None
+
+    course_dict = course.model_dump()
+    course_dict["is_favorite"] = is_favorite
+    course_dict["students_count"] = students_count
+    course_dict["is_enrolled"] = is_enrolled
+
+    return CoursePublic(**course_dict)
+
+
 @router.post("/", response_model=CoursePublic)
 async def create_course(
     course_in: CourseCreate,
@@ -39,12 +80,7 @@ async def create_course(
     await session.commit()
     await session.refresh(course)
 
-    course_dict = course.model_dump()
-    course_dict["is_favorite"] = False
-    course_dict["students_count"] = 0
-    course_dict["is_enrolled"] = False
-
-    return CoursePublic(**course_dict)
+    return await enrich_course_public(course, session, current_user.id)
 
 
 @router.get("/", response_model=CoursesPublic)
@@ -109,35 +145,11 @@ async def read_courses(
     statement = statement.offset(skip).limit(limit)
     courses = (await session.exec(statement)).all()
 
-    # Получаем список ID избранных курсов текущего пользователя
-    favorite_statement = select(CourseFavoriteLink.course_id).where(
-        CourseFavoriteLink.user_id == current_user.id
-    )
-    favorite_course_ids = set((await session.exec(favorite_statement)).all())
-
-    # Преобразуем курсы в CoursePublic с is_favorite и students_count
+    # Преобразуем курсы в CoursePublic с дополнительными полями
     courses_public = []
     for course in courses:
-        course_dict = course.model_dump()
-        course_dict["is_favorite"] = course.id in favorite_course_ids
-        # считаем студентов
-        students_statement = (
-            select(func.count())
-            .select_from(CourseStudentLink)
-            .where(CourseStudentLink.course_id == course.id)
-        )
-        course_dict["students_count"] = (await session.exec(students_statement)).one()
-        # признак записанности
-        enrolled_stmt = (
-            select(func.count())
-            .select_from(CourseStudentLink)
-            .where(
-                CourseStudentLink.course_id == course.id,
-                CourseStudentLink.user_id == current_user.id,
-            )
-        )
-        course_dict["is_enrolled"] = (await session.exec(enrolled_stmt)).one() > 0
-        courses_public.append(CoursePublic(**course_dict))
+        course_public = await enrich_course_public(course, session, current_user.id)
+        courses_public.append(course_public)
 
     return CoursesPublic(data=courses_public, count=count)
 
@@ -172,19 +184,11 @@ async def read_favorite_courses(
     statement = statement.offset(skip).limit(limit)
     courses = (await session.exec(statement)).all()
 
-    # Все курсы в избранном, поэтому is_favorite = True для всех
+    # Преобразуем курсы в CoursePublic
     courses_public = []
     for course in courses:
-        course_dict = course.model_dump()
-        course_dict["is_favorite"] = True
-        # считаем студентов для каждого курса
-        students_statement = (
-            select(func.count())
-            .select_from(CourseStudentLink)
-            .where(CourseStudentLink.course_id == course.id)
-        )
-        course_dict["students_count"] = (await session.exec(students_statement)).one()
-        courses_public.append(CoursePublic(**course_dict))
+        course_public = await enrich_course_public(course, session, current_user.id)
+        courses_public.append(course_public)
 
     return CoursesPublic(data=courses_public, count=count)
 
@@ -212,19 +216,8 @@ async def read_my_courses(
 
     courses_public: list[CoursePublic] = []
     for course in courses:
-        favorite_statement = select(CourseFavoriteLink.course_id).where(
-            CourseFavoriteLink.user_id == current_user.id
-        )
-        favorite_course_ids = set((await session.exec(favorite_statement)).all())
-        students_statement = (
-            select(func.count())
-            .select_from(CourseStudentLink)
-            .where(CourseStudentLink.course_id == course.id)
-        )
-        course_dict = course.model_dump()
-        course_dict["is_favorite"] = course.id in favorite_course_ids
-        course_dict["students_count"] = (await session.exec(students_statement)).one()
-        courses_public.append(CoursePublic(**course_dict))
+        course_public = await enrich_course_public(course, session, current_user.id)
+        courses_public.append(course_public)
 
     return CoursesPublic(data=courses_public, count=count)
 
@@ -247,19 +240,10 @@ async def read_author_courses(
 
     courses_public: list[CoursePublic] = []
     for course in courses:
-        favorite_statement = select(CourseFavoriteLink.course_id).where(
-            CourseFavoriteLink.user_id == current_user.id
-        )
-        favorite_course_ids = set((await session.exec(favorite_statement)).all())
-        students_statement = (
-            select(func.count())
-            .select_from(CourseStudentLink)
-            .where(CourseStudentLink.course_id == course.id)
-        )
-        course_dict = course.model_dump()
-        course_dict["is_favorite"] = course.id in favorite_course_ids
-        course_dict["students_count"] = (await session.exec(students_statement)).one()
-        course_dict["is_enrolled"] = False  # Автор не может быть записан на свой курс
+        course_public = await enrich_course_public(course, session, current_user.id)
+        # Автор не записан на свой курс, так что переопределяем
+        course_dict = course_public.model_dump()
+        course_dict["is_enrolled"] = False
         courses_public.append(CoursePublic(**course_dict))
 
     return CoursesPublic(data=courses_public, count=count)
@@ -300,30 +284,7 @@ async def read_course_by_id(
     if not course.is_published and course.author_id != current_user.id:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    # проверяем избранное
-    favorite_statement = select(CourseFavoriteLink.course_id).where(
-        CourseFavoriteLink.user_id == current_user.id
-    )
-    favorite_course_ids = set((await session.exec(favorite_statement)).all())
-
-    course_dict = course.model_dump()
-    course_dict["is_favorite"] = course.id in favorite_course_ids
-    students_statement = (
-        select(func.count())
-        .select_from(CourseStudentLink)
-        .where(CourseStudentLink.course_id == course.id)
-    )
-    course_dict["students_count"] = (await session.exec(students_statement)).one()
-    enrolled_stmt = (
-        select(func.count())
-        .select_from(CourseStudentLink)
-        .where(
-            CourseStudentLink.course_id == course.id,
-            CourseStudentLink.user_id == current_user.id,
-        )
-    )
-    course_dict["is_enrolled"] = (await session.exec(enrolled_stmt)).one() > 0
-    return CoursePublic(**course_dict)
+    return await enrich_course_public(course, session, current_user.id)
 
 
 @router.post("/{course_id}/favorite")
@@ -461,6 +422,97 @@ async def read_course_description_blocks(
     return [{"title": title, "text": text} for title, text in rows]
 
 
+@router.post("/{course_id}/cover", response_model=CoursePublic)
+async def upload_course_cover(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+    file: UploadFile = File(...),
+) -> Any:
+    """
+    Загрузить обложку курса. Принимает image/jpeg, image/png, image/webp.
+    Только автор курса может загружать обложку.
+    """
+    course = await session.get(Course, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail="Only course author can upload course cover"
+        )
+
+    content_type = file.content_type or ""
+    allowed = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+    if content_type not in allowed:
+        raise HTTPException(status_code=400, detail="Unsupported content type")
+
+    covers_dir = Path("app/static/covers")
+    covers_dir.mkdir(parents=True, exist_ok=True)
+    ext = allowed[content_type]
+    filename = f"{course_id}_{uuid4().hex}.{ext}"
+    filepath = covers_dir / filename
+
+    data = await file.read()
+    if len(data) > settings.MAX_IMAGE_SIZE_BYTES:
+        raise HTTPException(status_code=413, detail="File too large")
+    magic_ext = detect_image_ext_by_magic(data)
+    if magic_ext is None or magic_ext != allowed[content_type]:
+        raise HTTPException(status_code=400, detail="Invalid image data")
+    filepath.write_bytes(data)
+
+    # Удаляем старую обложку, если она есть
+    if course.cover_image and course.cover_image.startswith("/static/covers/"):
+        try:
+            old_path = Path("app") / course.cover_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    course.cover_image = f"/static/covers/{filename}"
+    session.add(course)
+    await session.commit()
+    await session.refresh(course)
+
+    return await enrich_course_public(course, session, current_user.id)
+
+
+@router.delete("/{course_id}/cover", response_model=CoursePublic)
+async def delete_course_cover(
+    course_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Удалить обложку курса. Только автор курса может удалять.
+    """
+    course = await session.get(Course, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    if course.author_id != current_user.id:
+        raise HTTPException(
+            status_code=403, detail="Only course author can delete course cover"
+        )
+
+    # Удаляем файл обложки
+    if course.cover_image and course.cover_image.startswith("/static/covers/"):
+        try:
+            old_path = Path("app") / course.cover_image.lstrip("/")
+            if old_path.exists():
+                old_path.unlink()
+        except Exception:
+            pass
+
+    course.cover_image = None
+    session.add(course)
+    await session.commit()
+    await session.refresh(course)
+
+    return await enrich_course_public(course, session, current_user.id)
+
+
 @router.patch("/{course_id}", response_model=CoursePublic)
 async def update_course(
     course_id: UUID,
@@ -484,35 +536,10 @@ async def update_course(
         setattr(course, field, value)
 
     # Обновляем дату изменения
-    from datetime import datetime
-
     course.datetime_update = datetime.utcnow()
 
     session.add(course)
     await session.commit()
     await session.refresh(course)
 
-    # Проверяем избранное и подписку
-    is_favorite_stmt = select(CourseFavoriteLink).where(
-        CourseFavoriteLink.course_id == course_id,
-        CourseFavoriteLink.user_id == current_user.id,
-    )
-    is_favorite = (await session.exec(is_favorite_stmt)).first() is not None
-
-    students_count_stmt = select(func.count(CourseStudentLink.user_id)).where(
-        CourseStudentLink.course_id == course_id
-    )
-    students_count = (await session.exec(students_count_stmt)).one()
-
-    is_enrolled_stmt = select(CourseStudentLink).where(
-        CourseStudentLink.course_id == course_id,
-        CourseStudentLink.user_id == current_user.id,
-    )
-    is_enrolled = (await session.exec(is_enrolled_stmt)).first() is not None
-
-    course_dict = course.model_dump()
-    course_dict["is_favorite"] = is_favorite
-    course_dict["students_count"] = students_count
-    course_dict["is_enrolled"] = is_enrolled
-
-    return CoursePublic(**course_dict)
+    return await enrich_course_public(course, session, current_user.id)

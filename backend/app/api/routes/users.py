@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
 
+from app.api.utils import detect_image_ext_by_magic
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlmodel import col, func, select
 
@@ -75,22 +76,6 @@ def _validate_social_links(payload: dict) -> None:
                 status_code=422,
                 detail="youtube_url must start with https://youtube.com/ or https://youtu.be/",
             )
-
-
-MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
-
-
-def _detect_image_ext_by_magic(data: bytes) -> str | None:
-    # JPEG: FF D8 FF
-    if len(data) >= 3 and data[0:3] == b"\xff\xd8\xff":
-        return "jpg"
-    # PNG: 89 50 4E 47 0D 0A 1A 0A
-    if len(data) >= 8 and data[0:8] == b"\x89PNG\r\n\x1a\n":
-        return "png"
-    # WEBP: RIFF....WEBP
-    if len(data) >= 12 and data[0:4] == b"RIFF" and data[8:12] == b"WEBP":
-        return "webp"
-    return None
 
 
 @router.get(
@@ -349,9 +334,9 @@ async def upload_avatar_me(
     filepath = avatars_dir / filename
 
     data = await file.read()
-    if len(data) > MAX_IMAGE_SIZE_BYTES:
+    if len(data) > settings.MAX_IMAGE_SIZE_BYTES:
         raise HTTPException(status_code=413, detail="File too large")
-    magic_ext = _detect_image_ext_by_magic(data)
+    magic_ext = detect_image_ext_by_magic(data)
     if magic_ext is None or magic_ext != allowed[content_type]:
         raise HTTPException(status_code=400, detail="Invalid image data")
     filepath.write_bytes(data)
@@ -419,9 +404,9 @@ async def upload_cover_me(
     filepath = covers_dir / filename
 
     data = await file.read()
-    if len(data) > MAX_IMAGE_SIZE_BYTES:
+    if len(data) > settings.MAX_IMAGE_SIZE_BYTES:
         raise HTTPException(status_code=413, detail="File too large")
-    magic_ext = _detect_image_ext_by_magic(data)
+    magic_ext = detect_image_ext_by_magic(data)
     if magic_ext is None or magic_ext != allowed[content_type]:
         raise HTTPException(status_code=400, detail="Invalid image data")
     filepath.write_bytes(data)
