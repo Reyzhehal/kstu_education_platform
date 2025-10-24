@@ -225,6 +225,42 @@
   color: var(--text);
 }
 
+.activeStepActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.saveStepButton {
+  padding: 8px 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.saveStepButton:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.saveStepButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.saveStepButton:disabled:hover {
+  background: #9ca3af;
+  transform: none;
+  box-shadow: none;
+}
+
 .deleteStepButton {
   padding: 8px 16px;
   background: #ef4444;

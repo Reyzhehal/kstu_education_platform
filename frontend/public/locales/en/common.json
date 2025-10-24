@@ -241,6 +241,7 @@
       "stepNumberText": "Step {{number}}: Text",
       "stepNumberVideo": "Step {{number}}: Video",
       "addNewStep": "Add new step",
+      "saveStep": "Save",
       "deleteStep": "Delete step",
       "stepTypeText": "Text",
       "stepTypeVideo": "Video",

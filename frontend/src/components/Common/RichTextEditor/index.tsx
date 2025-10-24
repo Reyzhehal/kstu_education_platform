@@ -9,7 +9,7 @@ import TextAlign from "@tiptap/extension-text-align"
 import Underline from "@tiptap/extension-underline"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { useCallback } from "react"
+import { useCallback, useRef } from "react"
 import styles from "./RichTextEditor.module.css"
 
 type RichTextEditorProps = {
@@ -17,6 +17,7 @@ type RichTextEditorProps = {
   onChange: (content: string) => void
   placeholder?: string
   editable?: boolean
+  onImageUpload?: (file: File) => Promise<string>
 }
 
 export default function RichTextEditor({
@@ -24,7 +25,9 @@ export default function RichTextEditor({
   onChange,
   placeholder = "Начните писать...",
   editable = true,
+  onImageUpload,
 }: RichTextEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -40,6 +43,8 @@ export default function RichTextEditor({
         },
       }),
       Image.configure({
+        inline: true,
+        allowBase64: true,
         HTMLAttributes: {
           class: styles.image,
         },
@@ -92,6 +97,77 @@ export default function RichTextEditor({
       editor.chain().focus().setImage({ src: url }).run()
     }
   }, [editor])
+
+  const uploadImage = useCallback(
+    async (file: File) => {
+      if (!editor || !onImageUpload) return
+
+      // Проверяем тип файла
+      if (!file.type.startsWith("image/")) {
+        alert("Пожалуйста, выберите изображение")
+        return
+      }
+
+      // Проверяем размер файла (5 МБ)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Размер файла не должен превышать 5 МБ")
+        return
+      }
+
+      try {
+        // Загружаем изображение через callback
+        const url = await onImageUpload(file)
+        // Вставляем изображение в редактор
+        editor.chain().focus().setImage({ src: url }).run()
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        alert("Ошибка при загрузке изображения")
+      }
+    },
+    [editor, onImageUpload],
+  )
+
+  const handleImageUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      await uploadImage(file)
+
+      // Очищаем input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+    },
+    [uploadImage],
+  )
+
+  // Поддержка drag & drop для изображений
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (!onImageUpload) return
+
+      const file = e.dataTransfer.files?.[0]
+      if (file?.type.startsWith("image/")) {
+        await uploadImage(file)
+      }
+    },
+    [onImageUpload, uploadImage],
+  )
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
+
+  const triggerImageUpload = useCallback(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }, [])
 
   if (!editor) {
     return null
@@ -251,13 +327,32 @@ export default function RichTextEditor({
             >
               🔗
             </button>
-            <button
-              type="button"
-              onClick={addImage}
-              title="Вставить изображение"
-            >
-              🖼
-            </button>
+            {onImageUpload ? (
+              <>
+                <button
+                  type="button"
+                  onClick={triggerImageUpload}
+                  title="Загрузить изображение"
+                >
+                  🖼
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleImageUpload}
+                  style={{ display: "none" }}
+                />
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={addImage}
+                title="Вставить изображение по URL"
+              >
+                🖼
+              </button>
+            )}
             <button
               type="button"
               onClick={() =>
@@ -315,7 +410,9 @@ export default function RichTextEditor({
         </div>
       )}
 
-      <EditorContent editor={editor} className={styles.editor} />
+      <div onDrop={handleDrop} onDragOver={handleDragOver}>
+        <EditorContent editor={editor} className={styles.editor} />
+      </div>
     </div>
   )
 }

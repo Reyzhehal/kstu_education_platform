@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { StepPublic, StepType } from "@/client"
 import {
+  ContentService,
   LanguagesService,
   LessonsService,
   ModulesService,
@@ -36,24 +37,33 @@ export const Route = createFileRoute("/_layout/lesson/$lessonId/edit")({
 function LessonEditPage() {
   const { lessonId } = Route.useParams()
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   // Загружаем курс для проверки прав доступа
   // Будем грузить модули, чтобы найти нужный урок и курс
   const [courseId, setCourseId] = useState<string | null>(null)
-  const [currentLessonId, setCurrentLessonId] = useState<string>(lessonId)
 
   usePageTitle(t("lesson.edit.title"))
+
+  const handleLessonSelect = (newLessonId: string) => {
+    // Навигация к новому уроку
+    navigate({ to: `/lesson/${newLessonId}/edit` } as any)
+  }
 
   return (
     <div className={styles.page}>
       <LessonNavigationSidebar
         courseId={courseId}
-        currentLessonId={currentLessonId}
-        onLessonSelect={setCurrentLessonId}
+        currentLessonId={lessonId}
+        onLessonSelect={handleLessonSelect}
         onCourseIdFound={setCourseId}
       />
       <div className={styles.mainContent}>
-        <LessonStepsEditor lessonId={currentLessonId} courseId={courseId} />
+        <LessonStepsEditor
+          key={lessonId}
+          lessonId={lessonId}
+          courseId={courseId}
+        />
       </div>
     </div>
   )
@@ -157,6 +167,7 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   const [showStepTypeModal, setShowStepTypeModal] = useState(false)
   const [showLessonSettings, setShowLessonSettings] = useState(false)
   const [activeStepIndex, setActiveStepIndex] = useState(0)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // Загружаем данные урока
   const { data: lessonData } = useQuery({
@@ -339,6 +350,11 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
     }
   }, [steps.length, activeStepIndex])
 
+  // Сбрасываем флаг несохраненных изменений при смене шага
+  useEffect(() => {
+    setHasUnsavedChanges(false)
+  }, [])
+
   return (
     <div className={styles.stepsEditor}>
       <div className={styles.editorHeader}>
@@ -435,18 +451,39 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
                     number: activeStepIndex + 1,
                   })}
             </h2>
-            <button
-              className={styles.deleteStepButton}
-              onClick={() => {
-                handleDeleteStep(activeStep.id)
-                if (activeStepIndex > 0) {
-                  setActiveStepIndex(activeStepIndex - 1)
-                }
-              }}
-              title={t("lesson.edit.deleteStep")}
-            >
-              × {t("lesson.edit.deleteStep")}
-            </button>
+            <div className={styles.activeStepActions}>
+              <button
+                className={styles.saveStepButton}
+                onClick={() => {
+                  if (activeStep.step_type === STEP_TYPE_TEXT) {
+                    // Сохранение будет вызвано через ref
+                    const saveEvent = new CustomEvent("saveStep", {
+                      detail: { stepId: activeStep.id },
+                    })
+                    window.dispatchEvent(saveEvent)
+                  } else {
+                    // Для видео сохраняем сразу
+                    handleUpdateStep(activeStep.id, {})
+                  }
+                }}
+                disabled={!hasUnsavedChanges}
+                title={t("lesson.edit.saveStep")}
+              >
+                {t("lesson.edit.saveStep")}
+              </button>
+              <button
+                className={styles.deleteStepButton}
+                onClick={() => {
+                  handleDeleteStep(activeStep.id)
+                  if (activeStepIndex > 0) {
+                    setActiveStepIndex(activeStepIndex - 1)
+                  }
+                }}
+                title={t("lesson.edit.deleteStep")}
+              >
+                × {t("lesson.edit.deleteStep")}
+              </button>
+            </div>
           </div>
           {activeStep.step_type === STEP_TYPE_TEXT ? (
             <TextStepEditor
@@ -454,6 +491,8 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
               onUpdate={(content) =>
                 handleUpdateStep(activeStep.id, { content })
               }
+              onSave={() => setHasUnsavedChanges(false)}
+              onHasChanges={setHasUnsavedChanges}
             />
           ) : (
             <VideoStepEditor
@@ -543,27 +582,105 @@ function StepTypeModal({ onClose, onSelect }: StepTypeModalProps) {
 type TextStepEditorProps = {
   step: StepPublic
   onUpdate: (content: any) => void
+  onSave: () => void
+  onHasChanges: (hasChanges: boolean) => void
 }
 
-function TextStepEditor({ step, onUpdate }: TextStepEditorProps) {
+function TextStepEditor({
+  step,
+  onUpdate,
+  onSave,
+  onHasChanges,
+}: TextStepEditorProps) {
   const { t } = useTranslation()
   const content = (step.content || {}) as TextStepContent
   const [text, setText] = useState(content.text || "")
+  const previousImagesRef = useRef<Set<string>>(new Set())
+
+  // Функция для извлечения URL изображений из HTML
+  const extractImageUrls = (html: string): Set<string> => {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, "text/html")
+    const images = doc.querySelectorAll("img")
+    const urls = new Set<string>()
+
+    images.forEach((img) => {
+      const src = img.getAttribute("src")
+      if (src?.includes("/static/step_images/")) {
+        // Извлекаем относительный путь без домена
+        const url = src.replace(import.meta.env.VITE_API_URL || "", "")
+        urls.add(url)
+      }
+    })
+
+    return urls
+  }
 
   // Синхронизируем текст при смене шага
   useEffect(() => {
     setText(content.text || "")
-  }, [content.text])
+    // Обновляем список изображений при смене шага
+    previousImagesRef.current = extractImageUrls(content.text || "")
+    // Сбрасываем флаг изменений при смене шага
+    onHasChanges(false)
+  }, [content.text, onHasChanges, extractImageUrls])
 
-  // Автосохранение с задержкой
+  // Отслеживаем изменения текста
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (text !== content.text) {
-        onUpdate({ text })
+    const hasChanges = text !== content.text
+    onHasChanges(hasChanges)
+  }, [text, content.text, onHasChanges])
+
+  // Обработчик сохранения
+  const handleSave = async () => {
+    if (text !== content.text) {
+      onUpdate({ text })
+
+      // Проверяем, какие изображения были удалены
+      const currentImages = extractImageUrls(text)
+      const deletedImages = Array.from(previousImagesRef.current).filter(
+        (url) => !currentImages.has(url),
+      )
+
+      // Удаляем файлы удаленных изображений
+      for (const imageUrl of deletedImages) {
+        try {
+          await ContentService.deleteContentImage({
+            imageUrl,
+          })
+          console.log(`Deleted unused image: ${imageUrl}`)
+        } catch (error) {
+          console.error(`Failed to delete image ${imageUrl}:`, error)
+        }
       }
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [text, content.text, onUpdate])
+
+      // Обновляем список текущих изображений
+      previousImagesRef.current = currentImages
+
+      // Вызываем колбэк для сохранения
+      onSave()
+    }
+  }
+
+  // Слушаем событие сохранения
+  useEffect(() => {
+    const handleSaveEvent = (event: Event) => {
+      const customEvent = event as CustomEvent
+      if (customEvent.detail?.stepId === step.id) {
+        handleSave()
+      }
+    }
+
+    window.addEventListener("saveStep", handleSaveEvent)
+    return () => window.removeEventListener("saveStep", handleSaveEvent)
+  }, [step.id, handleSave])
+
+  const handleImageUpload = async (file: File): Promise<string> => {
+    const result = (await ContentService.uploadContentImage({
+      formData: { file },
+    })) as { url: string }
+    return withApiBase(result.url)
+  }
 
   return (
     <div className={styles.textEditor}>
@@ -571,6 +688,7 @@ function TextStepEditor({ step, onUpdate }: TextStepEditorProps) {
         content={text}
         onChange={setText}
         placeholder={t("lesson.edit.textPlaceholder")}
+        onImageUpload={handleImageUpload}
       />
     </div>
   )

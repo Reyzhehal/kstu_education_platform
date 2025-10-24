@@ -616,8 +616,3 @@ class StepPublic(StepBase):
     id: UUID
     lesson_id: UUID
     content: dict[str, Any] = Field(default_factory=dict)
-
-
-class StepsPublic(SQLModel):
-    data: list[StepPublic]
-    count: int

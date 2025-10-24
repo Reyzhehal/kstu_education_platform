@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.api.routes import (
     categories,
+    content,
     courses,
     languages,
     lessons,
@@ -18,6 +19,7 @@ api_router = APIRouter()
 api_router.include_router(login.router)
 api_router.include_router(users.router)
 api_router.include_router(utils.router)
+api_router.include_router(content.router)
 api_router.include_router(modules.router)
 api_router.include_router(modules.modules_router)
 api_router.include_router(lessons.router)

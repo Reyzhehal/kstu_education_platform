@@ -285,6 +285,7 @@
       "stepNumberText": "Шаг {{number}}: Текст",
       "stepNumberVideo": "Шаг {{number}}: Видео",
       "addNewStep": "Добавить новый шаг",
+      "saveStep": "Сохранить",
       "deleteStep": "Удалить шаг",
       "stepTypeText": "Текст",
       "stepTypeVideo": "Видео",

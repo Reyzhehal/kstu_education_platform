@@ -13,7 +13,6 @@ from app.models import (
     StepCreate,
     StepUpdate,
     StepPublic,
-    StepsPublic,
 )
 
 router = APIRouter(prefix="/lessons/{lesson_id}/steps", tags=["steps"])
