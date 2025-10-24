@@ -31,7 +31,6 @@ export function extractYoutubeHandle(
   if (!url) return url as any
   const s = String(url).trim()
   const handle = extractHandle(s)
-  // В инпуте храним handle БЕЗ '@'
   return String(handle || "").replace(/^@+/, "") as any
 }
 

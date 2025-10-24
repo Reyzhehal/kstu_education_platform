@@ -220,6 +220,13 @@
     "access": "Access Rights"
   },
   "lesson": {
+    "view": {
+      "title": "View lesson",
+      "editLesson": "Edit lesson",
+      "step": "Step",
+      "noVideoUrl": "Video URL not specified",
+      "invalidVideoUrl": "Invalid video URL"
+    },
     "edit": {
       "title": "Edit Lesson",
       "courseContent": "Course Content",
@@ -243,6 +250,8 @@
       "addNewStep": "Add new step",
       "saveStep": "Save",
       "deleteStep": "Delete step",
+      "backToView": "Back to view",
+      "nextStep": "Next step",
       "stepTypeText": "Text",
       "stepTypeVideo": "Video",
       "stepTypeTextDescription": "Text with formatting, images, formulas",

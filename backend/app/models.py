@@ -409,24 +409,6 @@ class StepBase(SQLModel):
 
 
 class Step(StepBase, table=True):
-    # Примеры структур content для разных типов:
-    #
-    # TEXT: {"text": str, "images": [str]}
-    # VIDEO: {"url": str, "duration": int}
-    # CODE: {"task": str, "starter_code": str, "test_cases": [...], "language": str}
-    # QUIZ: {"question": str, "options": [...], "correct_answers": [...], "multiple": bool}
-    # MATCHING: {"pairs": [{"left": str, "right": str}], "options": [...]}
-    # SORTING: {"items": [str], "correct_order": [int]}
-    # TABLE: {"headers": [str], "correct_answers": [[str]]}
-    # FILL_BLANKS: {"text": str, "blanks": [{"position": int, "answer": str}]}
-    # STRING: {"question": str, "answer": str, "case_sensitive": bool}
-    # NUMBER: {"question": str, "answer": float, "tolerance": float}
-    # MATH: {"question": str, "answer": str, "variables": {...}}
-    # FREE_ANSWER: {"question": str, "max_length": int}
-    # SQL: {"task": str, "database_schema": str, "test_queries": [...]}
-    # HTML_CSS: {"task": str, "initial_html": str, "initial_css": str}
-    # DATASET: {"task": str, "dataset_url": str, "test_cases": [...]}
-
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     lesson_id: UUID = Field(foreign_key="lesson.id", ondelete="CASCADE")
     lesson: Lesson | None = Relationship()
@@ -592,7 +574,6 @@ class LessonPublic(LessonBase):
     module_id: UUID
 
 
-# Вложенная структура для просмотра содержания курса
 class ModuleWithLessons(ModulePublic):
     lessons: list[LessonPublic] = []
 
@@ -616,3 +597,22 @@ class StepPublic(StepBase):
     id: UUID
     lesson_id: UUID
     content: dict[str, Any] = Field(default_factory=dict)
+    is_completed: bool = False  # Пройден ли шаг текущим пользователем
+
+
+# Step Progress (отслеживание прогресса прохождения шагов)
+class StepProgress(SQLModel, table=True):
+    __tablename__ = "step_progress"
+    __table_args__ = (UniqueConstraint("user_id", "step_id", name="unique_user_step"),)
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    user_id: UUID = Field(foreign_key="users.id", index=True)
+    step_id: UUID = Field(foreign_key="step.id", index=True)
+    completed_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class StepProgressPublic(SQLModel):
+    id: UUID
+    user_id: UUID
+    step_id: UUID
+    completed_at: datetime

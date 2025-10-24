@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, ContentUploadContentImageData, ContentUploadContentImageResponse, ContentDeleteContentImageData, ContentDeleteContentImageResponse, CoursesCreateCourseData, CoursesCreateCourseResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadAuthorCoursesData, CoursesReadAuthorCoursesResponse, CoursesPublishCourseData, CoursesPublishCourseResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesUpdateCourseData, CoursesUpdateCourseResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, CoursesUploadCourseCoverData, CoursesUploadCourseCoverResponse, CoursesDeleteCourseCoverData, CoursesDeleteCourseCoverResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LessonsReadLessonData, LessonsReadLessonResponse, LessonsUpdateLessonData, LessonsUpdateLessonResponse, LessonsDeleteLessonData, LessonsDeleteLessonResponse, LessonsUploadLessonCoverData, LessonsUploadLessonCoverResponse, LessonsDeleteLessonCoverData, LessonsDeleteLessonCoverResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginRefreshAccessTokenData, LoginRefreshAccessTokenResponse, LoginRevokeRefreshTokenData, LoginRevokeRefreshTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, ModulesReadCourseModulesData, ModulesReadCourseModulesResponse, ModulesCreateModuleData, ModulesCreateModuleResponse, ModulesReadModuleData, ModulesReadModuleResponse, ModulesUpdateModuleData, ModulesUpdateModuleResponse, ModulesDeleteModuleData, ModulesDeleteModuleResponse, ModulesCreateLessonInModuleData, ModulesCreateLessonInModuleResponse, PrivateCreateUserData, PrivateCreateUserResponse, StepsReadLessonStepsData, StepsReadLessonStepsResponse, StepsCreateStepData, StepsCreateStepResponse, StepsReadStepData, StepsReadStepResponse, StepsUpdateStepData, StepsUpdateStepResponse, StepsDeleteStepData, StepsDeleteStepResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CategoriesReadCategoriesData, CategoriesReadCategoriesResponse, CategoriesReadMetaCategoriesByCategoryData, CategoriesReadMetaCategoriesByCategoryResponse, ContentUploadContentImageData, ContentUploadContentImageResponse, ContentDeleteContentImageData, ContentDeleteContentImageResponse, CoursesCreateCourseData, CoursesCreateCourseResponse, CoursesReadCoursesData, CoursesReadCoursesResponse, CoursesReadFavoriteCoursesData, CoursesReadFavoriteCoursesResponse, CoursesReadMyCoursesData, CoursesReadMyCoursesResponse, CoursesReadAuthorCoursesData, CoursesReadAuthorCoursesResponse, CoursesPublishCourseData, CoursesPublishCourseResponse, CoursesReadCourseByIdData, CoursesReadCourseByIdResponse, CoursesUpdateCourseData, CoursesUpdateCourseResponse, CoursesAddToFavoritesData, CoursesAddToFavoritesResponse, CoursesRemoveFromFavoritesData, CoursesRemoveFromFavoritesResponse, CoursesEnrollCourseData, CoursesEnrollCourseResponse, CoursesUnenrollCourseData, CoursesUnenrollCourseResponse, CoursesReadCourseLearnLinesData, CoursesReadCourseLearnLinesResponse, CoursesReadCourseDescriptionBlocksData, CoursesReadCourseDescriptionBlocksResponse, CoursesUploadCourseCoverData, CoursesUploadCourseCoverResponse, CoursesDeleteCourseCoverData, CoursesDeleteCourseCoverResponse, LanguagesReadLanguagesData, LanguagesReadLanguagesResponse, LessonsReadLessonData, LessonsReadLessonResponse, LessonsUpdateLessonData, LessonsUpdateLessonResponse, LessonsDeleteLessonData, LessonsDeleteLessonResponse, LessonsUploadLessonCoverData, LessonsUploadLessonCoverResponse, LessonsDeleteLessonCoverData, LessonsDeleteLessonCoverResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginRefreshAccessTokenData, LoginRefreshAccessTokenResponse, LoginRevokeRefreshTokenData, LoginRevokeRefreshTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, ModulesReadCourseModulesData, ModulesReadCourseModulesResponse, ModulesCreateModuleData, ModulesCreateModuleResponse, ModulesReadModuleData, ModulesReadModuleResponse, ModulesUpdateModuleData, ModulesUpdateModuleResponse, ModulesDeleteModuleData, ModulesDeleteModuleResponse, ModulesCreateLessonInModuleData, ModulesCreateLessonInModuleResponse, PrivateCreateUserData, PrivateCreateUserResponse, StepsReadLessonStepsData, StepsReadLessonStepsResponse, StepsCreateStepData, StepsCreateStepResponse, StepsReadStepData, StepsReadStepResponse, StepsUpdateStepData, StepsUpdateStepResponse, StepsDeleteStepData, StepsDeleteStepResponse, StepsMarkStepCompletedData, StepsMarkStepCompletedResponse, StepsGetCompletedStepsData, StepsGetCompletedStepsResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersSetLanguageMeData, UsersSetLanguageMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersUploadAvatarMeData, UsersUploadAvatarMeResponse, UsersDeleteAvatarMeResponse, UsersUploadCoverMeData, UsersUploadCoverMeResponse, UsersDeleteCoverMeResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class CategoriesService {
     /**
@@ -1011,6 +1011,50 @@ export class StepsService {
             path: {
                 lesson_id: data.lessonId,
                 step_id: data.stepId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Mark Step Completed
+     * Отметить шаг как пройденный для текущего пользователя
+     * @param data The data for the request.
+     * @param data.lessonId
+     * @param data.stepId
+     * @returns StepProgressPublic Successful Response
+     * @throws ApiError
+     */
+    public static markStepCompleted(data: StepsMarkStepCompletedData): CancelablePromise<StepsMarkStepCompletedResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/lessons/{lesson_id}/steps/{step_id}/complete',
+            path: {
+                lesson_id: data.lessonId,
+                step_id: data.stepId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Completed Steps
+     * Получить список ID пройденных шагов для урока
+     * @param data The data for the request.
+     * @param data.lessonId
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static getCompletedSteps(data: StepsGetCompletedStepsData): CancelablePromise<StepsGetCompletedStepsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/lessons/{lesson_id}/steps/progress',
+            path: {
+                lesson_id: data.lessonId
             },
             errors: {
                 422: 'Validation Error'

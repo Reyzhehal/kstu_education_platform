@@ -1175,6 +1175,34 @@ export const StepCreateSchema = {
     title: 'StepCreate'
 } as const;
 
+export const StepProgressPublicSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        user_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'User Id'
+        },
+        step_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Step Id'
+        },
+        completed_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Completed At'
+        }
+    },
+    type: 'object',
+    required: ['id', 'user_id', 'step_id', 'completed_at'],
+    title: 'StepProgressPublic'
+} as const;
+
 export const StepPublicSchema = {
     properties: {
         title: {

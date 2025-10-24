@@ -64,14 +64,12 @@ const useAuth = () => {
   const logout = async () => {
     const refreshToken = localStorage.getItem("refresh_token")
 
-    // Пытаемся отозвать refresh token
     if (refreshToken) {
       try {
         await LoginService.revokeRefreshToken({
           refreshToken,
         })
       } catch (error) {
-        // Игнорируем ошибки при revoke
         console.error("Failed to revoke refresh token:", error)
       }
     }

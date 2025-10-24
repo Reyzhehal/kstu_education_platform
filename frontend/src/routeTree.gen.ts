@@ -35,6 +35,7 @@ import { Route as LayoutSettingsAppearanceRouteImport } from './routes/_layout/s
 import { Route as LayoutPromoIdRouteImport } from './routes/_layout/promo/$id'
 import { Route as LayoutProfileIdRouteImport } from './routes/_layout/profile/$id'
 import { Route as LayoutCatalogIdRouteImport } from './routes/_layout/catalog/$id'
+import { Route as LayoutLessonLessonIdIndexRouteImport } from './routes/_layout/lesson/$lessonId.index'
 import { Route as LayoutLessonLessonIdEditRouteImport } from './routes/_layout/lesson/$lessonId.edit'
 import { Route as LayoutCourseCourseIdTabRouteImport } from './routes/_layout/course/$courseId.$tab'
 import { Route as LayoutCatalogMetaIdRouteImport } from './routes/_layout/catalog/meta.$id'
@@ -169,6 +170,12 @@ const LayoutCatalogIdRoute = LayoutCatalogIdRouteImport.update({
   path: '/catalog/$id',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutLessonLessonIdIndexRoute =
+  LayoutLessonLessonIdIndexRouteImport.update({
+    id: '/lesson/$lessonId/',
+    path: '/lesson/$lessonId/',
+    getParentRoute: () => LayoutRoute,
+  } as any)
 const LayoutLessonLessonIdEditRoute =
   LayoutLessonLessonIdEditRouteImport.update({
     id: '/lesson/$lessonId/edit',
@@ -215,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
   '/course/$courseId/$tab': typeof LayoutCourseCourseIdTabRoute
   '/lesson/$lessonId/edit': typeof LayoutLessonLessonIdEditRoute
+  '/lesson/$lessonId': typeof LayoutLessonLessonIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/classes': typeof ClassesRoute
@@ -244,6 +252,7 @@ export interface FileRoutesByTo {
   '/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
   '/course/$courseId/$tab': typeof LayoutCourseCourseIdTabRoute
   '/lesson/$lessonId/edit': typeof LayoutLessonLessonIdEditRoute
+  '/lesson/$lessonId': typeof LayoutLessonLessonIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -276,6 +285,7 @@ export interface FileRoutesById {
   '/_layout/catalog/meta/$id': typeof LayoutCatalogMetaIdRoute
   '/_layout/course/$courseId/$tab': typeof LayoutCourseCourseIdTabRoute
   '/_layout/lesson/$lessonId/edit': typeof LayoutLessonLessonIdEditRoute
+  '/_layout/lesson/$lessonId/': typeof LayoutLessonLessonIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/catalog/meta/$id'
     | '/course/$courseId/$tab'
     | '/lesson/$lessonId/edit'
+    | '/lesson/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/classes'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/catalog/meta/$id'
     | '/course/$courseId/$tab'
     | '/lesson/$lessonId/edit'
+    | '/lesson/$lessonId'
   id:
     | '__root__'
     | '/_layout'
@@ -368,6 +380,7 @@ export interface FileRouteTypes {
     | '/_layout/catalog/meta/$id'
     | '/_layout/course/$courseId/$tab'
     | '/_layout/lesson/$lessonId/edit'
+    | '/_layout/lesson/$lessonId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -567,6 +580,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutCatalogIdRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/lesson/$lessonId/': {
+      id: '/_layout/lesson/$lessonId/'
+      path: '/lesson/$lessonId'
+      fullPath: '/lesson/$lessonId'
+      preLoaderRoute: typeof LayoutLessonLessonIdIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/lesson/$lessonId/edit': {
       id: '/_layout/lesson/$lessonId/edit'
       path: '/lesson/$lessonId/edit'
@@ -627,6 +647,7 @@ interface LayoutRouteChildren {
   LayoutCatalogMetaIdRoute: typeof LayoutCatalogMetaIdRoute
   LayoutCourseCourseIdTabRoute: typeof LayoutCourseCourseIdTabRoute
   LayoutLessonLessonIdEditRoute: typeof LayoutLessonLessonIdEditRoute
+  LayoutLessonLessonIdIndexRoute: typeof LayoutLessonLessonIdIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -643,6 +664,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutCatalogMetaIdRoute: LayoutCatalogMetaIdRoute,
   LayoutCourseCourseIdTabRoute: LayoutCourseCourseIdTabRoute,
   LayoutLessonLessonIdEditRoute: LayoutLessonLessonIdEditRoute,
+  LayoutLessonLessonIdIndexRoute: LayoutLessonLessonIdIndexRoute,
 }
 
 const LayoutRouteWithChildren =

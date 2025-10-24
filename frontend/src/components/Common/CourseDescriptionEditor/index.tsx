@@ -52,12 +52,10 @@ export default function CourseDescriptionEditor({
     course.hours_week?.toString() || "",
   )
 
-  // Обновляем локальное состояние при изменении course.cover_image
   useEffect(() => {
     setCoverImage(course.cover_image || "")
   }, [course.cover_image])
 
-  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: languagesData } = useQuery({
     queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages(),

@@ -7,10 +7,13 @@ import {
   ContentService,
   LanguagesService,
   LessonsService,
-  ModulesService,
   StepsService,
 } from "@/client"
-import { RichTextEditor } from "@/components/Common"
+import {
+  LessonNavigationSidebar,
+  RichTextEditor,
+  StepsNavigation,
+} from "@/components/Common"
 import useCustomToast from "@/hooks/useCustomToast"
 import usePageTitle from "@/hooks/usePageTitle"
 import { LANGUAGES_QUERY_KEY } from "@/routes/_layout"
@@ -21,7 +24,6 @@ import styles from "./index.module.css"
 const STEP_TYPE_TEXT: StepType = 0
 const STEP_TYPE_VIDEO: StepType = 1
 
-// Типы для контента шагов
 type TextStepContent = {
   text?: string
 }
@@ -39,14 +41,11 @@ function LessonEditPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  // Загружаем курс для проверки прав доступа
-  // Будем грузить модули, чтобы найти нужный урок и курс
   const [courseId, setCourseId] = useState<string | null>(null)
 
   usePageTitle(t("lesson.edit.title"))
 
   const handleLessonSelect = (newLessonId: string) => {
-    // Навигация к новому уроку
     navigate({ to: `/lesson/${newLessonId}/edit` } as any)
   }
 
@@ -69,92 +68,6 @@ function LessonEditPage() {
   )
 }
 
-type LessonNavigationSidebarProps = {
-  courseId: string | null
-  currentLessonId: string
-  onLessonSelect: (lessonId: string) => void
-  onCourseIdFound: (courseId: string) => void
-}
-
-function LessonNavigationSidebar({
-  courseId,
-  currentLessonId,
-  onLessonSelect,
-  onCourseIdFound,
-}: LessonNavigationSidebarProps) {
-  const { t } = useTranslation()
-
-  const { data: currentLesson } = useQuery({
-    queryKey: ["lesson", currentLessonId],
-    queryFn: () => LessonsService.readLesson({ lessonId: currentLessonId }),
-  })
-
-  const { data: currentModule } = useQuery({
-    queryKey: ["module", currentLesson?.module_id],
-    queryFn: () =>
-      currentLesson?.module_id
-        ? ModulesService.readModule({ moduleId: currentLesson.module_id })
-        : null,
-    enabled: !!currentLesson?.module_id,
-  })
-
-  useEffect(() => {
-    if (currentModule?.course_id && !courseId) {
-      onCourseIdFound(currentModule.course_id)
-    }
-  }, [currentModule?.course_id, courseId, onCourseIdFound])
-
-  const { data: modules } = useQuery({
-    queryKey: ["courseModules", courseId],
-    queryFn: () =>
-      courseId ? ModulesService.readCourseModules({ courseId }) : null,
-    enabled: !!courseId,
-  })
-
-  const isLoading = !courseId || !modules
-
-  return (
-    <aside className={styles.sidebar}>
-      <div className={styles.sidebarHeader}>
-        <h2 className={styles.sidebarTitle}>
-          {t("lesson.edit.courseContent")}
-        </h2>
-      </div>
-      <div className={styles.modulesList}>
-        {isLoading ? (
-          <div className={styles.loading}>{t("common.loading")}</div>
-        ) : modules?.length === 0 ? (
-          <div className={styles.empty}>{t("lesson.edit.noContent")}</div>
-        ) : (
-          modules?.map((module: any, moduleIndex: number) => (
-            <div key={module.id} className={styles.module}>
-              <div className={styles.moduleTitle}>
-                {moduleIndex + 1}. {module.title}
-              </div>
-              <ul className={styles.lessonsList}>
-                {module.lessons?.map((lesson: any, lessonIndex: number) => (
-                  <li
-                    key={lesson.id}
-                    className={`${styles.lessonItem} ${
-                      lesson.id === currentLessonId ? styles.active : ""
-                    }`}
-                    onClick={() => onLessonSelect(lesson.id)}
-                  >
-                    <span className={styles.lessonNumber}>
-                      {moduleIndex + 1}.{lessonIndex + 1}
-                    </span>
-                    <span className={styles.lessonTitle}>{lesson.title}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        )}
-      </div>
-    </aside>
-  )
-}
-
 type LessonStepsEditorProps = {
   lessonId: string
   courseId: string | null
@@ -162,6 +75,7 @@ type LessonStepsEditorProps = {
 
 function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const queryClient = useQueryClient()
   const [showStepTypeModal, setShowStepTypeModal] = useState(false)
@@ -169,20 +83,17 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
-  // Загружаем данные урока
   const { data: lessonData } = useQuery({
     queryKey: ["lesson", lessonId],
     queryFn: () => LessonsService.readLesson({ lessonId }),
   })
 
-  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: languagesData } = useQuery({
     queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages(),
-    staleTime: Infinity, // Языки загружаются один раз в Layout
+    staleTime: Infinity,
   })
 
-  // Загружаем шаги урока
   const { data: stepsData = [] } = useQuery({
     queryKey: ["lessonSteps", lessonId],
     queryFn: () => StepsService.readLessonSteps({ lessonId }),
@@ -326,7 +237,6 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
       content: defaultContent,
     })
     setShowStepTypeModal(false)
-    // Активируем новый шаг после создания
     setActiveStepIndex(steps.length)
   }
 
@@ -343,14 +253,12 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
   const steps = stepsData as StepPublic[]
   const activeStep = steps[activeStepIndex]
 
-  // Корректируем activeStepIndex если он больше количества шагов
   useEffect(() => {
     if (steps.length > 0 && activeStepIndex >= steps.length) {
       setActiveStepIndex(steps.length - 1)
     }
   }, [steps.length, activeStepIndex])
 
-  // Сбрасываем флаг несохраненных изменений при смене шага
   useEffect(() => {
     setHasUnsavedChanges(false)
   }, [])
@@ -384,58 +292,15 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
       )}
 
       {/* Горизонтальная панель шагов */}
-      <div className={styles.stepsBar}>
-        {steps.map((step: StepPublic, index: number) => (
-          <div key={step.id} className={styles.stepContainer}>
-            <span className={styles.stepLabel}>{index + 1}</span>
-            <button
-              className={`${styles.stepSquare} ${
-                index === activeStepIndex ? styles.stepSquareActive : ""
-              } ${step.step_type === STEP_TYPE_VIDEO ? styles.stepSquareVideo : ""}`}
-              onClick={() => setActiveStepIndex(index)}
-              title={
-                step.step_type === STEP_TYPE_TEXT
-                  ? t("lesson.edit.stepNumberText", { number: index + 1 })
-                  : t("lesson.edit.stepNumberVideo", { number: index + 1 })
-              }
-            >
-              {step.step_type === STEP_TYPE_VIDEO ? (
-                <svg
-                  className={styles.stepSquareIcon}
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path d="M8 5v14l11-7z" fill="currentColor" />
-                </svg>
-              ) : (
-                <svg
-                  className={styles.stepSquareIcon}
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                    fill="currentColor"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        ))}
-        <div className={styles.stepContainer}>
-          <span className={styles.stepLabel}>&nbsp;</span>
-          <button
-            className={`${styles.stepSquare} ${styles.stepSquareAdd}`}
-            onClick={handleAddStep}
-            title={t("lesson.edit.addNewStep")}
-          >
-            <span className={styles.stepSquarePlus}>+</span>
-          </button>
-        </div>
+      <div className={styles.stepsNavigation}>
+        <StepsNavigation
+          steps={steps}
+          activeStepIndex={activeStepIndex}
+          onStepClick={setActiveStepIndex}
+          mode="edit"
+          onAddStep={handleAddStep}
+          addStepLabel={t("lesson.edit.addNewStep")}
+        />
       </div>
 
       {/* Редактор активного шага */}
@@ -451,18 +316,35 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
                     number: activeStepIndex + 1,
                   })}
             </h2>
+          </div>
+          {activeStep.step_type === STEP_TYPE_TEXT ? (
+            <TextStepEditor
+              step={activeStep}
+              onUpdate={(content) =>
+                handleUpdateStep(activeStep.id, { content })
+              }
+              onSave={() => setHasUnsavedChanges(false)}
+              onHasChanges={setHasUnsavedChanges}
+            />
+          ) : (
+            <VideoStepEditor
+              step={activeStep}
+              onUpdate={(content) =>
+                handleUpdateStep(activeStep.id, { content })
+              }
+            />
+          )}
+          <div className={styles.activeStepFooter}>
             <div className={styles.activeStepActions}>
               <button
                 className={styles.saveStepButton}
                 onClick={() => {
                   if (activeStep.step_type === STEP_TYPE_TEXT) {
-                    // Сохранение будет вызвано через ref
                     const saveEvent = new CustomEvent("saveStep", {
                       detail: { stepId: activeStep.id },
                     })
                     window.dispatchEvent(saveEvent)
                   } else {
-                    // Для видео сохраняем сразу
                     handleUpdateStep(activeStep.id, {})
                   }
                 }}
@@ -484,24 +366,14 @@ function LessonStepsEditor({ lessonId, courseId }: LessonStepsEditorProps) {
                 × {t("lesson.edit.deleteStep")}
               </button>
             </div>
+            <button
+              className={styles.backToViewButton}
+              onClick={() => navigate({ to: `/lesson/${lessonId}` } as any)}
+              title={t("lesson.edit.backToView")}
+            >
+              ← {t("lesson.edit.backToView")}
+            </button>
           </div>
-          {activeStep.step_type === STEP_TYPE_TEXT ? (
-            <TextStepEditor
-              step={activeStep}
-              onUpdate={(content) =>
-                handleUpdateStep(activeStep.id, { content })
-              }
-              onSave={() => setHasUnsavedChanges(false)}
-              onHasChanges={setHasUnsavedChanges}
-            />
-          ) : (
-            <VideoStepEditor
-              step={activeStep}
-              onUpdate={(content) =>
-                handleUpdateStep(activeStep.id, { content })
-              }
-            />
-          )}
         </div>
       ) : (
         <div className={styles.emptyState}>
@@ -597,7 +469,6 @@ function TextStepEditor({
   const [text, setText] = useState(content.text || "")
   const previousImagesRef = useRef<Set<string>>(new Set())
 
-  // Функция для извлечения URL изображений из HTML
   const extractImageUrls = (html: string): Set<string> => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, "text/html")
@@ -607,7 +478,6 @@ function TextStepEditor({
     images.forEach((img) => {
       const src = img.getAttribute("src")
       if (src?.includes("/static/step_images/")) {
-        // Извлекаем относительный путь без домена
         const url = src.replace(import.meta.env.VITE_API_URL || "", "")
         urls.add(url)
       }
@@ -616,33 +486,26 @@ function TextStepEditor({
     return urls
   }
 
-  // Синхронизируем текст при смене шага
   useEffect(() => {
     setText(content.text || "")
-    // Обновляем список изображений при смене шага
     previousImagesRef.current = extractImageUrls(content.text || "")
-    // Сбрасываем флаг изменений при смене шага
     onHasChanges(false)
   }, [content.text, onHasChanges, extractImageUrls])
 
-  // Отслеживаем изменения текста
   useEffect(() => {
     const hasChanges = text !== content.text
     onHasChanges(hasChanges)
   }, [text, content.text, onHasChanges])
 
-  // Обработчик сохранения
   const handleSave = async () => {
     if (text !== content.text) {
       onUpdate({ text })
 
-      // Проверяем, какие изображения были удалены
       const currentImages = extractImageUrls(text)
       const deletedImages = Array.from(previousImagesRef.current).filter(
         (url) => !currentImages.has(url),
       )
 
-      // Удаляем файлы удаленных изображений
       for (const imageUrl of deletedImages) {
         try {
           await ContentService.deleteContentImage({
@@ -654,15 +517,12 @@ function TextStepEditor({
         }
       }
 
-      // Обновляем список текущих изображений
       previousImagesRef.current = currentImages
 
-      // Вызываем колбэк для сохранения
       onSave()
     }
   }
 
-  // Слушаем событие сохранения
   useEffect(() => {
     const handleSaveEvent = (event: Event) => {
       const customEvent = event as CustomEvent
@@ -704,12 +564,10 @@ function VideoStepEditor({ step, onUpdate }: VideoStepEditorProps) {
   const content = (step.content || {}) as VideoStepContent
   const [url, setUrl] = useState(content.url || "")
 
-  // Синхронизируем URL при смене шага
   useEffect(() => {
     setUrl(content.url || "")
   }, [content.url])
 
-  // Автосохранение с задержкой
   useEffect(() => {
     const timer = setTimeout(() => {
       if (url !== content.url) {
@@ -791,13 +649,11 @@ function LessonSettingsCard({
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Проверяем тип файла
     if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
       alert(t("lesson.edit.imageFormatError"))
       return
     }
 
-    // Проверяем размер файла (5 МБ)
     if (file.size > 5 * 1024 * 1024) {
       alert(t("lesson.edit.imageSizeError"))
       return
@@ -806,7 +662,6 @@ function LessonSettingsCard({
     setIsUploading(true)
     try {
       await onUploadCover(file)
-      // URL обновится через рефреш данных
     } catch (error) {
       console.error("Error uploading cover:", error)
       alert(t("lesson.edit.errorUploadingCover"))
@@ -833,7 +688,6 @@ function LessonSettingsCard({
     }
   }
 
-  // Обновляем локальное состояние при изменении lesson.cover_image
   useEffect(() => {
     setCoverImage(lesson.cover_image || "")
   }, [lesson.cover_image])

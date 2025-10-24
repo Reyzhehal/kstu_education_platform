@@ -1,0 +1,107 @@
+.stepsBar {
+  display: flex;
+  gap: 16px;
+  padding: 12px;
+  background: var(--panel);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.stepSquare {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  background: var(--bg-2);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stepSquare:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stepSquareVideo {
+  background: var(--bg);
+}
+
+.stepSquareIcon {
+  color: var(--text-muted);
+}
+
+.stepSquareActive {
+  border-color: var(--accent);
+  border-width: 3px;
+  box-shadow: 0 0 0 2px var(--accent-light);
+}
+
+.stepSquareCompleted {
+  background: #22c55e !important;
+  border-color: #22c55e !important;
+  color: white !important;
+}
+
+.stepSquareCompleted .stepSquareIcon {
+  color: white !important;
+}
+
+/* Активный пройденный шаг - зеленый с яркой подсветкой */
+.stepSquareActive.stepSquareCompleted {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+  border-width: 3px;
+}
+
+.stepSquareAdd {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.stepSquareAdd:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.stepSquarePlus {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+@media (max-width: 1024px) {
+  .stepSquare {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+  }
+
+  .stepSquareIcon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stepsBar {
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .stepSquare {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+  }
+
+  .stepSquareIcon {
+    width: 24px;
+    height: 24px;
+  }
+}

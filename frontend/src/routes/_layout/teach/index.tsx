@@ -71,7 +71,6 @@ function TeachPage() {
     console.log("Delete course:", courseId)
   }
 
-  // Загружаем курсы автора (созданные преподавателем)
   const { data: coursesData } = useQuery({
     queryKey: ["authorCourses"],
     queryFn: () => CoursesService.readAuthorCourses({ limit: 100 }),

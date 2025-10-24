@@ -15,7 +15,6 @@ export default function LanguageSwitcherInline({ className }: Props) {
   const { t } = useTranslation("common")
   const [selectedCode, setSelectedCode] = useState<string>(i18n.language)
 
-  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data } = useQuery({
     queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages({ skip: 0, limit: 100 }),

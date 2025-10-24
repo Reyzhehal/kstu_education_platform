@@ -58,7 +58,6 @@ function CoursePage() {
       const prevCourse = queryClient.getQueryData<any>(["course", id])
       const prevProgress = queryClient.getQueryData<any>(["progress"])
 
-      // Обновляем текущий курс
       if (prevCourse) {
         queryClient.setQueryData(["course", id], {
           ...prevCourse,
@@ -67,7 +66,6 @@ function CoursePage() {
         })
       }
 
-      // Добавляем в список прогресса
       if (prevProgress?.data) {
         const exists = prevProgress.data.some((c: any) => c.id === id)
         const newData = exists
@@ -294,8 +292,4 @@ function levelLabel(level: number | undefined, t: any) {
     default:
       return t("catalog.difficulty.beginner")
   }
-}
-
-// резервный метод больше не нужен, список берём с бэка
-
-// блоки теперь приходят с бэка
+  }

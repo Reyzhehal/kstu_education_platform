@@ -38,7 +38,6 @@ function ProfileByIdPage() {
 
   const { data: coursesResp } = useQuery({
     queryKey: ["courses", "by-author", id],
-    // пока нет фильтра по author_id — берём список и считаем на клиенте
     queryFn: () => CoursesService.readCourses({ limit: 200 }),
   })
 

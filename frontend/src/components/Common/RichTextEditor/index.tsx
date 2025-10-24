@@ -102,22 +102,18 @@ export default function RichTextEditor({
     async (file: File) => {
       if (!editor || !onImageUpload) return
 
-      // Проверяем тип файла
       if (!file.type.startsWith("image/")) {
         alert("Пожалуйста, выберите изображение")
         return
       }
 
-      // Проверяем размер файла (5 МБ)
       if (file.size > 5 * 1024 * 1024) {
         alert("Размер файла не должен превышать 5 МБ")
         return
       }
 
       try {
-        // Загружаем изображение через callback
         const url = await onImageUpload(file)
-        // Вставляем изображение в редактор
         editor.chain().focus().setImage({ src: url }).run()
       } catch (error) {
         console.error("Error uploading image:", error)
@@ -134,7 +130,6 @@ export default function RichTextEditor({
 
       await uploadImage(file)
 
-      // Очищаем input
       if (fileInputRef.current) {
         fileInputRef.current.value = ""
       }
@@ -142,7 +137,6 @@ export default function RichTextEditor({
     [uploadImage],
   )
 
-  // Поддержка drag & drop для изображений
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault()

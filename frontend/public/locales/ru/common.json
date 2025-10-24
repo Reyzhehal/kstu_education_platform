@@ -264,6 +264,13 @@
     "noDescription": "Описание пока отсутствует"
   },
   "lesson": {
+    "view": {
+      "title": "Просмотр урока",
+      "editLesson": "Редактировать урок",
+      "step": "Шаг",
+      "noVideoUrl": "URL видео не указан",
+      "invalidVideoUrl": "Неверный URL видео"
+    },
     "edit": {
       "title": "Редактирование урока",
       "courseContent": "Содержание курса",
@@ -287,6 +294,8 @@
       "addNewStep": "Добавить новый шаг",
       "saveStep": "Сохранить",
       "deleteStep": "Удалить шаг",
+      "backToView": "Вернуться к просмотру",
+      "nextStep": "Следующий шаг",
       "stepTypeText": "Текст",
       "stepTypeVideo": "Видео",
       "stepTypeTextDescription": "Текст с форматированием, изображениями, формулами",

@@ -15,6 +15,7 @@
   --text: #e8e8ea;
   --muted: #a7a7ad;
   --accent: #4c7fff;
+  --accent-light: rgba(76, 127, 255, 0.2);
   --border: #2a2b30;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
@@ -29,6 +30,7 @@
   --text: #1a1a1a;
   --muted: #666666;
   --accent: #4c7fff;
+  --accent-light: rgba(76, 127, 255, 0.15);
   --border: #e0e0e0;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }

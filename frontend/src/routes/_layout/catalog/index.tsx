@@ -31,7 +31,6 @@ function CatalogPage() {
   const [langs, setLangs] = useState<number[]>([])
   const [levels, setLevels] = useState<number[]>([1, 2, 3])
 
-  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data: langsResp } = useQuery({
     queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages({ limit: 100 }),

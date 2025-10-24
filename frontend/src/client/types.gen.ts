@@ -210,6 +210,13 @@ export type StepCreate = {
     };
 };
 
+export type StepProgressPublic = {
+    id: string;
+    user_id: string;
+    step_id: string;
+    completed_at: string;
+};
+
 export type StepPublic = {
     title?: (string | null);
     step_type?: StepType;
@@ -633,6 +640,19 @@ export type StepsDeleteStepData = {
 };
 
 export type StepsDeleteStepResponse = (unknown);
+
+export type StepsMarkStepCompletedData = {
+    lessonId: string;
+    stepId: string;
+};
+
+export type StepsMarkStepCompletedResponse = (StepProgressPublic);
+
+export type StepsGetCompletedStepsData = {
+    lessonId: string;
+};
+
+export type StepsGetCompletedStepsResponse = (Array<(string)>);
 
 export type UsersReadUsersData = {
     limit?: number;

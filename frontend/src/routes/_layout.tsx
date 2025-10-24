@@ -5,7 +5,6 @@ import { isLoggedIn } from "@/hooks/useAuth"
 import "./main.css"
 import { Header } from "@/components/Common"
 
-// Константа для ключа запроса языков (используется везде в приложении)
 export const LANGUAGES_QUERY_KEY = ["languages"]
 
 export const Route = createFileRoute("/_layout")({
@@ -20,14 +19,11 @@ export const Route = createFileRoute("/_layout")({
 })
 
 function Layout() {
-  // Предварительно загружаем языки при монтировании Layout
-  // staleTime: Infinity означает, что данные никогда не устареют
-  // и будут загружены только один раз за сессию
   const { data: languagesData } = useQuery({
     queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages(),
-    staleTime: Infinity, // Языки не меняются, загружаем один раз
-    gcTime: Infinity, // Храним в кэше всегда
+    staleTime: Infinity,
+    gcTime: Infinity,
   })
 
   return (

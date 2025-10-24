@@ -59,7 +59,6 @@ export default function SocialLinks() {
     },
   })
 
-  // При обновлении currentUser (после успешного сохранения или refetch) восстанавливаем форму к «последне сохранённому» состоянию
   useEffect(() => {
     reset({
       website_url: (currentUser as any)?.website_url,
@@ -95,7 +94,6 @@ export default function SocialLinks() {
       ),
     }
     await mutation.mutateAsync(payload)
-    // Локально приводим форму к сохранённому состоянию, чтобы кнопки сразу стали неактивны
     reset({
       website_url: payload.website_url as any,
       telegram_url: extractHandle(payload.telegram_url as any) as any,

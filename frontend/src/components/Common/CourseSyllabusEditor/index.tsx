@@ -39,7 +39,6 @@ export default function CourseSyllabusEditor({
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
-  // Загружаем модули из API
   const { data: loadedModules } = useQuery({
     queryKey: ["courseModules", courseId],
     queryFn: () => ModulesService.readCourseModules({ courseId }),
@@ -56,12 +55,10 @@ export default function CourseSyllabusEditor({
     },
   ])
 
-  // Обновляем modules при загрузке данных
   useEffect(() => {
     if (loadedModules && loadedModules.length > 0) {
       setModules(loadedModules.map((m: any) => ({ ...m, isExpanded: true })))
     } else if (loadedModules) {
-      // Если модулей нет, показываем один пустой
       setModules([
         {
           id: `temp-${crypto.randomUUID()}`,
@@ -109,7 +106,6 @@ export default function CourseSyllabusEditor({
   const handleDeleteModule = async (index: number) => {
     const module = modules[index]
 
-    // Если модуль уже сохранен в БД, удаляем через API
     if (module.id && !module.id.startsWith("temp-")) {
       try {
         await ModulesService.deleteModule({
@@ -167,7 +163,6 @@ export default function CourseSyllabusEditor({
     const module = modules[moduleIndex]
     const lesson = module.lessons[lessonIndex]
 
-    // Если урок уже сохранен в БД, удаляем через API
     if (
       lesson.id &&
       !lesson.id.startsWith("temp-") &&
@@ -194,15 +189,12 @@ export default function CourseSyllabusEditor({
 
   const handleSave = async () => {
     try {
-      // Обрабатываем каждый модуль
       for (let i = 0; i < modules.length; i++) {
         const module = modules[i]
 
         let moduleId = module.id
 
-        // Если модуль новый (нет id или id начинается с temp-)
         if (!moduleId || moduleId.startsWith("temp-")) {
-          // Создаем новый модуль
           const createdModule = await ModulesService.createModule({
             courseId,
             requestBody: {
@@ -213,7 +205,6 @@ export default function CourseSyllabusEditor({
           })
           moduleId = createdModule.id
         } else {
-          // Обновляем существующий модуль
           await ModulesService.updateModule({
             moduleId,
             requestBody: {
@@ -224,12 +215,10 @@ export default function CourseSyllabusEditor({
           })
         }
 
-        // Обрабатываем уроки модуля
         for (let j = 0; j < module.lessons.length; j++) {
           const lesson = module.lessons[j]
 
           if (!lesson.id || lesson.id.startsWith("temp-")) {
-            // Создаем новый урок
             await ModulesService.createLessonInModule({
               moduleId: module.id as string,
               requestBody: {
@@ -239,7 +228,6 @@ export default function CourseSyllabusEditor({
               },
             })
           } else {
-            // Обновляем существующий урок
             await LessonsService.updateLesson({
               lessonId: lesson.id,
               requestBody: {
@@ -251,7 +239,6 @@ export default function CourseSyllabusEditor({
         }
       }
 
-      // Инвалидируем кеш для перезагрузки данных
       queryClient.invalidateQueries({ queryKey: ["courseModules", courseId] })
 
       showSuccessToast(t("course.syllabus.saveSuccess"))
@@ -339,7 +326,6 @@ export default function CourseSyllabusEditor({
                       className={styles.editLessonButton}
                       onClick={(e) => {
                         e.stopPropagation()
-                        // Если урок уже существует (не временный), переходим к редактированию
                         if (lesson.id && !lesson.id.startsWith("temp-")) {
                           navigate({ to: `/lesson/${lesson.id}/edit` } as any)
                         }

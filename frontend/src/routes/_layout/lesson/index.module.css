@@ -4,81 +4,6 @@
   background: var(--bg);
 }
 
-/* Sidebar Navigation */
-.sidebar {
-  width: 300px;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-.sidebarHeader {
-  padding: 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.sidebarTitle {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.modulesList {
-  padding: 12px 0;
-}
-
-.module {
-  margin-bottom: 12px;
-}
-
-.moduleTitle {
-  padding: 12px 20px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text);
-  background: var(--bg-2);
-  border-left: 3px solid var(--accent);
-}
-
-.lessonsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.lessonItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  color: var(--text);
-}
-
-.lessonItem:hover {
-  background: var(--bg-2);
-}
-
-.lessonItem.active {
-  background: var(--accent);
-  color: white;
-}
-
-.lessonNumber {
-  font-size: 0.85rem;
-  font-weight: 600;
-  opacity: 0.7;
-  min-width: 40px;
-}
-
-.lessonTitle {
-  font-size: 0.9rem;
-  flex: 1;
-}
-
 /* Main Content */
 .mainContent {
   flex: 1;
@@ -86,7 +11,7 @@
 }
 
 .stepsEditor {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 32px 24px;
 }
@@ -120,93 +45,14 @@
   background: var(--border);
 }
 
-/* Горизонтальная панель шагов */
-.stepsBar {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 32px;
-  padding: 20px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow-x: auto;
-}
-
-.stepContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.stepLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  min-height: 20px;
-}
-
-.stepSquare {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  min-width: 80px;
-  background: var(--bg-2);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text);
-}
-
-.stepSquare:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.stepSquareVideo {
-  background: var(--bg);
-}
-
-.stepSquareIcon {
-  color: var(--text-muted);
-}
-
-.stepSquareActive {
-  background: #22c55e;
-  border-color: #22c55e;
-  color: white;
-}
-
-.stepSquareActive .stepSquareIcon {
-  color: white;
-}
-
-.stepSquareAdd {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
-}
-
-.stepSquareAdd:hover {
-  background: #2563eb;
-  border-color: #2563eb;
-}
-
-.stepSquarePlus {
-  font-size: 2rem;
-  font-weight: 300;
-}
+/* Горизонтальная панель шагов - стили перенесены в StepsNavigation.module.css */
 
 /* Редактор активного шага */
 .activeStepEditor {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 24px;
+  padding: 32px;
 }
 
 .activeStepHeader {
@@ -223,6 +69,17 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--text);
+}
+
+.activeStepFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .activeStepActions {
@@ -277,6 +134,25 @@
   background: #dc2626;
 }
 
+.backToViewButton {
+  padding: 8px 16px;
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.backToViewButton:hover {
+  background: var(--bg-3);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
 .emptyState {
   text-align: center;
   padding: 60px 20px;
@@ -284,6 +160,314 @@
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
+}
+
+/* Lesson Viewer Styles */
+.stepsViewer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.viewerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 20px;
+}
+
+.viewerTitle {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.editButton {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editButton:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+  color: white;
+}
+
+.stepsNavigation {
+  margin-bottom: 20px;
+}
+
+.stepCircle {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--panel);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.stepCircle:hover {
+  border-color: var(--accent);
+  background: var(--bg-2);
+}
+
+.stepCircleActive {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.activeStepViewer {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 32px;
+}
+
+.stepContent {
+  min-height: 300px;
+}
+
+.textContent {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* Markdown стили для текстового контента */
+.textContent p {
+  margin: 0 0 16px;
+  line-height: 1.7;
+}
+
+.textContent p:last-child {
+  margin-bottom: 0;
+}
+
+.textContent h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 24px 0 16px;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.textContent h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 20px 0 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.textContent h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.textContent h4,
+.textContent h5,
+.textContent h6 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 12px 0 8px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.textContent ul,
+.textContent ol {
+  margin: 0 0 16px 24px;
+  padding: 0;
+}
+
+.textContent li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.textContent li:last-child {
+  margin-bottom: 0;
+}
+
+.textContent ul {
+  list-style-type: disc;
+}
+
+.textContent ol {
+  list-style-type: decimal;
+}
+
+.textContent ul ul,
+.textContent ol ul {
+  list-style-type: circle;
+  margin-top: 8px;
+}
+
+.textContent ul ol,
+.textContent ol ol {
+  list-style-type: lower-alpha;
+  margin-top: 8px;
+}
+
+.textContent blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  border-left: 4px solid var(--accent);
+  background: var(--bg-2);
+  border-radius: 4px;
+}
+
+.textContent blockquote p {
+  margin: 0;
+}
+
+.textContent code {
+  background: var(--bg-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+  color: var(--text);
+}
+
+.textContent pre {
+  background: var(--bg-2);
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.textContent pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.textContent a {
+  color: var(--accent);
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.textContent a:hover {
+  opacity: 0.8;
+}
+
+.textContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 16px 0;
+  display: block;
+}
+
+.textContent hr {
+  border: none;
+  border-top: 2px solid var(--border);
+  margin: 24px 0;
+}
+
+.textContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.textContent table th,
+.textContent table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.textContent table th {
+  background: var(--bg-2);
+  font-weight: 600;
+}
+
+.textContent strong,
+.textContent b {
+  font-weight: 700;
+}
+
+.textContent em,
+.textContent i {
+  font-style: italic;
+}
+
+.videoContainer {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.videoContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.stepFooter {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.nextStepButton {
+  padding: 12px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.nextStepButton:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
 }
 
 /* Step Editors */
@@ -629,35 +813,14 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .sidebar {
-    width: 250px;
-  }
-
   .stepTypeGrid {
     grid-template-columns: 1fr;
-  }
-
-  .stepSquare {
-    width: 70px;
-    height: 70px;
-    min-width: 70px;
-  }
-
-  .stepSquareIcon {
-    width: 28px;
-    height: 28px;
   }
 }
 
 @media (max-width: 768px) {
   .page {
     flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
   }
 
   .editorHeader {
@@ -668,25 +831,5 @@
 
   .settingsButton {
     width: 100%;
-  }
-
-  .stepsBar {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .stepSquare {
-    width: 60px;
-    height: 60px;
-    min-width: 60px;
-  }
-
-  .stepSquareIcon {
-    width: 24px;
-    height: 24px;
-  }
-
-  .stepLabel {
-    font-size: 0.75rem;
   }
 }

@@ -13,7 +13,6 @@ type Props = {
 export default function LanguageSelect({ className }: Props) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
-  // Используем языки из глобального кэша (уже загружены в Layout)
   const { data } = useQuery({
     queryKey: LANGUAGES_QUERY_KEY,
     queryFn: () => LanguagesService.readLanguages({ skip: 0, limit: 100 }),

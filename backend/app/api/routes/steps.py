@@ -11,6 +11,8 @@ from app.models import (
     Module,
     Step,
     StepCreate,
+    StepProgress,
+    StepProgressPublic,
     StepUpdate,
     StepPublic,
 )
@@ -27,12 +29,10 @@ async def read_lesson_steps(
     """
     Получить все шаги урока, отсортированные по position
     """
-    # Проверяем существование урока
     lesson = await session.get(Lesson, lesson_id)
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson not found")
 
-    # Получаем модуль и курс для проверки доступа
     module = await session.get(Module, lesson.module_id)
     if not module:
         raise HTTPException(status_code=404, detail="Module not found")
@@ -41,14 +41,30 @@ async def read_lesson_steps(
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    # Получаем шаги
     steps_stmt = (
         select(Step).where(col(Step.lesson_id) == lesson_id).order_by(Step.position)
     )
     steps_result = await session.exec(steps_stmt)
     steps = steps_result.all()
 
-    return steps
+    step_ids = [step.id for step in steps]
+    if step_ids:
+        progress_stmt = select(StepProgress).where(
+            StepProgress.user_id == current_user.id,
+            col(StepProgress.step_id).in_(step_ids)
+        )
+        progress_result = await session.exec(progress_stmt)
+        completed_step_ids = {progress.step_id for progress in progress_result}
+    else:
+        completed_step_ids = set()
+
+    steps_public = []
+    for step in steps:
+        step_dict = step.model_dump()
+        step_dict["is_completed"] = step.id in completed_step_ids
+        steps_public.append(StepPublic(**step_dict))
+
+    return steps_public
 
 
 @router.post("/", response_model=StepPublic)
@@ -170,3 +186,33 @@ async def delete_step(
     await session.delete(step)
     await session.commit()
     return {"ok": True}
+
+
+@router.post("/{step_id}/complete", response_model=StepProgressPublic)
+async def mark_step_completed(
+    lesson_id: UUID,
+    step_id: UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentUser,
+) -> Any:
+    """
+    Отметить шаг как пройденный для текущего пользователя
+    """
+    step = await session.get(Step, step_id)
+    if not step or step.lesson_id != lesson_id:
+        raise HTTPException(status_code=404, detail="Step not found")
+
+    statement = select(StepProgress).where(
+        StepProgress.user_id == current_user.id, StepProgress.step_id == step_id
+    )
+    existing_progress = await session.exec(statement)
+    existing = existing_progress.first()
+
+    if existing:
+        return existing
+
+    progress = StepProgress(user_id=current_user.id, step_id=step_id)
+    session.add(progress)
+    await session.commit()
+    await session.refresh(progress)
+    return progress

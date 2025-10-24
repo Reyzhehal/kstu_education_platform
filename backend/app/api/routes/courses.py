@@ -33,14 +33,12 @@ async def enrich_course_public(
     """
     Обогатить объект Course дополнительными полями для CoursePublic
     """
-    # Проверяем избранное
     is_favorite_stmt = select(CourseFavoriteLink).where(
         CourseFavoriteLink.course_id == course.id,
         CourseFavoriteLink.user_id == user_id,
     )
     is_favorite = (await session.exec(is_favorite_stmt)).first() is not None
 
-    # Считаем студентов
     students_count_stmt = (
         select(func.count())
         .select_from(CourseStudentLink)
@@ -48,7 +46,6 @@ async def enrich_course_public(
     )
     students_count = (await session.exec(students_count_stmt)).one()
 
-    # Проверяем запись на курс
     is_enrolled_stmt = select(CourseStudentLink).where(
         CourseStudentLink.course_id == course.id,
         CourseStudentLink.user_id == user_id,
@@ -104,29 +101,23 @@ async def read_courses(
 
     statement = select(Course).where(col(Course.is_published) == True)
 
-    # Фильтр по категории
     if category_id is not None:
         statement = statement.where(col(Course.category_id) == category_id)
 
-    # Фильтр по подкатегории
     if subcategory_id is not None:
         statement = statement.where(col(Course.subcategory_id) == subcategory_id)
 
-    # Фильтр по метакатегории через join subcategory
     if meta_category_id is not None:
         statement = statement.join(
             Subcategory, col(Subcategory.id) == col(Course.subcategory_id)
         ).where(col(Subcategory.meta_category_id) == meta_category_id)
 
-    # Фильтр по языку курса
     if language_id is not None:
         statement = statement.where(col(Course.language_id) == language_id)
 
-    # Фильтр по уровню сложности
     if difficulty_level is not None:
         statement = statement.where(col(Course.difficulty_level) == difficulty_level)
 
-    # Поиск по тексту (title, description, author first/last name, author.username)
     if q:
         pattern = f"%{q}%"
         statement = statement.join(User, col(User.id) == col(Course.author_id)).where(
@@ -137,7 +128,6 @@ async def read_courses(
             | False
         )
 
-    # Подсчет общего количества с учетом фильтров
     count_statement = statement.with_only_columns(func.count()).order_by(None)
     count = (await session.exec(count_statement)).one()
 
@@ -145,7 +135,6 @@ async def read_courses(
     statement = statement.offset(skip).limit(limit)
     courses = (await session.exec(statement)).all()
 
-    # Преобразуем курсы в CoursePublic с дополнительными полями
     courses_public = []
     for course in courses:
         course_public = await enrich_course_public(course, session, current_user.id)
