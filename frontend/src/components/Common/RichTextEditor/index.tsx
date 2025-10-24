@@ -10,6 +10,7 @@ import Underline from "@tiptap/extension-underline"
 import { EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import { useCallback, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import styles from "./RichTextEditor.module.css"
 
 type RichTextEditorProps = {
@@ -23,11 +24,13 @@ type RichTextEditorProps = {
 export default function RichTextEditor({
   content,
   onChange,
-  placeholder = "Начните писать...",
+  placeholder,
   editable = true,
   onImageUpload,
 }: RichTextEditorProps) {
+  const { t } = useTranslation()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const defaultPlaceholder = placeholder || t("editor.placeholder")
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -62,7 +65,7 @@ export default function RichTextEditor({
       TableCell,
       TableHeader,
       Placeholder.configure({
-        placeholder,
+        placeholder: defaultPlaceholder,
       }),
     ],
     content,
@@ -76,7 +79,7 @@ export default function RichTextEditor({
     if (!editor) return
 
     const previousUrl = editor.getAttributes("link").href
-    const url = window.prompt("URL:", previousUrl)
+    const url = window.prompt(t("editor.urlPrompt"), previousUrl)
 
     if (url === null) return
 
@@ -86,29 +89,29 @@ export default function RichTextEditor({
     }
 
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
-  }, [editor])
+  }, [editor, t])
 
   const addImage = useCallback(() => {
     if (!editor) return
 
-    const url = window.prompt("URL изображения:")
+    const url = window.prompt(t("editor.imageUrlPrompt"))
 
     if (url) {
       editor.chain().focus().setImage({ src: url }).run()
     }
-  }, [editor])
+  }, [editor, t])
 
   const uploadImage = useCallback(
     async (file: File) => {
       if (!editor || !onImageUpload) return
 
       if (!file.type.startsWith("image/")) {
-        alert("Пожалуйста, выберите изображение")
+        alert(t("editor.selectImage"))
         return
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        alert("Размер файла не должен превышать 5 МБ")
+        alert(t("editor.fileSizeError"))
         return
       }
 
@@ -117,10 +120,10 @@ export default function RichTextEditor({
         editor.chain().focus().setImage({ src: url }).run()
       } catch (error) {
         console.error("Error uploading image:", error)
-        alert("Ошибка при загрузке изображения")
+        alert(t("editor.uploadError"))
       }
     },
-    [editor, onImageUpload],
+    [editor, onImageUpload, t],
   )
 
   const handleImageUpload = useCallback(
@@ -177,7 +180,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleBold().run()}
               className={editor.isActive("bold") ? styles.isActive : ""}
-              title="Жирный"
+              title={t("editor.bold")}
             >
               <strong>B</strong>
             </button>
@@ -185,7 +188,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleItalic().run()}
               className={editor.isActive("italic") ? styles.isActive : ""}
-              title="Курсив"
+              title={t("editor.italic")}
             >
               <em>I</em>
             </button>
@@ -193,7 +196,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleUnderline().run()}
               className={editor.isActive("underline") ? styles.isActive : ""}
-              title="Подчеркнутый"
+              title={t("editor.underline")}
             >
               <u>U</u>
             </button>
@@ -201,7 +204,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleStrike().run()}
               className={editor.isActive("strike") ? styles.isActive : ""}
-              title="Зачеркнутый"
+              title={t("editor.strikethrough")}
             >
               <s>S</s>
             </button>
@@ -209,7 +212,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleCode().run()}
               className={editor.isActive("code") ? styles.isActive : ""}
-              title="Код"
+              title={t("editor.code")}
             >
               {"</>"}
             </button>
@@ -225,7 +228,7 @@ export default function RichTextEditor({
               className={
                 editor.isActive("heading", { level: 1 }) ? styles.isActive : ""
               }
-              title="Заголовок 1"
+              title={t("editor.heading1")}
             >
               H1
             </button>
@@ -237,7 +240,7 @@ export default function RichTextEditor({
               className={
                 editor.isActive("heading", { level: 2 }) ? styles.isActive : ""
               }
-              title="Заголовок 2"
+              title={t("editor.heading2")}
             >
               H2
             </button>
@@ -249,7 +252,7 @@ export default function RichTextEditor({
               className={
                 editor.isActive("heading", { level: 3 }) ? styles.isActive : ""
               }
-              title="Заголовок 3"
+              title={t("editor.heading3")}
             >
               H3
             </button>
@@ -261,7 +264,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               className={editor.isActive("bulletList") ? styles.isActive : ""}
-              title="Маркированный список"
+              title={t("editor.bulletList")}
             >
               ⬤
             </button>
@@ -269,7 +272,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               className={editor.isActive("orderedList") ? styles.isActive : ""}
-              title="Нумерованный список"
+              title={t("editor.orderedList")}
             >
               1.
             </button>
@@ -283,7 +286,7 @@ export default function RichTextEditor({
               className={
                 editor.isActive({ textAlign: "left" }) ? styles.isActive : ""
               }
-              title="Выровнять по левому краю"
+              title={t("editor.alignLeft")}
             >
               ≡
             </button>
@@ -295,7 +298,7 @@ export default function RichTextEditor({
               className={
                 editor.isActive({ textAlign: "center" }) ? styles.isActive : ""
               }
-              title="Выровнять по центру"
+              title={t("editor.alignCenter")}
             >
               ≣
             </button>
@@ -305,7 +308,7 @@ export default function RichTextEditor({
               className={
                 editor.isActive({ textAlign: "right" }) ? styles.isActive : ""
               }
-              title="Выровнять по правому краю"
+              title={t("editor.alignRight")}
             >
               ≡
             </button>
@@ -317,7 +320,7 @@ export default function RichTextEditor({
               type="button"
               onClick={setLink}
               className={editor.isActive("link") ? styles.isActive : ""}
-              title="Вставить ссылку"
+              title={t("editor.insertLink")}
             >
               🔗
             </button>
@@ -326,7 +329,7 @@ export default function RichTextEditor({
                 <button
                   type="button"
                   onClick={triggerImageUpload}
-                  title="Загрузить изображение"
+                  title={t("editor.uploadImage")}
                 >
                   🖼
                 </button>
@@ -342,7 +345,7 @@ export default function RichTextEditor({
               <button
                 type="button"
                 onClick={addImage}
-                title="Вставить изображение по URL"
+                title={t("editor.insertImageUrl")}
               >
                 🖼
               </button>
@@ -356,7 +359,7 @@ export default function RichTextEditor({
                   .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
                   .run()
               }
-              title="Вставить таблицу"
+              title={t("editor.insertTable")}
             >
               ⊞
             </button>
@@ -368,7 +371,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
               className={editor.isActive("blockquote") ? styles.isActive : ""}
-              title="Цитата"
+              title={t("editor.blockquote")}
             >
               ❝❞
             </button>
@@ -376,7 +379,7 @@ export default function RichTextEditor({
               type="button"
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
               className={editor.isActive("codeBlock") ? styles.isActive : ""}
-              title="Блок кода"
+              title={t("editor.codeBlock")}
             >
               {"{ }"}
             </button>
@@ -387,7 +390,7 @@ export default function RichTextEditor({
             <button
               type="button"
               onClick={() => editor.chain().focus().setHorizontalRule().run()}
-              title="Горизонтальная линия"
+              title={t("editor.horizontalRule")}
             >
               ―
             </button>
@@ -396,7 +399,7 @@ export default function RichTextEditor({
               onClick={() =>
                 editor.chain().focus().clearNodes().unsetAllMarks().run()
               }
-              title="Очистить форматирование"
+              title={t("editor.clearFormatting")}
             >
               ⎚
             </button>

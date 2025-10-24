@@ -326,6 +326,35 @@
       }
     }
   },
+  "editor": {
+    "placeholder": "Начните писать...",
+    "urlPrompt": "URL:",
+    "imageUrlPrompt": "URL изображения:",
+    "selectImage": "Пожалуйста, выберите изображение",
+    "fileSizeError": "Размер файла не должен превышать 5 МБ",
+    "uploadError": "Ошибка при загрузке изображения",
+    "bold": "Жирный",
+    "italic": "Курсив",
+    "underline": "Подчеркнутый",
+    "strikethrough": "Зачеркнутый",
+    "code": "Код",
+    "heading1": "Заголовок 1",
+    "heading2": "Заголовок 2",
+    "heading3": "Заголовок 3",
+    "bulletList": "Маркированный список",
+    "orderedList": "Нумерованный список",
+    "alignLeft": "Выровнять по левому краю",
+    "alignCenter": "Выровнять по центру",
+    "alignRight": "Выровнять по правому краю",
+    "insertLink": "Вставить ссылку",
+    "uploadImage": "Загрузить изображение",
+    "insertImageUrl": "Вставить изображение по URL",
+    "insertTable": "Вставить таблицу",
+    "blockquote": "Цитата",
+    "codeBlock": "Блок кода",
+    "horizontalRule": "Горизонтальная линия",
+    "clearFormatting": "Очистить форматирование"
+  },
   "settings": {
     "title": "Настройки пользователя",
     "tabs": {

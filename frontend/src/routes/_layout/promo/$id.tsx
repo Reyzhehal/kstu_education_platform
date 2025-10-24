@@ -292,4 +292,4 @@ function levelLabel(level: number | undefined, t: any) {
     default:
       return t("catalog.difficulty.beginner")
   }
-  }
+}

@@ -44,13 +44,13 @@
 }
 
 .stepSquareCompleted {
-  background: #22c55e !important;
-  border-color: #22c55e !important;
-  color: white !important;
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
 }
 
 .stepSquareCompleted .stepSquareIcon {
-  color: white !important;
+  color: white;
 }
 
 /* Активный пройденный шаг - зеленый с яркой подсветкой */

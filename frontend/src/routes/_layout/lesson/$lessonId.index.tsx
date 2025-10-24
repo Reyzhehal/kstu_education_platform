@@ -108,28 +108,38 @@ function LessonStepsViewer({ lessonId, courseId }: LessonStepsViewerProps) {
 
   useEffect(() => {
     markedStepsRef.current.clear()
-  }, [lessonId])
+  }, [])
 
   useEffect(() => {
     if (activeStep && currentUser) {
       const isAlreadyCompleted = (activeStep as any).is_completed || false
       const alreadyMarked = markedStepsRef.current.has(activeStep.id)
-      
+
       console.log("Step progress check:", {
         stepId: activeStep.id,
         isAlreadyCompleted,
         alreadyMarked,
         isPending: markStepCompleted.isPending,
       })
-      
-      if (!isAlreadyCompleted && !alreadyMarked && !markStepCompleted.isPending) {
+
+      if (
+        !isAlreadyCompleted &&
+        !alreadyMarked &&
+        !markStepCompleted.isPending
+      ) {
         console.log("Marking step as completed:", activeStep.id)
         markedStepsRef.current.add(activeStep.id)
         markStepCompleted.mutate(activeStep.id)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeStep?.id, currentUser?.id])
+  }, [
+    activeStep?.id,
+    currentUser?.id,
+    markStepCompleted,
+    currentUser,
+    activeStep,
+  ])
 
   const getNextStep = () => {
     if (activeStepIndex < steps.length - 1) {
